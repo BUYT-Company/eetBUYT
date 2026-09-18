@@ -107,7 +107,7 @@
       }
       const frame = document.createElement('iframe');
       frame.src = src;
-      frame.title = 'Video over eetBUYT';
+      frame.title = 'Video over BUYT';
       frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       frame.allowFullscreen = true;
       video.appendChild(frame);
