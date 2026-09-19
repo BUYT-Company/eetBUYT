@@ -1,0 +1,7 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  # De prijslijst wordt zowel door de site als door de betaalfunctie gebruikt.
+  included_files = ["data/products.json"]

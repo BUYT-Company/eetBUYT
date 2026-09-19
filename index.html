@@ -31,6 +31,7 @@
       setTimeout(function () { d.classList.remove('intro-on'); d.classList.add('is-ready', 'force'); }, 9000);
     })();
   </script>
+  <script src="js/cart.js" defer></script>
   <script src="js/main.js" defer></script>
 </head>
 <body id="top">
@@ -97,15 +98,22 @@
         <img src="assets/logo.jpg" alt="" width="72" height="72">
         <span class="brand__name">BUYT</span>
       </a>
-      <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu openen">
-        <span></span><span></span><span></span>
-      </button>
       <nav id="nav" class="nav" aria-label="Hoofdmenu">
-        <a href="#verhaal">Ons verhaal</a>
         <a href="#producten">Producten</a>
+        <a href="#zakelijk">Horeca &amp; zakelijk</a>
+        <a href="#verhaal">Ons verhaal</a>
         <a href="#over-ons">Over ons</a>
-        <a class="btn btn--primary btn--sm" href="#bestellen"><span class="btn__label">Bestellen</span></a>
+        <a class="btn btn--primary btn--sm nav__cta" href="#producten"><span class="btn__label">Bestellen</span></a>
       </nav>
+      <div class="header__tools">
+        <a class="cart-btn" href="afrekenen.html" aria-label="Winkelmandje, leeg">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
+          <span class="cart-btn__count" data-cart-count hidden>0</span>
+        </a>
+        <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu openen">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -190,8 +198,8 @@
           <h1 id="hero-title" data-split>Gans verdient <em>beter.</em></h1>
           <p class="lead" data-in style="--d:1">In Nederland worden jaarlijks circa 330.000 ganzen geschoten. Circa 95% daarvan belandt in de prullenbak. BUYT brengt de gans terug op het bord.</p>
           <div class="hero__actions" data-in style="--d:2">
-            <a class="btn btn--primary" href="#producten"><span class="btn__label">Bekijk de producten</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
-            <a class="btn btn--outline" href="#verhaal"><span class="btn__label">Ons verhaal</span></a>
+            <a class="btn btn--primary" href="#producten"><span class="btn__label">Bestel nu</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn--outline" href="#zakelijk"><span class="btn__label">Zakelijk bestellen</span></a>
             <p class="note" aria-hidden="true">
               <span>Proef mee!</span>
               <svg viewBox="0 0 70 56" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M64 6C40 2 14 12 10 40"/><path d="M10 40L4 28M10 40L22 33"/></svg>
@@ -208,6 +216,110 @@
           </svg>
         </div>
         <svg class="badge__goose" viewBox="0 0 130 80"><use href="#goose-fly"/></svg>
+      </div>
+    </section>
+
+    <section class="section routes" id="routes" aria-labelledby="routes-title">
+      <div class="wrap">
+        <p class="kicker reveal">Voor wie</p>
+        <h2 id="routes-title" data-split>Kies jouw <em>route</em></h2>
+        <div class="routes__grid">
+          <a class="route reveal" href="#producten" data-type="particulier" style="--bg:#F7B4A8">
+            <span class="route__tag">Thuiskok</span>
+            <h3>Gans in je eigen keuken</h3>
+            <p>Kies je producten, leg ze in je mandje en reken direct online af.</p>
+            <span class="route__go" aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="route reveal" href="#zakelijk" data-type="zakelijk" style="--bg:#CDD9A3">
+            <span class="route__tag">Horeca &amp; zakelijk</span>
+            <h3>Gans op de kaart</h3>
+            <p>Ben je chef of horecaondernemer? Bestel zakelijk of vraag direct een offerte aan.</p>
+            <span class="route__go" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section products-section" id="producten" aria-labelledby="prod-title">
+      <div class="wrap products-head">
+        <div>
+          <p class="kicker reveal">Bestsellers</p>
+          <h2 id="prod-title" data-split>Onze <em>producten</em></h2>
+        </div>
+        <div class="carousel-nav" role="group" aria-label="Blader door de producten">
+          <button class="round" type="button" data-dir="-1" aria-label="Vorige producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="round" type="button" data-dir="1" aria-label="Volgende producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="carousel" tabindex="0" role="region" aria-label="Onze producten, scroll of sleep opzij">
+        <ul class="track">
+          <li class="card" style="--tile:#DDE6C4; --tilt:-2.2deg">
+            <div class="card__img grain"><span class="tag">Pita</span><img src="assets/product-shoarma.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
+            <div class="card__meta"><h3>Ganzenshoarma</h3><span class="price" data-price-for="ganzenshoarma">&euro;&nbsp;15,00</span></div>
+            <p>Gekruide reepjes gans, klaar voor in de pita.</p>
+            <button class="btn btn--primary btn--block" type="button" data-add="ganzenshoarma"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+          </li>
+          <li class="card" style="--tile:#FAD8D0; --tilt:1.8deg">
+            <div class="card__img grain"><span class="tag">Klassieker</span><img src="assets/product-rookworst.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
+            <div class="card__meta"><h3>Ganzenrookworst</h3><span class="price" data-price-for="ganzenrookworst">&euro;&nbsp;10,00</span></div>
+            <p>Rookworst zoals je hem kent, maar dan van gans.</p>
+            <button class="btn btn--primary btn--block" type="button" data-add="ganzenrookworst"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+          </li>
+          <li class="card" style="--tile:#F3EBC8; --tilt:-1.4deg">
+            <div class="card__img grain"><span class="tag">Bbq &amp; pan</span><img src="assets/product-burger.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
+            <div class="card__meta"><h3>Ganzenburger</h3><span class="price" data-price-for="ganzenburger">&euro;&nbsp;12,50</span></div>
+            <p>Een stevige burger van gans, voor op de bbq of in de pan.</p>
+            <button class="btn btn--primary btn--block" type="button" data-add="ganzenburger"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+          </li>
+          <li class="card" style="--tile:#CDD9A3; --tilt:2deg">
+            <div class="card__img grain"><span class="tag">Borrelplank</span><img src="assets/product-pastrami.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
+            <div class="card__meta"><h3>Ganzenpastrami</h3><span class="price" data-price-for="ganzenpastrami">&euro;&nbsp;14,00</span></div>
+            <p>Dungesneden gans pastrami voor op brood of de borrelplank.</p>
+            <button class="btn btn--primary btn--block" type="button" data-add="ganzenpastrami"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+          </li>
+        </ul>
+      </div>
+      <div class="drag-cursor" aria-hidden="true"><span>Sleep</span></div>
+      <div class="wrap products-foot">
+        <a class="btn btn--dark" href="afrekenen.html"><span class="btn__label">Naar je mandje</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+        <p class="products-foot__note">Veilig betalen via Mollie.</p>
+      </div>
+    </section>
+
+    <section class="section section--forest section--order" id="zakelijk" aria-labelledby="order-title">
+      <div class="wrap order">
+        <div class="order__text reveal">
+          <p class="kicker kicker--light">Horeca &amp; zakelijk</p>
+          <h2 id="order-title">Zakelijk <em>bestellen</em></h2>
+          <p>Ben je chef of horecaondernemer? Laat je gegevens achter en we nemen contact met je op over je bestelling of offerte.</p>
+          <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
+        </div>
+        <div class="order__card reveal">
+          <form name="bestellen" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" class="form">
+            <input type="hidden" name="form-name" value="bestellen">
+            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+            <div class="field">
+              <label for="f-naam">Naam</label>
+              <input id="f-naam" name="naam" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="f-email">E-mailadres</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <fieldset class="field field--choice">
+              <legend>Ik ben</legend>
+              <label><input type="radio" name="type" value="particulier"> Particulier</label>
+              <label><input type="radio" name="type" value="zakelijk" checked> Horeca of zakelijk</label>
+            </fieldset>
+            <div class="field">
+              <label for="f-bericht">Wat wil je bestellen of weten?</label>
+              <textarea id="f-bericht" name="bericht" rows="4"></textarea>
+            </div>
+            <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt! We nemen snel contact met je op.</p>
+            <p class="form__msg form__msg--err" role="alert" hidden>Er ging iets mis met versturen. Probeer het later nog eens.</p>
+          </form>
+        </div>
       </div>
     </section>
 
@@ -235,51 +347,6 @@
           <p class="reveal">We richten ons op thuiskoks &eacute;n op horeca en andere zakelijke afnemers: b2c en b2b.</p>
           <p class="reveal">Dat doen we met campagnes, met diners en met chefs die in de keuken met onze producten aan de slag gaan. Zo krijgt elke gans een betere bestemming dan de prullenbak.</p>
         </div>
-      </div>
-    </section>
-
-    <section class="section products-section" id="producten" aria-labelledby="prod-title">
-      <div class="wrap products-head">
-        <div>
-          <p class="kicker reveal">Bestsellers</p>
-          <h2 id="prod-title" data-split>Onze <em>producten</em></h2>
-        </div>
-        <div class="carousel-nav" role="group" aria-label="Blader door de producten">
-          <button class="round" type="button" data-dir="-1" aria-label="Vorige producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <button class="round" type="button" data-dir="1" aria-label="Volgende producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </div>
-      </div>
-      <div class="carousel" tabindex="0" role="region" aria-label="Onze producten, scroll of sleep opzij">
-        <ul class="track">
-          <li class="card" style="--tile:#DDE6C4; --tilt:-2.2deg">
-            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Pita</span><img src="assets/product-shoarma.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
-            <div class="card__meta"><h3>Ganzenshoarma</h3><span class="price">&euro;&nbsp;15,00</span></div>
-            <p>Gekruide reepjes gans, klaar voor in de pita.</p>
-            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-          </li>
-          <li class="card" style="--tile:#FAD8D0; --tilt:1.8deg">
-            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Klassieker</span><img src="assets/product-rookworst.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
-            <div class="card__meta"><h3>Ganzenrookworst</h3><span class="price">&euro;&nbsp;10,00</span></div>
-            <p>Rookworst zoals je hem kent, maar dan van gans.</p>
-            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-          </li>
-          <li class="card" style="--tile:#F3EBC8; --tilt:-1.4deg">
-            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Bbq &amp; pan</span><img src="assets/product-burger.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
-            <div class="card__meta"><h3>Ganzenburger</h3><span class="price">&euro;&nbsp;12,50</span></div>
-            <p>Een stevige burger van gans, voor op de bbq of in de pan.</p>
-            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-          </li>
-          <li class="card" style="--tile:#CDD9A3; --tilt:2deg">
-            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Borrelplank</span><img src="assets/product-pastrami.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
-            <div class="card__meta"><h3>Ganzenpastrami</h3><span class="price">&euro;&nbsp;14,00</span></div>
-            <p>Dungesneden gans pastrami voor op brood of de borrelplank.</p>
-            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-          </li>
-        </ul>
-      </div>
-      <div class="drag-cursor" aria-hidden="true"><span>Sleep</span></div>
-      <div class="wrap products-foot">
-        <a class="btn btn--dark" href="#bestellen"><span class="btn__label">Bekijk alles</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </section>
 
@@ -526,34 +593,13 @@
       </div>
     </section>
 
-    <section class="section section--tight routes" aria-labelledby="routes-title">
-      <div class="wrap">
-        <p class="kicker reveal">Voor wie</p>
-        <h2 id="routes-title" data-split>Kies jouw <em>route</em></h2>
-        <div class="routes__grid">
-          <a class="route reveal" href="#bestellen" data-type="particulier" style="--bg:#F7B4A8">
-            <span class="route__tag">Thuiskok</span>
-            <h3>Gans in je eigen keuken</h3>
-            <p>Voor in de pita, op de bbq of op brood. Laat je gegevens achter en we nemen contact op over je bestelling.</p>
-            <span class="route__go" aria-hidden="true">&rarr;</span>
-          </a>
-          <a class="route reveal" href="#bestellen" data-type="zakelijk" style="--bg:#CDD9A3">
-            <span class="route__tag">Horeca &amp; zakelijk</span>
-            <h3>Gans op de kaart</h3>
-            <p>Ben je chef of horecaondernemer? Neem contact op en ontdek wat er allemaal mogelijk is met gans.</p>
-            <span class="route__go" aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
     <section class="section section--tight faq" id="faq" aria-labelledby="faq-title">
       <div class="wrap faq__grid">
         <div class="faq__intro reveal">
           <p class="kicker">Veelgestelde vragen</p>
           <h2 id="faq-title">Vragen? <em>Wij antwoorden.</em></h2>
           <p>Staat je vraag er niet bij? Stuur ons een bericht, dan komen we erop terug.</p>
-          <a class="btn btn--dark" href="#bestellen"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--dark" href="#zakelijk"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
         <!-- Placeholder-vragen: vervang de tekst in <summary> en <p>. Kopieer een <details>-blok om een vraag toe te voegen. -->
         <div class="faq__list">
@@ -580,43 +626,6 @@
         </div>
       </div>
     </section>
-
-    <section class="section section--forest section--order" id="bestellen" aria-labelledby="order-title">
-      <div class="wrap order">
-        <div class="order__text reveal">
-          <p class="kicker kicker--light">Bestellen</p>
-          <h2 id="order-title">Bestel of <em>proef</em> mee</h2>
-          <p>Ben je particulier, chef of horecaondernemer? Laat je gegevens achter en we nemen contact met je op over je bestelling.</p>
-          <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
-        </div>
-        <div class="order__card reveal">
-          <form name="bestellen" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" class="form">
-            <input type="hidden" name="form-name" value="bestellen">
-            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-            <div class="field">
-              <label for="f-naam">Naam</label>
-              <input id="f-naam" name="naam" type="text" autocomplete="name" required>
-            </div>
-            <div class="field">
-              <label for="f-email">E-mailadres</label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required>
-            </div>
-            <fieldset class="field field--choice">
-              <legend>Ik bestel als</legend>
-              <label><input type="radio" name="type" value="particulier" checked> Particulier</label>
-              <label><input type="radio" name="type" value="zakelijk"> Horeca of zakelijk</label>
-            </fieldset>
-            <div class="field">
-              <label for="f-bericht">Wat wil je bestellen of weten?</label>
-              <textarea id="f-bericht" name="bericht" rows="4"></textarea>
-            </div>
-            <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
-            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt! We nemen snel contact met je op.</p>
-            <p class="form__msg form__msg--err" role="alert" hidden>Er ging iets mis met versturen. Probeer het later nog eens.</p>
-          </form>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer class="footer">
@@ -629,10 +638,12 @@
       <div>
         <p class="footer__head">Overzicht</p>
         <ul>
-          <li><a href="#verhaal">Ons verhaal</a></li>
           <li><a href="#producten">Producten</a></li>
+          <li><a href="afrekenen.html">Winkelmandje</a></li>
+          <li><a href="#zakelijk">Horeca &amp; zakelijk</a></li>
+          <li><a href="#verhaal">Ons verhaal</a></li>
           <li><a href="#over-ons">Over ons</a></li>
-          <li><a href="#bestellen">Bestellen</a></li>
+          <li><a href="#faq">Veelgestelde vragen</a></li>
         </ul>
       </div>
     </div>

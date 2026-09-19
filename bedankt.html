@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bedankt | BUYT</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#FEFBE8">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="js/cart.js" defer></script>
+  <script src="js/subpage.js" defer></script>
+  <script src="js/bedankt.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Naar de inhoud</a>
+
+  <header class="site-header">
+    <div class="wrap header__inner">
+      <a class="brand" href="index.html" aria-label="BUYT, naar de homepage">
+        <img src="assets/logo.jpg" alt="" width="72" height="72">
+        <span class="brand__name">BUYT</span>
+      </a>
+      <nav id="nav" class="nav" aria-label="Hoofdmenu">
+        <a href="index.html#producten">Producten</a>
+        <a href="index.html#zakelijk">Horeca &amp; zakelijk</a>
+        <a href="index.html#verhaal">Ons verhaal</a>
+        <a href="index.html#over-ons">Over ons</a>
+        <a class="btn btn--primary btn--sm nav__cta" href="index.html#producten"><span class="btn__label">Bestellen</span></a>
+      </nav>
+      <div class="header__tools">
+        <a class="cart-btn" href="afrekenen.html" aria-label="Winkelmandje, leeg">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
+          <span class="cart-btn__count" data-cart-count hidden>0</span>
+        </a>
+        <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu openen">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="thanks" role="status" aria-live="polite">
+        <div data-state="laden">
+          <p>Even kijken hoe het met je bestelling staat&hellip;</p>
+        </div>
+        <div data-state="betaald" hidden>
+          <h1>Bedankt voor je <em>bestelling</em></h1>
+          <p>Je betaling is ontvangen. Je krijgt een bevestiging per e-mail.</p>
+        </div>
+        <div data-state="aanvraag" hidden>
+          <h1>Bedankt voor je <em>bestelling</em></h1>
+          <p>We hebben je bestelling ontvangen. Online betalen is nog niet beschikbaar, dus we nemen contact met je op over de betaling en bezorging.</p>
+        </div>
+        <div data-state="open" hidden>
+          <h1>We wachten op je <em>betaling</em></h1>
+          <p>De betaling is nog niet bevestigd. Zodra dat gebeurd is ontvang je een e-mail.</p>
+        </div>
+        <div data-state="mislukt" hidden>
+          <h1>De betaling is <em>niet gelukt</em></h1>
+          <p>Er is niets afgeschreven. Je mandje staat nog klaar, dus je kunt het opnieuw proberen.</p>
+          <a class="btn btn--primary" href="afrekenen.html"><span class="btn__label">Opnieuw afrekenen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div data-state="onbekend" hidden>
+          <h1>Bedankt <em>voor je bezoek</em></h1>
+          <p>We konden de status van je bestelling niet ophalen. Heb je betaald, dan ontvang je een bevestiging per e-mail.</p>
+        </div>
+        <a class="btn btn--dark" href="index.html"><span class="btn__label">Terug naar de homepage</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__bottom">
+      <p>&copy; 2026 BUYT. Gans verdient beter.</p>
+    </div>
+  </footer>
+</body>
+</html>
