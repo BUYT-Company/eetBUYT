@@ -20,10 +20,15 @@
       d.classList.add('js');
       try {
         var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!still && !sessionStorage.getItem('buyt-intro')) d.classList.add('intro-on');
+        if (!still && !sessionStorage.getItem('buyt-intro')) {
+          d.classList.add('intro-on');
+          var l = document.createElement('link');
+          l.rel = 'preload'; l.as = 'image'; l.href = 'assets/logo-animatie.svg';
+          document.head.appendChild(l);
+        }
       } catch (e) {}
       /* vangnet: mocht main.js niet laden, dan blijft de pagina toch zichtbaar */
-      setTimeout(function () { d.classList.remove('intro-on'); d.classList.add('is-ready', 'force'); }, 6000);
+      setTimeout(function () { d.classList.remove('intro-on'); d.classList.add('is-ready', 'force'); }, 9000);
     })();
   </script>
   <script src="js/main.js" defer></script>
@@ -33,7 +38,7 @@
 
   <div class="intro" aria-hidden="true">
     <div class="intro__bg"></div>
-    <div class="intro__logo"><img src="assets/logo.jpg" alt="" width="200" height="200"></div>
+    <div class="intro__logo"><img data-src="assets/logo-animatie.svg" alt="" width="1350" height="1270"></div>
     <svg class="intro__wave" viewBox="0 0 100 200" preserveAspectRatio="none" focusable="false">
       <path fill="#12301D" d="M0 5C10 -1 20 9 33 4S56 -2 68 5S90 9 100 3V197C90 203 78 193 66 198S42 204 30 197S8 193 0 199Z"/>
     </svg>

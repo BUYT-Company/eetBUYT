@@ -168,8 +168,8 @@ em {
 .intro { position: fixed; inset: 0; z-index: 300; display: none; overflow: hidden; }
 .intro-on .intro { display: block; }
 .intro__bg { position: absolute; inset: 0; background: var(--cream); }
-.intro__logo { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; }
-.intro__logo img { width: clamp(120px, 22vw, 200px); height: auto; }
+.intro__logo { position: absolute; inset: 0; display: grid; place-items: center; }
+.intro__logo img { width: clamp(240px, 60vw, 440px); height: auto; }
 .intro__wave { position: absolute; left: 0; top: 0; width: 100%; height: 200vh; transform: translateY(100vh); will-change: transform; }
 
 /* Header */

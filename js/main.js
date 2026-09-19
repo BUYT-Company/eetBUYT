@@ -5,9 +5,6 @@
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-  const SPRING = window.CSS && CSS.supports('transition-timing-function', 'linear(0, 1)')
-    ? 'linear(0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%, 1.077 22.7%, 1.121 26.3%, 1.149 30.3%, 1.159 34.5%, 1.154 38.4%, 1.108 45.5%, 1.02 55.7%, 0.987 63.4%, 0.982 68.9%, 0.998 79.7%, 1.003 90%, 1)'
-    : 'cubic-bezier(.34, 1.56, .64, 1)';
 
   /* Tekst splitsen in woorden en letters, met behoud van <em> e.d. Het label blijft leesbaar voor screenreaders. */
   const splitChars = (el, cls) => {
@@ -125,25 +122,34 @@
     intro.addEventListener('pointerdown', finish);
     window.addEventListener('keydown', finish, { once: true });
 
-    logo.animate(
-      [{ opacity: 0, transform: 'scale(.4) rotate(-14deg)' }, { opacity: 1, transform: 'scale(1) rotate(0deg)' }],
-      { duration: 800, easing: SPRING, fill: 'forwards' }
-    );
-    const rise = wave.animate(
-      [{ transform: 'translateY(100vh)' }, { transform: 'translateY(0)' }],
-      { duration: 560, delay: 950, easing: 'cubic-bezier(.55, 0, .35, 1)', fill: 'both' }
-    );
-    rise.onfinish = () => {
-      if (finished) return;
-      bg.style.opacity = '0';
-      logo.style.visibility = 'hidden';
-      const out = wave.animate(
-        [{ transform: 'translateY(0)' }, { transform: 'translateY(-215vh)' }],
-        { duration: 800, delay: 140, easing: 'cubic-bezier(.6, .05, .3, 1)', fill: 'forwards' }
+    /* Het logo animeert zichzelf (SVG, 1,7 s). De golf start pas als die klaar is. */
+    const LOGO_MS = 1700;
+    const HOLD_MS = 350;
+    let started = false;
+    const begin = () => {
+      if (started || finished) return;
+      started = true;
+      const rise = wave.animate(
+        [{ transform: 'translateY(100vh)' }, { transform: 'translateY(0)' }],
+        { duration: 560, delay: LOGO_MS + HOLD_MS, easing: 'cubic-bezier(.55, 0, .35, 1)', fill: 'both' }
       );
-      timers.push(setTimeout(ready, 470));
-      out.onfinish = finish;
+      rise.onfinish = () => {
+        if (finished) return;
+        bg.style.opacity = '0';
+        logo.style.visibility = 'hidden';
+        const out = wave.animate(
+          [{ transform: 'translateY(0)' }, { transform: 'translateY(-215vh)' }],
+          { duration: 800, delay: 140, easing: 'cubic-bezier(.6, .05, .3, 1)', fill: 'forwards' }
+        );
+        timers.push(setTimeout(ready, 470));
+        out.onfinish = finish;
+      };
     };
+    const img = $('img', logo);
+    img.addEventListener('load', begin, { once: true });
+    img.addEventListener('error', begin, { once: true });
+    timers.push(setTimeout(begin, 2500));
+    img.src = img.dataset.src;
   };
   runIntro();
 
