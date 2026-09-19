@@ -2,9 +2,33 @@
   "currency": "EUR",
   "shippingCents": null,
   "products": [
-    { "id": "ganzenshoarma", "name": "Ganzenshoarma", "priceCents": 1500, "image": "assets/product-shoarma.svg", "tile": "#DDE6C4" },
-    { "id": "ganzenrookworst", "name": "Ganzenrookworst", "priceCents": 1000, "image": "assets/product-rookworst.svg", "tile": "#FAD8D0" },
-    { "id": "ganzenburger", "name": "Ganzenburger", "priceCents": 1250, "image": "assets/product-burger.svg", "tile": "#F3EBC8" },
-    { "id": "ganzenpastrami", "name": "Ganzenpastrami", "priceCents": 1400, "image": "assets/product-pastrami.svg", "tile": "#CDD9A3" }
+    {
+      "id": "ganzenshoarma",
+      "name": "Ganzenshoarma",
+      "priceCents": 1500,
+      "image": "assets/product-shoarma.svg",
+      "tile": "#D8ED36"
+    },
+    {
+      "id": "ganzenrookworst",
+      "name": "Ganzenrookworst",
+      "priceCents": 1000,
+      "image": "assets/product-rookworst.svg",
+      "tile": "#F0EADB"
+    },
+    {
+      "id": "ganzenburger",
+      "name": "Ganzenburger",
+      "priceCents": 1250,
+      "image": "assets/product-burger.svg",
+      "tile": "#D8ED36"
+    },
+    {
+      "id": "ganzenpastrami",
+      "name": "Ganzenpastrami",
+      "priceCents": 1400,
+      "image": "assets/product-pastrami.svg",
+      "tile": "#F0EADB"
+    }
   ]
 }

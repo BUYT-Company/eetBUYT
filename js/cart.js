@@ -55,7 +55,7 @@
          <button type="button" class="cart-line__remove" data-qty="remove" data-id="${esc(l.id)}" aria-label="${name} verwijderen">Verwijderen</button>`
       : `<span class="cart-line__qty">Aantal: ${l.qty}</span>`;
     return `<li class="cart-line">
-      <span class="cart-line__img" style="--tile:${esc(p.tile || '#DDE6C4')}"><img src="${esc(p.image)}" alt="" width="72" height="72"></span>
+      <span class="cart-line__img" style="--tile:${esc(p.tile || '#D8ED36')}"><img src="${esc(p.image)}" alt="" width="72" height="72"></span>
       <div class="cart-line__info">
         <p class="cart-line__name">${name}</p>
         <p class="cart-line__price">${fmt(p.priceCents)}</p>
