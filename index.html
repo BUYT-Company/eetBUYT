@@ -14,11 +14,30 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!still && !sessionStorage.getItem('buyt-intro')) d.classList.add('intro-on');
+      } catch (e) {}
+      /* vangnet: mocht main.js niet laden, dan blijft de pagina toch zichtbaar */
+      setTimeout(function () { d.classList.remove('intro-on'); d.classList.add('is-ready', 'force'); }, 6000);
+    })();
+  </script>
   <script src="js/main.js" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#main">Naar de inhoud</a>
+
+  <div class="intro" aria-hidden="true">
+    <div class="intro__bg"></div>
+    <div class="intro__logo"><img src="assets/logo.jpg" alt="" width="200" height="200"></div>
+    <svg class="intro__wave" viewBox="0 0 100 200" preserveAspectRatio="none" focusable="false">
+      <path fill="#12301D" d="M0 5C10 -1 20 9 33 4S56 -2 68 5S90 9 100 3V197C90 203 78 193 66 198S42 204 30 197S8 193 0 199Z"/>
+    </svg>
+  </div>
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <defs>
@@ -40,6 +59,21 @@
         <path d="M146 92C166 100 178 120 183 142" stroke="currentColor" stroke-width="20" stroke-linecap="round" fill="none"/>
         <path fill="currentColor" d="M176 138C186 134 196 140 200 150L186 160C180 158 174 148 176 138Z"/>
         <path d="M92 146L90 170M114 146L116 170M80 172H100M106 172H126" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
+      </symbol>
+      <symbol id="bin" viewBox="0 0 120 150">
+        <path fill="currentColor" d="M18 40H102L94 136C93.500 142 89 146 83 146H37C31 146 26.500 142 26 136Z"/>
+        <path d="M46 62V126M60 62V126M74 62V126" stroke="#FEFBE8" stroke-width="5" stroke-linecap="round" fill="none" opacity=".55"/>
+        <path d="M8 34H112" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <path d="M44 30V20C44 16 47 14 51 14H69C73 14 76 16 76 20V30" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </symbol>
+      <symbol id="spark" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z"/>
+      </symbol>
+      <symbol id="plate" viewBox="0 0 60 60">
+        <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <circle cx="30" cy="30" r="26"/>
+          <circle cx="30" cy="30" r="15"/>
+        </g>
       </symbol>
       <g id="reeds" fill="none" stroke="currentColor" stroke-linecap="round">
         <path d="M30 760C34 660 46 590 78 520" stroke-width="5"/>
@@ -65,7 +99,7 @@
         <a href="#verhaal">Ons verhaal</a>
         <a href="#producten">Producten</a>
         <a href="#over-ons">Over ons</a>
-        <a class="btn btn--primary btn--sm" href="#bestellen">Bestellen</a>
+        <a class="btn btn--primary btn--sm" href="#bestellen"><span class="btn__label">Bestellen</span></a>
       </nav>
     </div>
   </header>
@@ -96,38 +130,44 @@
           </defs>
           <rect width="1600" height="760" fill="url(#hsky)"/>
           <rect width="1600" height="760" fill="url(#hglow)"/>
-          <circle cx="1120" cy="470" r="150" fill="url(#hsun)"/>
-          <path d="M0 520C200 486 400 500 620 526C840 552 1000 494 1220 506C1400 516 1520 534 1600 516V760H0Z" fill="#2A5A3C"/>
-          <g class="windmill" fill="#143624" stroke="#143624">
-            <path d="M1458 522L1482 522L1475 454L1465 454Z" stroke="none"/>
-            <g class="windmill__blades" stroke-width="5" stroke-linecap="round">
-              <path d="M1470 450V394M1470 450H1526M1470 450V506M1470 450H1414"/>
+          <g class="px" data-depth="8"><circle cx="1120" cy="470" r="150" fill="url(#hsun)"/></g>
+          <g class="px" data-depth="14">
+            <path d="M0 520C200 486 400 500 620 526C840 552 1000 494 1220 506C1400 516 1520 534 1600 516V760H0Z" fill="#2A5A3C"/>
+            <g class="windmill" fill="#143624" stroke="#143624">
+              <path d="M1458 522L1482 522L1475 454L1465 454Z" stroke="none"/>
+              <g class="windmill__blades" stroke-width="5" stroke-linecap="round">
+                <path d="M1470 450V394M1470 450H1526M1470 450V506M1470 450H1414"/>
+              </g>
             </g>
           </g>
-          <path d="M0 580C260 540 480 560 720 592C960 624 1140 556 1380 574C1500 583 1560 594 1600 588V760H0Z" fill="#1E4A31"/>
-          <path d="M0 640C300 604 560 626 820 650C1080 674 1300 620 1600 640V760H0Z" fill="#143624"/>
-          <path d="M0 662C300 638 600 652 860 672C1120 692 1360 652 1600 666V760H0Z" fill="url(#hmeadow)"/>
-          <g class="flock" style="color:#FEFBE8" opacity=".95">
-            <g transform="translate(1110 226) rotate(-8) scale(.62)">
-              <use href="#goose-fly" x="0" y="0" width="130" height="80"/>
-              <use href="#goose-fly" x="-64" y="-36" width="130" height="80"/>
-              <use href="#goose-fly" x="-64" y="38" width="130" height="80"/>
-              <use href="#goose-fly" x="-128" y="-74" width="130" height="80"/>
-              <use href="#goose-fly" x="-128" y="78" width="130" height="80"/>
-              <use href="#goose-fly" x="-192" y="-108" width="130" height="80"/>
-              <use href="#goose-fly" x="-192" y="118" width="130" height="80"/>
+          <g class="px" data-depth="22">
+            <path d="M0 580C260 540 480 560 720 592C960 624 1140 556 1380 574C1500 583 1560 594 1600 588V760H0Z" fill="#1E4A31"/>
+            <path d="M0 640C300 604 560 626 820 650C1080 674 1300 620 1600 640V760H0Z" fill="#143624"/>
+            <path d="M0 662C300 638 600 652 860 672C1120 692 1360 652 1600 666V760H0Z" fill="url(#hmeadow)"/>
+          </g>
+          <g class="px" data-depth="34">
+            <g class="flock" style="color:#FEFBE8" opacity=".95">
+              <g transform="translate(1110 226) rotate(-8) scale(.62)">
+                <use href="#goose-fly" x="0" y="0" width="130" height="80"/>
+                <use href="#goose-fly" x="-64" y="-36" width="130" height="80"/>
+                <use href="#goose-fly" x="-64" y="38" width="130" height="80"/>
+                <use href="#goose-fly" x="-128" y="-74" width="130" height="80"/>
+                <use href="#goose-fly" x="-128" y="78" width="130" height="80"/>
+                <use href="#goose-fly" x="-192" y="-108" width="130" height="80"/>
+                <use href="#goose-fly" x="-192" y="118" width="130" height="80"/>
+              </g>
+            </g>
+            <g class="flock flock--slow" style="color:#FEFBE8" opacity=".7">
+              <g transform="translate(1400 330) rotate(-5) scale(.3)">
+                <use href="#goose-fly" x="0" y="0" width="130" height="80"/>
+                <use href="#goose-fly" x="-64" y="-36" width="130" height="80"/>
+                <use href="#goose-fly" x="-64" y="38" width="130" height="80"/>
+                <use href="#goose-fly" x="-128" y="-74" width="130" height="80"/>
+                <use href="#goose-fly" x="-128" y="78" width="130" height="80"/>
+              </g>
             </g>
           </g>
-          <g class="flock flock--slow" style="color:#FEFBE8" opacity=".7">
-            <g transform="translate(1400 330) rotate(-5) scale(.3)">
-              <use href="#goose-fly" x="0" y="0" width="130" height="80"/>
-              <use href="#goose-fly" x="-64" y="-36" width="130" height="80"/>
-              <use href="#goose-fly" x="-64" y="38" width="130" height="80"/>
-              <use href="#goose-fly" x="-128" y="-74" width="130" height="80"/>
-              <use href="#goose-fly" x="-128" y="78" width="130" height="80"/>
-            </g>
-          </g>
-          <g style="color:#0B2415">
+          <g class="px" data-depth="46" style="color:#0B2415">
             <use href="#goose-stand" width="200" height="175" transform="translate(240 654) scale(.5)"/>
             <use href="#goose-graze" width="200" height="175" transform="translate(380 664) scale(.42)"/>
             <use href="#goose-stand" width="200" height="175" transform="translate(1134 641) scale(-.62 .62)"/>
@@ -141,21 +181,27 @@
       </div>
       <div class="wrap hero__inner">
         <div class="hero__copy">
-          <p class="eyebrow">BUYT &middot; Amsterdam</p>
-          <h1 id="hero-title">Gans verdient <em>beter.</em></h1>
-          <p class="lead">In Nederland worden jaarlijks circa 330.000 ganzen geschoten. Circa 95% daarvan belandt in de prullenbak. BUYT brengt de gans terug op het bord.</p>
-          <div class="hero__actions">
-            <a class="btn btn--primary" href="#producten">Bekijk de producten <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
-            <a class="btn btn--outline" href="#verhaal">Ons verhaal</a>
+          <p class="eyebrow" data-in style="--d:0">BUYT &middot; Amsterdam</p>
+          <h1 id="hero-title" data-split>Gans verdient <em>beter.</em></h1>
+          <p class="lead" data-in style="--d:1">In Nederland worden jaarlijks circa 330.000 ganzen geschoten. Circa 95% daarvan belandt in de prullenbak. BUYT brengt de gans terug op het bord.</p>
+          <div class="hero__actions" data-in style="--d:2">
+            <a class="btn btn--primary" href="#producten"><span class="btn__label">Bekijk de producten</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn--outline" href="#verhaal"><span class="btn__label">Ons verhaal</span></a>
+            <p class="note" aria-hidden="true">
+              <span>Proef mee!</span>
+              <svg viewBox="0 0 70 56" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M64 6C40 2 14 12 10 40"/><path d="M10 40L4 28M10 40L22 33"/></svg>
+            </p>
           </div>
         </div>
       </div>
       <div class="badge" aria-hidden="true">
-        <svg class="badge__ring" viewBox="0 0 200 200">
-          <defs><path id="badge-circle" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
-          <circle cx="100" cy="100" r="100" fill="#EF6A55"/>
-          <text font-family="Fraunces, Georgia, serif" font-size="14" font-weight="700" letter-spacing="2" fill="#0B2415"><textPath href="#badge-circle" textLength="486" lengthAdjust="spacing">VAN PRULLENBAK NAAR BORD &#183; VAN PRULLENBAK NAAR BORD &#183; </textPath></text>
-        </svg>
+        <div class="badge__spin">
+          <svg class="badge__ring" viewBox="0 0 200 200">
+            <defs><path id="badge-circle" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
+            <circle cx="100" cy="100" r="100" fill="#EF6A55"/>
+            <text font-family="Fraunces, Georgia, serif" font-size="14" font-weight="700" letter-spacing="2" fill="#0B2415"><textPath href="#badge-circle" textLength="486" lengthAdjust="spacing">VAN PRULLENBAK NAAR BORD &#183; VAN PRULLENBAK NAAR BORD &#183; </textPath></text>
+          </svg>
+        </div>
         <svg class="badge__goose" viewBox="0 0 130 80"><use href="#goose-fly"/></svg>
       </div>
     </section>
@@ -173,51 +219,192 @@
       </div>
     </div>
 
-    <section class="section split">
-      <div class="wrap split__inner">
-        <div class="split__text reveal" id="verhaal">
-          <p class="kicker">Ons verhaal</p>
-          <h2>Ons <em>doel</em></h2>
-          <p class="statement">BUYT maakt de gans populair bij de consument.</p>
-          <p>In Nederland worden jaarlijks circa 330.000 ganzen geschoten. Het vlees is wild en van eigen bodem, maar circa 95% belandt in de prullenbak. Dat kan anders.</p>
-          <p>We richten ons op thuiskoks &eacute;n op horeca en andere zakelijke afnemers: b2c en b2b.</p>
-          <p>Dat doen we met campagnes, met diners en met chefs die in de keuken met onze producten aan de slag gaan. Zo krijgt elke gans een betere bestemming dan de prullenbak.</p>
+    <section class="section mission" id="verhaal" aria-labelledby="mission-title">
+      <svg class="mission__blob mission__blob--a" viewBox="0 0 400 400" aria-hidden="true" focusable="false"><path fill="#DDE6C4" d="M300 60C360 100 380 190 350 260C320 330 240 380 160 350C80 320 30 240 50 160C70 80 150 20 220 22C250 23 280 40 300 60Z"/></svg>
+      <svg class="mission__blob mission__blob--b" viewBox="0 0 400 400" aria-hidden="true" focusable="false"><path fill="#F7B4A8" d="M310 90C370 150 360 250 300 310C240 370 140 360 90 300C40 240 50 140 110 90C170 40 250 30 310 90Z"/></svg>
+      <div class="wrap mission__inner">
+        <p class="kicker reveal">Ons verhaal</p>
+        <h2 id="mission-title" class="sr-only">Ons doel</h2>
+        <p class="mission__statement fill" data-fill>BUYT maakt de gans populair bij de consument. Van prullenbak naar bord, voor thuiskoks &eacute;n voor horeca.</p>
+        <div class="mission__cols">
+          <p class="reveal">We richten ons op thuiskoks &eacute;n op horeca en andere zakelijke afnemers: b2c en b2b.</p>
+          <p class="reveal">Dat doen we met campagnes, met diners en met chefs die in de keuken met onze producten aan de slag gaan. Zo krijgt elke gans een betere bestemming dan de prullenbak.</p>
         </div>
+      </div>
+    </section>
 
-        <div class="split__products reveal" id="producten">
-          <div class="section-head">
-            <div>
-              <p class="kicker">Bestsellers</p>
-              <h2>Onze <em>producten</em></h2>
+    <section class="section products-section" id="producten" aria-labelledby="prod-title">
+      <div class="wrap products-head">
+        <div>
+          <p class="kicker reveal">Bestsellers</p>
+          <h2 id="prod-title" data-split>Onze <em>producten</em></h2>
+        </div>
+        <div class="carousel-nav" role="group" aria-label="Blader door de producten">
+          <button class="round" type="button" data-dir="-1" aria-label="Vorige producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="round" type="button" data-dir="1" aria-label="Volgende producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="carousel" tabindex="0" role="region" aria-label="Onze producten, scroll of sleep opzij">
+        <ul class="track">
+          <li class="card" style="--tile:#DDE6C4; --tilt:-2.2deg">
+            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Pita</span><img src="assets/product-shoarma.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
+            <div class="card__meta"><h3>Ganzenshoarma</h3><span class="price">&euro;&nbsp;15,00</span></div>
+            <p>Gekruide reepjes gans, klaar voor in de pita.</p>
+            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
+          </li>
+          <li class="card" style="--tile:#FAD8D0; --tilt:1.8deg">
+            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Klassieker</span><img src="assets/product-rookworst.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
+            <div class="card__meta"><h3>Ganzenrookworst</h3><span class="price">&euro;&nbsp;10,00</span></div>
+            <p>Rookworst zoals je hem kent, maar dan van gans.</p>
+            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
+          </li>
+          <li class="card" style="--tile:#F3EBC8; --tilt:-1.4deg">
+            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Bbq &amp; pan</span><img src="assets/product-burger.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
+            <div class="card__meta"><h3>Ganzenburger</h3><span class="price">&euro;&nbsp;12,50</span></div>
+            <p>Een stevige burger van gans, voor op de bbq of in de pan.</p>
+            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
+          </li>
+          <li class="card" style="--tile:#CDD9A3; --tilt:2deg">
+            <a class="card__img grain" href="#bestellen" tabindex="-1" aria-hidden="true" draggable="false"><span class="tag">Borrelplank</span><img src="assets/product-pastrami.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></a>
+            <div class="card__meta"><h3>Ganzenpastrami</h3><span class="price">&euro;&nbsp;14,00</span></div>
+            <p>Dungesneden gans pastrami voor op brood of de borrelplank.</p>
+            <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="drag-cursor" aria-hidden="true"><span>Sleep</span></div>
+      <div class="wrap products-foot">
+        <a class="btn btn--dark" href="#bestellen"><span class="btn__label">Bekijk alles</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </section>
+
+    <section class="section steps" aria-labelledby="steps-title">
+      <div class="wrap">
+        <div class="steps__head">
+          <p class="kicker reveal">Zo werkt het</p>
+          <h2 id="steps-title" data-split>Van prullenbak <em>naar bord</em></h2>
+        </div>
+        <ol class="stack">
+          <li class="step" style="--bg:#DDE6C4; --n:0">
+            <div class="step__body">
+              <span class="step__num">01</span>
+              <h3>Wild uit Nederland</h3>
+              <p>Elk jaar worden er circa 330.000 ganzen geschoten. Het vlees is wild en van eigen bodem.</p>
             </div>
+            <svg class="step__art" viewBox="0 0 360 280" role="img" aria-label="Ganzen vliegen over een polder bij zonsondergang">
+              <circle cx="236" cy="124" r="62" fill="#EF6A55"/>
+              <path d="M0 220C70 196 130 206 200 214C260 222 310 200 360 208V280H0Z" fill="#2A5A3C"/>
+              <path d="M0 246C90 228 170 240 250 248C300 253 340 244 360 246V280H0Z" fill="#12301D"/>
+              <g style="color:#12301D">
+                <use href="#goose-fly" width="96" height="59" transform="translate(74 62) rotate(-8)"/>
+                <use href="#goose-fly" width="72" height="44" transform="translate(30 122) rotate(-6)"/>
+                <use href="#goose-fly" width="72" height="44" transform="translate(150 118) rotate(-8)"/>
+                <use href="#goose-fly" width="48" height="30" transform="translate(268 60) rotate(-5)"/>
+              </g>
+            </svg>
+          </li>
+          <li class="step" style="--bg:#F7B4A8; --n:1">
+            <div class="step__body">
+              <span class="step__num">02</span>
+              <h3>Niet de prullenbak</h3>
+              <p>Circa 95% daarvan belandt nu in de prullenbak. Zonde, want dat kan anders.</p>
+            </div>
+            <svg class="step__art" viewBox="0 0 360 280" role="img" aria-label="Een gans vliegt de prullenbak uit">
+              <ellipse cx="180" cy="252" rx="110" ry="14" fill="#12301D" opacity=".18"/>
+              <use href="#bin" x="120" y="100" width="120" height="150" style="color:#12301D"/>
+              <path d="M196 98C204 86 212 78 222 70" fill="none" stroke="#12301D" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 9"/>
+              <use href="#goose-fly" width="104" height="64" transform="translate(214 66) rotate(-24)" style="color:#FEFBE8"/>
+              <use href="#spark" x="60" y="60" width="26" height="26" style="color:#FEFBE8"/>
+              <use href="#spark" x="300" y="150" width="18" height="18" style="color:#12301D"/>
+            </svg>
+          </li>
+          <li class="step" style="--bg:#F3EBC8; --n:2">
+            <div class="step__body">
+              <span class="step__num">03</span>
+              <h3>Naar de keuken</h3>
+              <p>Shoarma, rookworst, burger en pastrami, voor thuiskoks &eacute;n voor horeca en andere zakelijke afnemers.</p>
+            </div>
+            <svg class="step__art" viewBox="0 0 360 280" role="img" aria-label="Ganzenshoarma, ganzenrookworst en ganzenburger">
+              <circle cx="180" cy="140" r="120" fill="#FEFBE8"/>
+              <image href="assets/product-rookworst.svg" x="14" y="130" width="130" height="130" transform="rotate(-8 79 195)"/>
+              <image href="assets/product-burger.svg" x="216" y="134" width="130" height="130" transform="rotate(8 281 199)"/>
+              <image href="assets/product-shoarma.svg" x="90" y="24" width="180" height="180"/>
+              <use href="#spark" x="292" y="34" width="28" height="28" style="color:#EF6A55"/>
+              <use href="#spark" x="40" y="60" width="20" height="20" style="color:#12301D"/>
+            </svg>
+          </li>
+          <li class="step" style="--bg:#CDD9A3; --n:3">
+            <div class="step__body">
+              <span class="step__num">04</span>
+              <h3>Op het bord</h3>
+              <p>Met campagnes, diners en chefs maken we gans net zo gewoon als kip of rund.</p>
+            </div>
+            <svg class="step__art" viewBox="0 0 360 280" role="img" aria-label="Een gerecht van gans op een bord">
+              <ellipse cx="180" cy="160" rx="150" ry="104" fill="#FEFBE8"/>
+              <ellipse cx="180" cy="160" rx="150" ry="104" fill="none" stroke="#12301D" stroke-width="3"/>
+              <ellipse cx="180" cy="160" rx="112" ry="76" fill="none" stroke="#12301D" stroke-width="2" opacity=".35"/>
+              <image href="assets/product-pastrami.svg" x="100" y="72" width="160" height="160"/>
+              <use href="#spark" x="298" y="36" width="30" height="30" style="color:#EF6A55"/>
+              <use href="#spark" x="44" y="44" width="20" height="20" style="color:#12301D"/>
+              <use href="#goose-fly" width="60" height="37" transform="translate(28 226) rotate(-8)" style="color:#12301D"/>
+            </svg>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section compare" aria-labelledby="compare-title">
+      <div class="wrap">
+        <div class="compare__head">
+          <div>
+            <p class="kicker reveal">Het verschil</p>
+            <h2 id="compare-title" data-split>Zo kan het <em>ook</em></h2>
           </div>
-          <div class="products">
-            <article class="product" style="--tile:#DDE6C4">
-              <a class="product__img grain" href="#bestellen" tabindex="-1" aria-hidden="true"><img src="assets/product-shoarma.svg" alt="" width="400" height="400" loading="lazy"></a>
-              <div class="product__meta"><h3>Ganzenshoarma</h3><span class="price">&euro;&nbsp;15,00</span></div>
-              <p>Gekruide reepjes gans, klaar voor in de pita.</p>
-              <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-            </article>
-            <article class="product" style="--tile:#FAD8D0">
-              <a class="product__img grain" href="#bestellen" tabindex="-1" aria-hidden="true"><img src="assets/product-rookworst.svg" alt="" width="400" height="400" loading="lazy"></a>
-              <div class="product__meta"><h3>Ganzenrookworst</h3><span class="price">&euro;&nbsp;10,00</span></div>
-              <p>Rookworst zoals je hem kent, maar dan van gans.</p>
-              <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-            </article>
-            <article class="product" style="--tile:#F3EBC8">
-              <a class="product__img grain" href="#bestellen" tabindex="-1" aria-hidden="true"><img src="assets/product-burger.svg" alt="" width="400" height="400" loading="lazy"></a>
-              <div class="product__meta"><h3>Ganzenburger</h3><span class="price">&euro;&nbsp;12,50</span></div>
-              <p>Een stevige burger van gans, voor op de bbq of in de pan.</p>
-              <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-            </article>
-            <article class="product" style="--tile:#CDD9A3">
-              <a class="product__img grain" href="#bestellen" tabindex="-1" aria-hidden="true"><img src="assets/product-pastrami.svg" alt="" width="400" height="400" loading="lazy"></a>
-              <div class="product__meta"><h3>Ganzenpastrami</h3><span class="price">&euro;&nbsp;14,00</span></div>
-              <p>Dungesneden gans pastrami voor op brood of de borrelplank.</p>
-              <a class="link-arrow" href="#bestellen">Bestellen <span aria-hidden="true">&rarr;</span></a>
-            </article>
+          <p class="reveal">Nu belandt circa 95% van de geschoten ganzen in de prullenbak. Sleep en zie wat wij ervan maken.</p>
+        </div>
+        <div class="ba reveal" data-ba style="--pos:50%">
+          <div class="ba__scene ba__scene--after">
+            <svg viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Met BUYT: gerechten van gans op tafel">
+              <rect width="1200" height="675" fill="#F7B4A8"/>
+              <circle cx="960" cy="150" r="90" fill="#EF6A55"/>
+              <path d="M0 470H1200V675H0Z" fill="#12301D"/>
+              <path d="M0 470H1200" stroke="#0B2415" stroke-width="6"/>
+              <ellipse cx="600" cy="500" rx="360" ry="92" fill="#0B2415" opacity=".28"/>
+              <ellipse cx="600" cy="470" rx="360" ry="92" fill="#FEFBE8"/>
+              <ellipse cx="600" cy="470" rx="270" ry="64" fill="none" stroke="#12301D" stroke-width="3" opacity=".3"/>
+              <image href="assets/product-shoarma.svg" x="440" y="170" width="320" height="320"/>
+              <image href="assets/product-rookworst.svg" x="150" y="330" width="230" height="230" transform="rotate(-8 265 445)"/>
+              <image href="assets/product-burger.svg" x="820" y="330" width="230" height="230" transform="rotate(8 935 445)"/>
+              <use href="#spark" x="330" y="150" width="46" height="46" style="color:#FEFBE8"/>
+              <use href="#spark" x="820" y="240" width="32" height="32" style="color:#FEFBE8"/>
+              <use href="#spark" x="130" y="250" width="26" height="26" style="color:#12301D"/>
+              <use href="#goose-fly" width="150" height="92" transform="translate(140 70) rotate(-8)" style="color:#12301D"/>
+              <use href="#goose-fly" width="90" height="55" transform="translate(320 60) rotate(-6)" style="color:#12301D"/>
+            </svg>
           </div>
-          <a class="btn btn--dark" href="#bestellen">Bekijk alles <span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <div class="ba__scene ba__scene--before">
+            <svg viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Nu: ganzen belanden in de prullenbak">
+              <rect width="1200" height="675" fill="#A9AF98"/>
+              <path d="M0 470H1200V675H0Z" fill="#7B8368"/>
+              <path d="M0 470H1200" stroke="#5E664D" stroke-width="6"/>
+              <ellipse cx="600" cy="612" rx="250" ry="26" fill="#3C4732" opacity=".45"/>
+              <g style="color:#3C4732">
+                <use href="#goose-fly" width="130" height="80" transform="translate(500 70) rotate(58)" opacity=".38"/>
+                <use href="#goose-fly" width="150" height="92" transform="translate(600 130) rotate(64)" opacity=".55"/>
+                <use href="#goose-fly" width="170" height="104" transform="translate(690 210) rotate(72)" opacity=".8"/>
+                <use href="#goose-fly" width="200" height="123" transform="translate(410 190) rotate(50)" opacity=".28"/>
+              </g>
+              <use href="#bin" x="440" y="270" width="320" height="400" style="color:#4A5540"/>
+              <use href="#spark" x="180" y="170" width="30" height="30" style="color:#8E957F"/>
+              <use href="#spark" x="980" y="260" width="22" height="22" style="color:#8E957F"/>
+            </svg>
+          </div>
+          <span class="ba__label ba__label--l">Nu: in de prullenbak</span>
+          <span class="ba__label ba__label--r">Met BUYT: op het bord</span>
+          <div class="ba__handle" aria-hidden="true">
+            <span class="ba__knob"><svg viewBox="0 0 24 24"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+          <input class="ba__range" type="range" min="0" max="100" step="1" value="50" aria-label="Sleep om te vergelijken: ganzen in de prullenbak of op het bord">
         </div>
       </div>
     </section>
@@ -277,17 +464,23 @@
     <section class="section section--forest section--impact" aria-labelledby="impact-title">
       <div class="wrap">
         <p class="kicker kicker--light reveal">Impact</p>
-        <h2 id="impact-title" class="reveal">Ganzen met een betere bestemming, <em>tot nu toe</em></h2>
+        <h2 id="impact-title" data-split>Ganzen met een betere bestemming, <em>tot nu toe</em></h2>
         <div class="stats">
           <div class="stat reveal">
+            <svg class="stat__icon" viewBox="0 0 60 60" aria-hidden="true"><use href="#plate"/></svg>
             <p class="stat__num stat__num--accent"><span data-count="113">113</span></p>
             <p class="stat__label">ganzen op het bord in plaats van in de prullenbak</p>
           </div>
           <div class="stat reveal">
+            <svg class="stat__icon" viewBox="0 0 130 80" aria-hidden="true"><use href="#goose-fly"/></svg>
             <p class="stat__num"><span data-count="330000">330.000</span></p>
             <p class="stat__label">ganzen geschoten per jaar in Nederland</p>
           </div>
           <div class="stat reveal">
+            <svg class="stat__icon stat__ring" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="5"/>
+              <circle class="stat__arc" cx="30" cy="30" r="26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="95 100" transform="rotate(-90 30 30)"/>
+            </svg>
             <p class="stat__num"><span data-count="95">95</span>%</p>
             <p class="stat__label">daarvan belandt nu nog in de prullenbak</p>
           </div>
@@ -328,6 +521,61 @@
       </div>
     </section>
 
+    <section class="section section--tight routes" aria-labelledby="routes-title">
+      <div class="wrap">
+        <p class="kicker reveal">Voor wie</p>
+        <h2 id="routes-title" data-split>Kies jouw <em>route</em></h2>
+        <div class="routes__grid">
+          <a class="route reveal" href="#bestellen" data-type="particulier" style="--bg:#F7B4A8">
+            <span class="route__tag">Thuiskok</span>
+            <h3>Gans in je eigen keuken</h3>
+            <p>Voor in de pita, op de bbq of op brood. Laat je gegevens achter en we nemen contact op over je bestelling.</p>
+            <span class="route__go" aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="route reveal" href="#bestellen" data-type="zakelijk" style="--bg:#CDD9A3">
+            <span class="route__tag">Horeca &amp; zakelijk</span>
+            <h3>Gans op de kaart</h3>
+            <p>Ben je chef of horecaondernemer? Neem contact op en ontdek wat er allemaal mogelijk is met gans.</p>
+            <span class="route__go" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tight faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <div class="faq__intro reveal">
+          <p class="kicker">Veelgestelde vragen</p>
+          <h2 id="faq-title">Vragen? <em>Wij antwoorden.</em></h2>
+          <p>Staat je vraag er niet bij? Stuur ons een bericht, dan komen we erop terug.</p>
+          <a class="btn btn--dark" href="#bestellen"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+        <!-- Placeholder-vragen: vervang de tekst in <summary> en <p>. Kopieer een <details>-blok om een vraag toe te voegen. -->
+        <div class="faq__list">
+          <details class="faq__item reveal">
+            <summary><span>Hier komt vraag 1</span><span class="faq__icon" aria-hidden="true"></span></summary>
+            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
+          </details>
+          <details class="faq__item reveal">
+            <summary><span>Hier komt vraag 2</span><span class="faq__icon" aria-hidden="true"></span></summary>
+            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
+          </details>
+          <details class="faq__item reveal">
+            <summary><span>Hier komt vraag 3</span><span class="faq__icon" aria-hidden="true"></span></summary>
+            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
+          </details>
+          <details class="faq__item reveal">
+            <summary><span>Hier komt vraag 4</span><span class="faq__icon" aria-hidden="true"></span></summary>
+            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
+          </details>
+          <details class="faq__item reveal">
+            <summary><span>Hier komt vraag 5</span><span class="faq__icon" aria-hidden="true"></span></summary>
+            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <section class="section section--forest section--order" id="bestellen" aria-labelledby="order-title">
       <div class="wrap order">
         <div class="order__text reveal">
@@ -357,7 +605,7 @@
               <label for="f-bericht">Wat wil je bestellen of weten?</label>
               <textarea id="f-bericht" name="bericht" rows="4"></textarea>
             </div>
-            <button class="btn btn--primary" type="submit">Verstuur <span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+            <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
             <p class="form__msg form__msg--ok" role="status" hidden>Bedankt! We nemen snel contact met je op.</p>
             <p class="form__msg form__msg--err" role="alert" hidden>Er ging iets mis met versturen. Probeer het later nog eens.</p>
           </form>
@@ -383,7 +631,7 @@
         </ul>
       </div>
     </div>
-    <p class="footer__mark" aria-hidden="true">BUYT</p>
+    <p class="footer__mark" aria-hidden="true" data-mark>BUYT</p>
     <div class="wrap footer__bottom">
       <p>&copy; 2026 BUYT. Gans verdient beter.</p>
     </div>

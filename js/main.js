@@ -1,12 +1,96 @@
 (() => {
+  const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const SPRING = window.CSS && CSS.supports('transition-timing-function', 'linear(0, 1)')
+    ? 'linear(0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%, 1.077 22.7%, 1.121 26.3%, 1.149 30.3%, 1.159 34.5%, 1.154 38.4%, 1.108 45.5%, 1.02 55.7%, 0.987 63.4%, 0.982 68.9%, 0.998 79.7%, 1.003 90%, 1)'
+    : 'cubic-bezier(.34, 1.56, .64, 1)';
 
-  const header = document.querySelector('.site-header');
-  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  /* Tekst splitsen in woorden en letters, met behoud van <em> e.d. Het label blijft leesbaar voor screenreaders. */
+  const splitChars = (el, cls) => {
+    el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+    let i = 0;
+    const walk = (node) => {
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          child.textContent.split(/(\s+)/).forEach((tok) => {
+            if (!tok) return;
+            if (/^\s+$/.test(tok)) { frag.appendChild(document.createTextNode(' ')); return; }
+            const word = document.createElement('span');
+            word.className = 'w';
+            word.setAttribute('aria-hidden', 'true');
+            Array.from(tok).forEach((ch) => {
+              const c = document.createElement('span');
+              c.className = cls;
+              c.style.setProperty('--i', i++);
+              c.textContent = ch;
+              word.appendChild(c);
+            });
+            frag.appendChild(word);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === 1) {
+          walk(child);
+        }
+      });
+    };
+    walk(el);
+    el.style.setProperty('--step', `${clamp(Math.round(650 / Math.max(i, 1)), 14, 30)}ms`);
+    return i;
+  };
 
-  const burger = document.querySelector('.burger');
+  const wrapWords = (el, cls) => {
+    const words = [];
+    const walk = (node) => {
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          child.textContent.split(/(\s+)/).forEach((tok) => {
+            if (!tok) return;
+            if (/^\s+$/.test(tok)) { frag.appendChild(document.createTextNode(' ')); return; }
+            const w = document.createElement('span');
+            w.className = cls;
+            w.textContent = tok;
+            words.push(w);
+            frag.appendChild(w);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === 1) {
+          walk(child);
+        }
+      });
+    };
+    walk(el);
+    return words;
+  };
+
+  $$('[data-split]').forEach((el) => splitChars(el, 'c'));
+  $$('.btn__label').forEach((label) => {
+    const btn = label.closest('.btn');
+    if (btn) btn.setAttribute('aria-label', label.textContent.replace(/\s+/g, ' ').trim());
+    splitChars(label, 'ch');
+    label.removeAttribute('aria-label');
+  });
+  const mark = $('[data-mark]');
+  if (mark) splitChars(mark, 'ch');
+
+  /* Scroll-handlers gebundeld in één rAF */
+  const scrollTasks = [];
+  let scrollQueued = false;
+  const runScroll = () => { scrollQueued = false; scrollTasks.forEach((fn) => fn()); };
+  window.addEventListener('scroll', () => {
+    if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(runScroll); }
+  }, { passive: true });
+  window.addEventListener('resize', () => scrollTasks.forEach((fn) => fn()));
+
+  const header = $('.site-header');
+  scrollTasks.push(() => header.classList.toggle('is-scrolled', window.scrollY > 8));
+
+  const burger = $('.burger');
   const nav = document.getElementById('nav');
   const setMenu = (open) => {
     nav.classList.toggle('open', open);
@@ -17,31 +101,79 @@
   nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
 
-  const reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window && !reduceMotion) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    reveals.forEach((el) => io.observe(el));
-  } else {
-    reveals.forEach((el) => el.classList.add('in'));
-  }
+  /* Intro: logo, dan een groene golf. Eén keer per sessie, overslaan met een klik of toets. */
+  const ready = () => {
+    root.classList.add('is-ready');
+    $$('.hero [data-split]').forEach((el) => el.classList.add('in'));
+  };
+  const runIntro = () => {
+    const intro = $('.intro');
+    if (!intro || !root.classList.contains('intro-on')) { ready(); return; }
+    const bg = $('.intro__bg', intro);
+    const logo = $('.intro__logo', intro);
+    const wave = $('.intro__wave', intro);
+    const timers = [];
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      timers.forEach(clearTimeout);
+      root.classList.remove('intro-on');
+      try { sessionStorage.setItem('buyt-intro', '1'); } catch (_) {}
+      ready();
+    };
+    intro.addEventListener('pointerdown', finish);
+    window.addEventListener('keydown', finish, { once: true });
 
+    logo.animate(
+      [{ opacity: 0, transform: 'scale(.4) rotate(-14deg)' }, { opacity: 1, transform: 'scale(1) rotate(0deg)' }],
+      { duration: 800, easing: SPRING, fill: 'forwards' }
+    );
+    const rise = wave.animate(
+      [{ transform: 'translateY(100vh)' }, { transform: 'translateY(0)' }],
+      { duration: 560, delay: 950, easing: 'cubic-bezier(.55, 0, .35, 1)', fill: 'both' }
+    );
+    rise.onfinish = () => {
+      if (finished) return;
+      bg.style.opacity = '0';
+      logo.style.visibility = 'hidden';
+      const out = wave.animate(
+        [{ transform: 'translateY(0)' }, { transform: 'translateY(-215vh)' }],
+        { duration: 800, delay: 140, easing: 'cubic-bezier(.6, .05, .3, 1)', fill: 'forwards' }
+      );
+      timers.push(setTimeout(ready, 470));
+      out.onfinish = finish;
+    };
+  };
+  runIntro();
+
+  /* Onthullen bij scrollen */
+  const io = 'IntersectionObserver' in window && !reduceMotion
+    ? new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
+    : null;
+  $$('.reveal, [data-split]').filter((el) => !el.closest('.hero')).forEach((el) => {
+    if (io) io.observe(el);
+    else el.classList.add('in');
+  });
+  if (!io) $$('.hero [data-split]').forEach((el) => el.classList.add('in'));
+
+  /* Tellers */
   const nf = new Intl.NumberFormat('nl-NL');
-  const counters = document.querySelectorAll('[data-count]');
+  const counters = $$('[data-count]');
   const runCounter = (el) => {
     const target = Number(el.dataset.count);
     const start = performance.now();
     const duration = 1600;
     const tick = (now) => {
       const p = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = nf.format(Math.round(target * eased));
+      el.textContent = nf.format(Math.round(target * (1 - Math.pow(1 - p, 3))));
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
@@ -55,15 +187,157 @@
         }
       });
     }, { threshold: 0.6 });
-    counters.forEach((el) => {
-      el.textContent = '0';
-      co.observe(el);
-    });
+    counters.forEach((el) => { el.textContent = '0'; co.observe(el); });
   }
 
-  const stage = document.querySelector('[data-goose-stage]');
-  const goose = stage && stage.querySelector('.cursor-goose');
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  /* Missie: woorden kleuren in terwijl je scrolt */
+  $$('[data-fill]').forEach((el) => {
+    const words = wrapWords(el, 'fw');
+    if (reduceMotion) { words.forEach((w) => w.classList.add('on')); return; }
+    const update = () => {
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const p = clamp((vh * 0.85 - r.top) / (vh * 0.3 + r.height), 0, 1);
+      const n = Math.round(p * words.length);
+      words.forEach((w, i) => w.classList.toggle('on', i < n));
+    };
+    scrollTasks.push(update);
+    update();
+  });
+
+  /* Hero: parallax met de muis, badge draait mee met scrollen */
+  const hero = $('.hero');
+  if (hero && finePointer && !reduceMotion) {
+    const layers = $$('.px', hero).map((g) => ({ g, d: Number(g.dataset.depth), x: 0, y: 0 }));
+    let tx = 0, ty = 0, raf = 0;
+    const step = () => {
+      let moving = false;
+      layers.forEach((l) => {
+        const dx = tx * l.d - l.x;
+        const dy = ty * l.d * 0.4 - l.y;
+        l.x += dx * 0.08;
+        l.y += dy * 0.08;
+        if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) moving = true;
+        l.g.style.transform = `translate(${l.x.toFixed(2)}px, ${l.y.toFixed(2)}px) scale(1.06)`;
+      });
+      raf = moving ? requestAnimationFrame(step) : 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(step); };
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = -((e.clientX - r.left) / r.width - 0.5) * 2;
+      ty = -((e.clientY - r.top) / r.height - 0.5) * 2;
+      kick();
+    });
+    hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
+  }
+  const spin = $('.badge__spin');
+  if (spin && !reduceMotion) {
+    scrollTasks.push(() => { spin.style.transform = `rotate(${(window.scrollY * 0.3).toFixed(1)}deg)`; });
+  }
+
+  /* Producten: pijlen, slepen met de muis en een "Sleep"-bolletje */
+  const scroller = $('.carousel');
+  if (scroller) {
+    const prev = $('[data-dir="-1"]');
+    const next = $('[data-dir="1"]');
+    const track = $('.track', scroller);
+    const first = $('.card', scroller);
+    const stepSize = () => first.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 24);
+    const updateArrows = () => {
+      prev.disabled = scroller.scrollLeft < 4;
+      next.disabled = scroller.scrollLeft > scroller.scrollWidth - scroller.clientWidth - 4;
+    };
+    [prev, next].forEach((btn) => btn.addEventListener('click', () => {
+      scroller.scrollBy({ left: Number(btn.dataset.dir) * stepSize(), behavior: reduceMotion ? 'auto' : 'smooth' });
+    }));
+    scroller.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    updateArrows();
+
+    if (finePointer) {
+      const label = $('.drag-cursor');
+      let down = false, startX = 0, startLeft = 0, moved = 0;
+      scroller.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        down = true; startX = e.clientX; startLeft = scroller.scrollLeft; moved = 0;
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!down) return;
+        const dx = e.clientX - startX;
+        moved = Math.max(moved, Math.abs(dx));
+        if (moved > 5) scroller.classList.add('is-drag');
+        scroller.scrollLeft = startLeft - dx;
+      });
+      window.addEventListener('pointerup', () => { down = false; scroller.classList.remove('is-drag'); });
+      scroller.addEventListener('click', (e) => {
+        if (moved > 5) { e.preventDefault(); e.stopPropagation(); moved = 0; }
+      }, true);
+      scroller.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        label.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        label.classList.add('on');
+      });
+      scroller.addEventListener('pointerleave', () => label.classList.remove('on'));
+    }
+  }
+
+  /* Vergelijken: prullenbak of bord */
+  const ba = $('[data-ba]');
+  if (ba) {
+    const range = $('.ba__range', ba);
+    let touched = false;
+    const setPos = (v) => {
+      v = clamp(v, 0, 100);
+      ba.style.setProperty('--pos', `${v}%`);
+      range.value = String(Math.round(v));
+      range.setAttribute('aria-valuetext', v < 35 ? 'vooral de prullenbak' : v > 65 ? 'vooral het bord' : 'half prullenbak, half bord');
+    };
+    let dragging = false;
+    const fromEvent = (e) => {
+      const r = ba.getBoundingClientRect();
+      setPos(((e.clientX - r.left) / r.width) * 100);
+    };
+    ba.addEventListener('pointerdown', (e) => {
+      touched = true; dragging = true;
+      ba.setPointerCapture(e.pointerId);
+      ba.classList.add('is-drag');
+      fromEvent(e);
+    });
+    ba.addEventListener('pointermove', (e) => { if (dragging) fromEvent(e); });
+    const stop = () => { dragging = false; ba.classList.remove('is-drag'); };
+    ba.addEventListener('pointerup', stop);
+    ba.addEventListener('pointercancel', stop);
+    range.addEventListener('input', () => { touched = true; setPos(Number(range.value)); });
+
+    if ('IntersectionObserver' in window && !reduceMotion) {
+      const nudge = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        nudge.disconnect();
+        const stops = [[50, 30, 600], [30, 68, 800], [68, 50, 600]];
+        let idx = 0;
+        const run = () => {
+          if (touched || idx >= stops.length) return;
+          const [a, b, dur] = stops[idx++];
+          const t0 = performance.now();
+          const tick = (now) => {
+            if (touched) return;
+            const p = Math.min((now - t0) / dur, 1);
+            const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+            setPos(a + (b - a) * e);
+            if (p < 1) requestAnimationFrame(tick); else run();
+          };
+          requestAnimationFrame(tick);
+        };
+        setTimeout(run, 500);
+      }, { threshold: 0.6 });
+      nudge.observe(ba);
+    }
+  }
+
+  /* Cursor-gans in het videoblok */
+  const stage = $('[data-goose-stage]');
+  const goose = stage && $('.cursor-goose', stage);
   if (goose && finePointer && !reduceMotion) {
     let tx = 0, ty = 0, x = 0, y = 0, dir = 1, active = false;
     const loop = () => {
@@ -81,9 +355,7 @@
       tx = e.clientX - r.left;
       ty = e.clientY - r.top;
       if (!active) {
-        x = tx;
-        y = ty;
-        active = true;
+        x = tx; y = ty; active = true;
         goose.classList.add('on');
         requestAnimationFrame(loop);
       }
@@ -94,13 +366,13 @@
     });
   }
 
-  const video = document.querySelector('.video');
-  const playBtn = video && video.querySelector('.video__play');
+  const video = $('.video');
+  const playBtn = video && $('.video__play', video);
   if (playBtn) {
     playBtn.addEventListener('click', () => {
       const src = video.dataset.videoSrc;
       if (!src) {
-        const note = video.querySelector('.video__note');
+        const note = $('.video__note', video);
         note.hidden = false;
         setTimeout(() => { note.hidden = true; }, 3000);
         return;
@@ -115,10 +387,18 @@
     });
   }
 
-  const form = document.querySelector('form[name="bestellen"]');
+  /* Kies je route: vul het formulier alvast voor */
+  $$('.route').forEach((card) => {
+    card.addEventListener('click', () => {
+      const radio = $(`input[name="type"][value="${card.dataset.type}"]`);
+      if (radio) radio.checked = true;
+    });
+  });
+
+  const form = $('form[name="bestellen"]');
   if (form) {
-    const ok = form.querySelector('.form__msg--ok');
-    const err = form.querySelector('.form__msg--err');
+    const ok = $('.form__msg--ok', form);
+    const err = $('.form__msg--err', form);
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       ok.hidden = true;
@@ -137,4 +417,6 @@
       }
     });
   }
+
+  scrollTasks.forEach((fn) => fn());
 })();
