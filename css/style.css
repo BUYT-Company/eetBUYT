@@ -156,13 +156,6 @@ em {
   65% { transform: translateY(.06em); }
   100% { transform: none; }
 }
-@keyframes wiggle {
-  0% { transform: rotate(0); }
-  25% { transform: rotate(-10deg) scale(1.04); }
-  55% { transform: rotate(7deg); }
-  80% { transform: rotate(-3deg); }
-  100% { transform: rotate(0); }
-}
 @keyframes float { from { transform: translate(0, 0) rotate(0); } to { transform: translate(14px, -18px) rotate(4deg); } }
 
 /* Intro: logo, dan een groene golf die de pagina onthult */
@@ -178,9 +171,8 @@ em {
 .site-header.is-scrolled { box-shadow: 0 1px 0 var(--hair); }
 .header__inner { height: 100%; display: flex; align-items: center; gap: 24px; }
 .header__tools { display: flex; align-items: center; gap: 10px; }
-.brand { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-.brand img { width: 72px; height: 72px; }
-.brand:hover img { animation: wiggle .8s var(--ease-out); }
+.brand { display: inline-flex; align-items: center; gap: 0; text-decoration: none; }
+.brand img { width: auto; height: 81px; }
 .brand__name { font: 700 1.7rem/1 var(--font-display); font-variation-settings: "SOFT" 60, "WONK" 0; color: var(--forest); letter-spacing: -.02em; }
 .nav { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 38px); margin-left: auto; }
 .nav a:not(.btn) { text-decoration: none; font-weight: 600; font-size: .98rem; color: var(--forest); position: relative; padding: 6px 0; }
@@ -489,7 +481,7 @@ em {
 }
 @media (max-width: 520px) {
   :root { --header-h: 76px; --panel-radius: 26px; }
-  .brand img { width: 60px; height: 60px; }
+  .brand img { height: 70px; }
   .brand__name { font-size: 1.45rem; }
   .video__play { width: 84px; height: 84px; }
   .pillar { grid-template-columns: 52px 1fr; }
