@@ -5,7 +5,7 @@
   if (!img || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const ANIMATION = 'assets/logo-animatie.svg';
-  const DURATION_MS = 1800;
+  const DURATION_MS = 1350;
   let blob = null;
   let loading = null;
   let playing = false;

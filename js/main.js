@@ -122,8 +122,8 @@
     intro.addEventListener('pointerdown', finish);
     window.addEventListener('keydown', finish, { once: true });
 
-    /* Het logo animeert zichzelf (SVG, 1,7 s). De golf start pas als die klaar is. */
-    const LOGO_MS = 1700;
+    /* Het logo animeert zichzelf (SVG, 1,25 s). De golf start pas als die klaar is. */
+    const LOGO_MS = 1250;
     const HOLD_MS = 350;
     let started = false;
     const begin = () => {
