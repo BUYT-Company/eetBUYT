@@ -14,6 +14,7 @@
   <link rel="icon" href="assets/favicon.svg?v=3" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/hero-a.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="css/style.css">
   <script>
     (function () {
@@ -58,16 +59,6 @@
           <path d="M54 43C47 22 57 7 76 0C75 15 77 31 82 43Z"/>
         </g>
       </symbol>
-      <symbol id="goose-stand" viewBox="0 0 200 175">
-        <path fill="currentColor" d="M6 96L34 104C44 88 70 78 100 78C118 78 132 82 142 90C150 72 152 52 148 36C146 22 154 10 168 10C178 10 184 16 184 24L199 31L184 34C178 38 172 40 170 48C168 64 172 82 166 100C176 112 170 132 146 140C126 148 100 150 80 148C48 146 22 130 16 112C14 106 10 100 6 96Z"/>
-        <path d="M92 146L90 170M114 146L116 170M80 172H100M106 172H126" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
-      </symbol>
-      <symbol id="goose-graze" viewBox="0 0 200 175">
-        <path fill="currentColor" d="M6 96L34 104C44 88 70 78 100 78C124 78 148 88 160 106C168 122 152 140 128 146C110 150 90 150 76 148C46 146 22 130 16 112C14 106 10 100 6 96Z"/>
-        <path d="M146 92C166 100 178 120 183 142" stroke="currentColor" stroke-width="20" stroke-linecap="round" fill="none"/>
-        <path fill="currentColor" d="M176 138C186 134 196 140 200 150L186 160C180 158 174 148 176 138Z"/>
-        <path d="M92 146L90 170M114 146L116 170M80 172H100M106 172H126" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
-      </symbol>
       <symbol id="bin" viewBox="0 0 120 150">
         <path fill="currentColor" d="M18 40H102L94 136C93.500 142 89 146 83 146H37C31 146 26.500 142 26 136Z"/>
         <path d="M46 62V126M60 62V126M74 62V126" stroke="#FFF8E8" stroke-width="5" stroke-linecap="round" fill="none" opacity=".55"/>
@@ -83,14 +74,6 @@
           <circle cx="30" cy="30" r="15"/>
         </g>
       </symbol>
-      <g id="reeds" fill="none" stroke="currentColor" stroke-linecap="round">
-        <path d="M30 760C34 660 46 590 78 520" stroke-width="5"/>
-        <path d="M62 760C64 690 74 640 100 590" stroke-width="4"/>
-        <path d="M8 760C10 690 16 630 30 580" stroke-width="4"/>
-        <path d="M96 760C98 700 106 660 126 626" stroke-width="3.5"/>
-        <ellipse cx="80" cy="516" rx="7" ry="22" fill="currentColor" stroke="none" transform="rotate(14 80 516)"/>
-        <ellipse cx="102" cy="584" rx="6" ry="18" fill="currentColor" stroke="none" transform="rotate(12 102 584)"/>
-      </g>
     </defs>
   </svg>
 
@@ -120,79 +103,14 @@
   </header>
 
   <main id="main">
-    <section class="hero grain" aria-labelledby="hero-title">
+    <section class="hero hero--image hero--illustration grain" aria-labelledby="hero-title">
+      <!-- Hero-afbeelding. Nu versie A (illustratie). Wisselen naar versie B (foto):
+           1. zet op de <section> hierboven "hero--photo" in plaats van "hero--illustration";
+           2. gebruik hieronder src="assets/hero-b.webp" width="1344" height="752" en de alt-tekst
+              "Grauwe ganzen grazen op een dijk naast een sloot in het Nederlandse polderlandschap";
+           3. pas de <link rel="preload"> in de <head> aan naar assets/hero-b.webp. -->
       <div class="hero__art">
-        <svg viewBox="0 0 1600 760" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Illustratie van een Nederlands polderlandschap bij zonsondergang met ganzen. Tijdelijk in plaats van een landschapsfoto.">
-          <defs>
-            <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#007F4F"/>
-              <stop offset=".55" stop-color="#007F4F"/>
-              <stop offset="1" stop-color="#1F8E61"/>
-            </linearGradient>
-            <radialGradient id="hglow" cx="1120" cy="480" r="640" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stop-color="#D8ED36" stop-opacity=".42"/>
-              <stop offset=".55" stop-color="#D8ED36" stop-opacity=".1"/>
-              <stop offset="1" stop-color="#D8ED36" stop-opacity="0"/>
-            </radialGradient>
-            <linearGradient id="hsun" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#EDF398"/>
-              <stop offset="1" stop-color="#D8ED36"/>
-            </linearGradient>
-            <linearGradient id="hmeadow" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#0F402D"/>
-              <stop offset="1" stop-color="#123326"/>
-            </linearGradient>
-          </defs>
-          <rect width="1600" height="760" fill="url(#hsky)"/>
-          <rect width="1600" height="760" fill="url(#hglow)"/>
-          <g class="px" data-depth="8"><circle cx="1120" cy="470" r="150" fill="url(#hsun)"/></g>
-          <g class="px" data-depth="14">
-            <path d="M0 520C200 486 400 500 620 526C840 552 1000 494 1220 506C1400 516 1520 534 1600 516V760H0Z" fill="#066441"/>
-            <g class="windmill" fill="#0F402D" stroke="#0F402D">
-              <path d="M1458 522L1482 522L1475 454L1465 454Z" stroke="none"/>
-              <g class="windmill__blades" stroke-width="5" stroke-linecap="round">
-                <path d="M1470 450V394M1470 450H1526M1470 450V506M1470 450H1414"/>
-              </g>
-            </g>
-          </g>
-          <g class="px" data-depth="22">
-            <path d="M0 580C260 540 480 560 720 592C960 624 1140 556 1380 574C1500 583 1560 594 1600 588V760H0Z" fill="#0C4B33"/>
-            <path d="M0 640C300 604 560 626 820 650C1080 674 1300 620 1600 640V760H0Z" fill="#0F402D"/>
-            <path d="M0 662C300 638 600 652 860 672C1120 692 1360 652 1600 666V760H0Z" fill="url(#hmeadow)"/>
-          </g>
-          <g class="px" data-depth="34">
-            <g class="flock" style="color:#FFF8E8" opacity=".95">
-              <g transform="translate(1110 226) rotate(-8) scale(.62)">
-                <use href="#goose-fly" x="0" y="0" width="130" height="80"/>
-                <use href="#goose-fly" x="-64" y="-36" width="130" height="80"/>
-                <use href="#goose-fly" x="-64" y="38" width="130" height="80"/>
-                <use href="#goose-fly" x="-128" y="-74" width="130" height="80"/>
-                <use href="#goose-fly" x="-128" y="78" width="130" height="80"/>
-                <use href="#goose-fly" x="-192" y="-108" width="130" height="80"/>
-                <use href="#goose-fly" x="-192" y="118" width="130" height="80"/>
-              </g>
-            </g>
-            <g class="flock flock--slow" style="color:#FFF8E8" opacity=".7">
-              <g transform="translate(1400 330) rotate(-5) scale(.3)">
-                <use href="#goose-fly" x="0" y="0" width="130" height="80"/>
-                <use href="#goose-fly" x="-64" y="-36" width="130" height="80"/>
-                <use href="#goose-fly" x="-64" y="38" width="130" height="80"/>
-                <use href="#goose-fly" x="-128" y="-74" width="130" height="80"/>
-                <use href="#goose-fly" x="-128" y="78" width="130" height="80"/>
-              </g>
-            </g>
-          </g>
-          <g class="px" data-depth="46" style="color:#FFF8E8">
-            <use href="#goose-stand" width="200" height="175" transform="translate(240 654) scale(.5)"/>
-            <use href="#goose-graze" width="200" height="175" transform="translate(380 664) scale(.42)"/>
-            <use href="#goose-stand" width="200" height="175" transform="translate(1134 641) scale(-.62 .62)"/>
-            <use href="#goose-graze" width="200" height="175" transform="translate(1190 659) scale(.5)"/>
-            <use href="#goose-stand" width="200" height="175" transform="translate(1410 665) scale(-.4 .4)"/>
-            <use href="#goose-stand" width="200" height="175" transform="translate(1440 640) scale(.7)"/>
-            <use href="#reeds" x="0" y="0" style="color:#123326"/>
-            <use href="#reeds" transform="translate(1600 0) scale(-1 1)" style="color:#123326"/>
-          </g>
-        </svg>
+        <img src="assets/hero-a.webp" alt="Illustratie van een Nederlands polderlandschap met een sloot en grauwe ganzen die grazen" width="1672" height="941" fetchpriority="high" decoding="async">
       </div>
       <div class="wrap hero__inner">
         <div class="hero__copy">
@@ -208,16 +126,6 @@
             </p>
           </div>
         </div>
-      </div>
-      <div class="badge" aria-hidden="true">
-        <div class="badge__spin">
-          <svg class="badge__ring" viewBox="0 0 200 200">
-            <defs><path id="badge-circle" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
-            <circle cx="100" cy="100" r="100" fill="#FF6652"/>
-            <text font-family="'Bricolage Grotesque', Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="2" fill="#123326"><textPath href="#badge-circle" textLength="486" lengthAdjust="spacing">VAN PRULLENBAK NAAR BORD &#183; VAN PRULLENBAK NAAR BORD &#183; </textPath></text>
-          </svg>
-        </div>
-        <svg class="badge__goose" viewBox="0 0 130 80"><use href="#goose-fly"/></svg>
       </div>
     </section>
 

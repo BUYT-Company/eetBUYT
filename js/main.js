@@ -211,37 +211,6 @@
     update();
   });
 
-  /* Hero: parallax met de muis, badge draait mee met scrollen */
-  const hero = $('.hero');
-  if (hero && finePointer && !reduceMotion) {
-    const layers = $$('.px', hero).map((g) => ({ g, d: Number(g.dataset.depth), x: 0, y: 0 }));
-    let tx = 0, ty = 0, raf = 0;
-    const step = () => {
-      let moving = false;
-      layers.forEach((l) => {
-        const dx = tx * l.d - l.x;
-        const dy = ty * l.d * 0.4 - l.y;
-        l.x += dx * 0.08;
-        l.y += dy * 0.08;
-        if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) moving = true;
-        l.g.style.transform = `translate(${l.x.toFixed(2)}px, ${l.y.toFixed(2)}px) scale(1.06)`;
-      });
-      raf = moving ? requestAnimationFrame(step) : 0;
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(step); };
-    hero.addEventListener('pointermove', (e) => {
-      const r = hero.getBoundingClientRect();
-      tx = -((e.clientX - r.left) / r.width - 0.5) * 2;
-      ty = -((e.clientY - r.top) / r.height - 0.5) * 2;
-      kick();
-    });
-    hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
-  }
-  const spin = $('.badge__spin');
-  if (spin && !reduceMotion) {
-    scrollTasks.push(() => { spin.style.transform = `rotate(${(window.scrollY * 0.3).toFixed(1)}deg)`; });
-  }
-
   /* Producten: pijlen, slepen met de muis en een "Sleep"-bolletje */
   const scroller = $('.carousel');
   if (scroller) {

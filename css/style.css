@@ -200,8 +200,22 @@ em {
 /* Hero */
 .hero { position: relative; margin-inline: var(--inset); border-radius: var(--panel-radius); background: var(--green); color: var(--cream); min-height: clamp(600px, 84vh, 820px); display: flex; align-items: flex-start; overflow: hidden; }
 .hero__art { position: absolute; inset: 0; }
-.hero__art svg { width: 100%; height: 100%; }
-.px { transform-origin: 800px 380px; transform-box: view-box; transform: scale(1.06); }
+.hero__art img { width: 100%; height: 100%; object-fit: cover; }
+/* Twee varianten voor de hero-afbeelding: .hero--illustration (nu actief) en .hero--photo (zie de opmerking bij de hero in index.html) */
+.hero--illustration .hero__art img { object-position: 60% 100%; }
+/* Lead en knoppen vallen over het heldere grasland: een donkergroene sluier links houdt ze leesbaar */
+.hero--illustration .hero__art::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(12, 75, 51, .82) 0%, rgba(12, 75, 51, .6) 32%, rgba(12, 75, 51, .12) 58%, rgba(12, 75, 51, 0) 72%);
+}
+/* De foto heeft een lichte, grijze lucht: een stevige sluier links houdt de tekst leesbaar, en de inzoom zet de ganzen rechts van de kop */
+.hero--photo .hero__art img { transform: scale(1.32); transform-origin: 0 72%; object-position: 0 72%; }
+.hero--photo .hero__art::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(18, 51, 38, .86) 0%, rgba(18, 51, 38, .66) 34%, rgba(18, 51, 38, .16) 64%, rgba(18, 51, 38, 0) 100%),
+    linear-gradient(0deg, rgba(18, 51, 38, .35) 0%, rgba(18, 51, 38, 0) 34%);
+}
 .hero__inner { position: relative; z-index: 2; padding-block: clamp(44px, 7vw, 96px); }
 .hero__copy { max-width: min(700px, 54%); }
 .hero .eyebrow { font-weight: 700; letter-spacing: .18em; text-transform: uppercase; font-size: .78rem; color: var(--cream); margin: 0 0 1.4rem; }
@@ -218,16 +232,6 @@ em {
   transition: opacity .6s ease calc(.5s + var(--d) * .12s), transform .9s var(--spring) calc(.5s + var(--d) * .12s);
 }
 
-.badge { position: absolute; z-index: 3; top: clamp(28px, 4vw, 56px); right: clamp(28px, 5vw, 72px); width: clamp(110px, 11vw, 150px); aspect-ratio: 1; }
-.badge__spin { width: 100%; height: 100%; will-change: transform; }
-.badge__ring { width: 100%; height: 100%; animation: spin 32s linear infinite; }
-.badge__goose { position: absolute; inset: 0; margin: auto; width: 42%; height: auto; color: var(--forest-deep); }
-
-.flock { animation: drift 10s ease-in-out infinite alternate; }
-.flock--slow { animation-duration: 14s; animation-delay: -4s; }
-@keyframes drift { from { transform: translate(0, 0); } to { transform: translate(-24px, 8px); } }
-.windmill__blades { transform-box: fill-box; transform-origin: center; animation: spin 46s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Ticker */
 .marquee { overflow: hidden; margin-top: 28px; padding: 18px 0; border-block: 1px solid var(--hair); }
@@ -485,7 +489,10 @@ em {
   .hero__inner { padding-bottom: 8px; }
   .hero__copy { max-width: none; }
   .hero__art { position: relative; inset: auto; order: 2; height: clamp(250px, 60vw, 440px); -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%); }
-  .badge { display: none; }
+  .hero--illustration .hero__art img { object-position: 78% 100%; }
+  /* Op mobiel staat de tekst op het groen boven de afbeelding, dus geen sluier en geen inzoom */
+  .hero--illustration .hero__art::after, .hero--photo .hero__art::after { display: none; }
+  .hero--photo .hero__art img { transform: none; object-position: 30% 60%; }
   .step { position: relative; top: auto; grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .step__art { max-height: 260px; }
   .carousel-nav { display: none; }
