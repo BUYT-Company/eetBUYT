@@ -279,12 +279,25 @@
       scroller.addEventListener('click', (e) => {
         if (moved > 5) { e.preventDefault(); e.stopPropagation(); moved = 0; }
       }, true);
+      /* Het "Sleep"-bolletje is een hint: hij verschijnt 2 seconden als je op het productblok komt en
+         verdwijnt dan, zodat hij de aantalknoppen niet in de weg zit. Kom je opnieuw op het blok, dan verschijnt hij weer. */
+      let hintTimer = 0;
+      const placeLabel = (e) => { label.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; };
+      scroller.addEventListener('pointerenter', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        placeLabel(e);
+        label.classList.add('on');
+        clearTimeout(hintTimer);
+        hintTimer = setTimeout(() => label.classList.remove('on'), 2000);
+      });
       scroller.addEventListener('pointermove', (e) => {
         if (e.pointerType !== 'mouse') return;
-        label.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-        label.classList.add('on');
+        placeLabel(e);
       });
-      scroller.addEventListener('pointerleave', () => label.classList.remove('on'));
+      scroller.addEventListener('pointerleave', () => {
+        clearTimeout(hintTimer);
+        label.classList.remove('on');
+      });
     }
   }
 

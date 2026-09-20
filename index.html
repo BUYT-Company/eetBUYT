@@ -105,7 +105,7 @@
         <a href="#zakelijk">Horeca &amp; zakelijk</a>
         <a href="#verhaal">Ons verhaal</a>
         <a href="#over-ons">Over ons</a>
-        <a class="btn btn--primary btn--sm nav__cta" href="#producten"><span class="btn__label">Bestellen</span></a>
+        <a class="btn btn--primary btn--sm nav__cta" href="#producten"><span class="btn__label">Bestel nu</span></a>
       </nav>
       <div class="header__tools">
         <a class="cart-btn" href="afrekenen.html" aria-label="Winkelmandje, leeg">
@@ -229,7 +229,7 @@
           <a class="route reveal" href="#producten" data-type="particulier" style="--bg:#D8ED36; --fg:#123326">
             <span class="route__tag">Thuiskok</span>
             <h3>Gans in je eigen keuken</h3>
-            <p>Kies je producten, leg ze in je mandje en reken direct online af.</p>
+            <p>Kies je producten, leg ze in je mandje en plaats je bestelling. We bezorgen in Amsterdam.</p>
             <span class="route__go" aria-hidden="true">&rarr;</span>
           </a>
           <a class="route reveal" href="#zakelijk" data-type="zakelijk" style="--bg:#007F4F; --fg:#FFF8E8">
@@ -254,37 +254,59 @@
         </div>
       </div>
       <div class="carousel" tabindex="0" role="region" aria-label="Onze producten, scroll of sleep opzij">
+        <!-- Foto's: vervang de illustratie in <img src> door de foto (vierkant, 1:1), zet class="card__img card__img--photo grain"
+             op de wrapper en geef de foto een beschrijvende alt-tekst. De kleurtegel blijft als achtergrond. -->
         <ul class="track">
           <li class="card" style="--tile:#D8ED36; --tilt:-2.2deg">
             <div class="card__img grain"><span class="tag">Pita</span><img src="assets/product-shoarma.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
             <div class="card__meta"><h3>Ganzenshoarma</h3><span class="price" data-price-for="ganzenshoarma">&euro;&nbsp;15,00</span></div>
             <p>Gekruide reepjes gans, klaar voor in de pita.</p>
             <button class="btn btn--primary btn--block" type="button" data-add="ganzenshoarma"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+            <div class="stepper" data-stepper="ganzenshoarma" role="group" aria-label="Aantal Ganzenshoarma" hidden>
+              <button type="button" data-qty="dec" data-id="ganzenshoarma" aria-label="Minder Ganzenshoarma"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+              <button type="button" data-qty="inc" data-id="ganzenshoarma" aria-label="Meer Ganzenshoarma"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+            </div>
           </li>
           <li class="card" style="--tile:#F0EADB; --tilt:1.8deg">
             <div class="card__img grain"><span class="tag">Klassieker</span><img src="assets/product-rookworst.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
             <div class="card__meta"><h3>Ganzenrookworst</h3><span class="price" data-price-for="ganzenrookworst">&euro;&nbsp;10,00</span></div>
             <p>Rookworst zoals je hem kent, maar dan van gans.</p>
             <button class="btn btn--primary btn--block" type="button" data-add="ganzenrookworst"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+            <div class="stepper" data-stepper="ganzenrookworst" role="group" aria-label="Aantal Ganzenrookworst" hidden>
+              <button type="button" data-qty="dec" data-id="ganzenrookworst" aria-label="Minder Ganzenrookworst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+              <button type="button" data-qty="inc" data-id="ganzenrookworst" aria-label="Meer Ganzenrookworst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+            </div>
           </li>
           <li class="card" style="--tile:#D8ED36; --tilt:-1.4deg">
             <div class="card__img grain"><span class="tag">Bbq &amp; pan</span><img src="assets/product-burger.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
             <div class="card__meta"><h3>Ganzenburger</h3><span class="price" data-price-for="ganzenburger">&euro;&nbsp;12,50</span></div>
             <p>Een stevige burger van gans, voor op de bbq of in de pan.</p>
             <button class="btn btn--primary btn--block" type="button" data-add="ganzenburger"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+            <div class="stepper" data-stepper="ganzenburger" role="group" aria-label="Aantal Ganzenburger" hidden>
+              <button type="button" data-qty="dec" data-id="ganzenburger" aria-label="Minder Ganzenburger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+              <button type="button" data-qty="inc" data-id="ganzenburger" aria-label="Meer Ganzenburger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+            </div>
           </li>
           <li class="card" style="--tile:#F0EADB; --tilt:2deg">
             <div class="card__img grain"><span class="tag">Borrelplank</span><img src="assets/product-pastrami.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
             <div class="card__meta"><h3>Ganzenpastrami</h3><span class="price" data-price-for="ganzenpastrami">&euro;&nbsp;14,00</span></div>
             <p>Dungesneden gans pastrami voor op brood of de borrelplank.</p>
             <button class="btn btn--primary btn--block" type="button" data-add="ganzenpastrami"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+            <div class="stepper" data-stepper="ganzenpastrami" role="group" aria-label="Aantal Ganzenpastrami" hidden>
+              <button type="button" data-qty="dec" data-id="ganzenpastrami" aria-label="Minder Ganzenpastrami"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+              <button type="button" data-qty="inc" data-id="ganzenpastrami" aria-label="Meer Ganzenpastrami"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+            </div>
           </li>
         </ul>
       </div>
       <div class="drag-cursor" aria-hidden="true"><span>Sleep</span></div>
       <div class="wrap products-foot">
-        <a class="btn btn--dark" href="afrekenen.html"><span class="btn__label">Naar je mandje</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
-        <p class="products-foot__note">Veilig betalen via Mollie.</p>
+        <a class="btn btn--dark btn--cart" href="afrekenen.html"><span class="btn__label">Naar je mandje</span><span class="btn__arrow" aria-hidden="true">&rarr;</span><span class="btn__count" data-cart-count hidden>0</span></a>
+        <p class="products-foot__note">We bezorgen in Amsterdam.</p>
       </div>
     </section>
 
@@ -293,7 +315,7 @@
         <div class="order__text reveal">
           <p class="kicker kicker--light">Horeca &amp; zakelijk</p>
           <h2 id="order-title">Zakelijk <em>bestellen</em></h2>
-          <p>Ben je chef of horecaondernemer? Laat je gegevens achter en we nemen contact met je op over je bestelling of offerte.</p>
+          <p>Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. We nemen contact met je op over je bestelling of offerte. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
           <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
         </div>
         <div class="order__card reveal">
@@ -314,12 +336,13 @@
               <label><input type="radio" name="type" value="zakelijk" checked> Horeca of zakelijk</label>
             </fieldset>
             <div class="field">
-              <label for="f-bericht">Wat wil je bestellen of weten?</label>
-              <textarea id="f-bericht" name="bericht" rows="4"></textarea>
+              <label for="f-bericht">Wat heb je nodig?</label>
+              <textarea id="f-bericht" name="bericht" rows="4" aria-describedby="f-bericht-hint"></textarea>
+              <p class="field__hint" id="f-bericht-hint">Bijvoorbeeld: welke producten, hoeveel en wanneer je ze wilt hebben.</p>
             </div>
             <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
-            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt! We nemen snel contact met je op.</p>
-            <p class="form__msg form__msg--err" role="alert" hidden>Er ging iets mis met versturen. Probeer het later nog eens.</p>
+            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bericht is verstuurd. We nemen contact met je op.</p>
+            <p class="form__msg form__msg--err" role="alert" hidden>Je bericht is niet verstuurd. Controleer je verbinding en probeer het opnieuw.</p>
           </form>
         </div>
       </div>
@@ -512,14 +535,12 @@
               </g>
             </g>
           </svg>
-          <button class="video__play" type="button" aria-label="Video afspelen">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
-          </button>
+          <!-- Zodra de video er is: zet hier weer <button class="video__play" type="button" aria-label="Video afspelen"> terug,
+               vul data-video-src op .video en haal het bijschrift "volgt binnenkort" weg. -->
           <div class="video__caption">
             <p class="video__title">Van gans naar gerecht</p>
-            <p class="video__sub">Een mini-docu over onze producten</p>
+            <p class="video__sub">Een mini-docu over onze producten. Volgt binnenkort.</p>
           </div>
-          <p class="video__note" hidden>De video volgt binnenkort.</p>
           <div class="cursor-goose" aria-hidden="true">
             <svg viewBox="0 0 130 80">
               <g fill="#FFF8E8">
@@ -599,32 +620,16 @@
       <div class="wrap faq__grid">
         <div class="faq__intro reveal">
           <p class="kicker">Veelgestelde vragen</p>
-          <h2 id="faq-title">Vragen? <em>Wij antwoorden.</em></h2>
-          <p>Staat je vraag er niet bij? Stuur ons een bericht, dan komen we erop terug.</p>
+          <h2 id="faq-title">Vragen? <em>Stel ze gerust.</em></h2>
+          <p>Heb je nu al een vraag? Stuur ons een bericht, dan komen we erop terug.</p>
           <a class="btn btn--dark" href="#zakelijk"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
-        <!-- Placeholder-vragen: vervang de tekst in <summary> en <p>. Kopieer een <details>-blok om een vraag toe te voegen. -->
-        <div class="faq__list">
-          <details class="faq__item reveal">
-            <summary><span>Hier komt vraag 1</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
-          </details>
-          <details class="faq__item reveal">
-            <summary><span>Hier komt vraag 2</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
-          </details>
-          <details class="faq__item reveal">
-            <summary><span>Hier komt vraag 3</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
-          </details>
-          <details class="faq__item reveal">
-            <summary><span>Hier komt vraag 4</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
-          </details>
-          <details class="faq__item reveal">
-            <summary><span>Hier komt vraag 5</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <div class="faq__a"><p>Het antwoord op deze vraag volgt.</p></div>
-          </details>
+        <!-- Zodra de vragen er zijn: zet hier de accordeon terug, in <div class="faq__list">, met per vraag:
+             <details class="faq__item reveal"><summary><span>Vraag</span><span class="faq__icon" aria-hidden="true"></span></summary>
+             <div class="faq__a"><p>Antwoord</p></div></details> -->
+        <div class="faq__soon reveal">
+          <p class="faq__soon-title">De antwoorden volgen.</p>
+          <p>We verzamelen de vragen die klanten het vaakst hebben. Ze komen hier te staan zodra ze er zijn.</p>
         </div>
       </div>
     </section>

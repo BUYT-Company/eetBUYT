@@ -74,20 +74,41 @@
     $$('[data-cart-empty]').forEach((el) => { el.hidden = n > 0; });
     $$('[data-cart-filled]').forEach((el) => { el.hidden = n === 0; });
 
+    /* Op de productkaart wordt "In mandje" een aantal-keuze zodra het product in het mandje zit */
+    $$('[data-stepper]').forEach((box) => {
+      const id = box.dataset.stepper;
+      const line = lines.find((l) => l.id === id);
+      const qty = line ? line.qty : 0;
+      const addBtn = $(`[data-add="${id}"]`);
+      box.hidden = qty === 0;
+      if (addBtn) addBtn.hidden = qty > 0;
+      const shown = $('[data-step-count]', box);
+      if (shown) shown.textContent = String(qty);
+      const inc = $('[data-qty="inc"]', box);
+      if (inc) inc.disabled = qty >= MAX_QTY;
+    });
+
     if (!catalog) return;
-    const focused = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.qty
-      ? { qty: document.activeElement.dataset.qty, id: document.activeElement.dataset.id } : null;
+    const active = document.activeElement;
+    const activeList = active && active.closest ? active.closest('[data-cart-lines]') : null;
+    const focused = activeList && active.dataset && active.dataset.qty
+      ? { qty: active.dataset.qty, id: active.dataset.id, list: activeList } : null;
     $$('[data-cart-lines]').forEach((list) => {
       const editable = list.hasAttribute('data-editable');
       list.innerHTML = lines.filter((l) => product(l.id)).map((l) => lineHTML(l, product(l.id), editable)).join('');
     });
     if (focused) {
-      const again = $(`[data-qty="${focused.qty}"][data-id="${focused.id}"]`) || $('[data-qty="inc"]');
+      const again = $(`[data-qty="${focused.qty}"][data-id="${focused.id}"]`, focused.list) || $('[data-qty="inc"]', focused.list);
       if (again) again.focus();
     }
     const ship = shipping();
+    /* Eén schakelaar: "paymentsLive" in data/products.json. Zolang die uit staat beloven we geen online betaling. */
+    $$('[data-payment-note]').forEach((el) => {
+      el.textContent = catalog.paymentsLive === true ? 'Veilig betalen via Mollie.' : 'We nemen contact met je op over betaling en bezorging.';
+    });
+    $$('[data-total-label]').forEach((el) => { el.textContent = ship === null ? 'Totaal exclusief bezorging' : 'Totaal'; });
     $$('[data-cart-subtotal]').forEach((el) => { el.textContent = fmt(subtotal()); });
-    $$('[data-cart-shipping]').forEach((el) => { el.textContent = ship === null ? 'Wordt berekend' : ship === 0 ? 'Gratis' : fmt(ship); });
+    $$('[data-cart-shipping]').forEach((el) => { el.textContent = ship === null ? 'Kosten volgen' : ship === 0 ? 'Gratis' : fmt(ship); });
     $$('[data-cart-total]').forEach((el) => { el.textContent = fmt(total()); });
   };
 
@@ -105,47 +126,77 @@
     .catch(() => {})
     .then(render);
 
-  /* Mandje-paneel: verschijnt als je iets toevoegt */
-  let drawer = null;
-  let lastTrigger = null;
-  const buildDrawer = () => {
-    drawer = document.createElement('div');
-    drawer.className = 'drawer';
-    drawer.innerHTML = `
-      <div class="drawer__scrim" data-drawer-close></div>
-      <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1">
-        <div class="drawer__head">
-          <h2 id="drawer-title">Toegevoegd aan je mandje</h2>
-          <button type="button" class="round round--sm" data-drawer-close aria-label="Mandje sluiten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
-        </div>
-        <div class="drawer__body">
-          <ul class="cart-lines" data-cart-lines data-editable></ul>
-        </div>
-        <div class="drawer__foot">
-          <p class="drawer__sum"><span>Subtotaal</span><strong data-cart-subtotal></strong></p>
+  /* Klein mandje-paneel onder het icoon. Het opent alleen als je op het icoon klikt, nooit vanzelf.
+     Zonder JavaScript blijft het icoon een gewone link naar de afrekenpagina. */
+  let panel = null;
+  let scrim = null;
+  let iconBtn = null;
+  const isOpen = () => Boolean(panel && !panel.hidden);
+  const buildPanel = () => {
+    const header = $('.site-header');
+    const shopHref = document.getElementById('producten') ? '#producten' : 'index.html#producten';
+    panel = document.createElement('section');
+    panel.className = 'minicart';
+    panel.id = 'minicart';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Je mandje');
+    panel.tabIndex = -1;
+    panel.hidden = true;
+    panel.innerHTML = `
+      <div class="minicart__head">
+        <h2>Je mandje</h2>
+        <button type="button" class="round round--sm" data-minicart-close aria-label="Mandje sluiten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="minicart__filled" data-cart-filled hidden>
+        <ul class="cart-lines" data-cart-lines data-editable></ul>
+        <div class="minicart__foot">
+          <p class="minicart__sum"><span>Subtotaal</span><strong data-cart-subtotal></strong></p>
           <a class="btn btn--primary btn--block" href="afrekenen.html"><span class="btn__label">Afrekenen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
-          <button type="button" class="drawer__continue" data-drawer-close>Verder winkelen</button>
-          <p class="drawer__note">Veilig betalen via Mollie.</p>
+          <p class="minicart__note" data-payment-note>We nemen contact met je op over betaling en bezorging.</p>
         </div>
-      </aside>`;
-    document.body.appendChild(drawer);
+      </div>
+      <div class="minicart__empty" data-cart-empty>
+        <p>Je mandje is nog leeg.</p>
+        <a class="btn btn--dark" href="${shopHref}" data-minicart-close><span class="btn__label">Bekijk de producten</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+      </div>`;
+    scrim = document.createElement('div');
+    scrim.className = 'minicart__scrim';
+    scrim.setAttribute('data-minicart-close', '');
+    scrim.hidden = true;
+    /* direct na de header, zodat de tabvolgorde bij het icoon aansluit */
+    header.after(scrim);
+    header.after(panel);
   };
-  const openDrawer = (trigger) => {
-    if (!drawer) buildDrawer();
-    lastTrigger = trigger || null;
+  const openPanel = (btn) => {
+    if (!panel) buildPanel();
+    iconBtn = btn;
     render();
-    document.documentElement.classList.add('drawer-open');
-    requestAnimationFrame(() => {
-      drawer.classList.add('open');
-      $('.drawer__panel', drawer).focus({ preventScroll: true });
+    panel.hidden = false;
+    scrim.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    panel.focus({ preventScroll: true });
+  };
+  const closePanel = (returnFocus = true) => {
+    if (!isOpen()) return;
+    panel.hidden = true;
+    scrim.hidden = true;
+    if (iconBtn) {
+      iconBtn.setAttribute('aria-expanded', 'false');
+      if (returnFocus) iconBtn.focus({ preventScroll: true });
+    }
+  };
+
+  $$('.cart-btn').forEach((btn) => {
+    if (btn.getAttribute('aria-current') === 'page') return;
+    btn.setAttribute('aria-haspopup', 'dialog');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', 'minicart');
+    btn.addEventListener('click', (e) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      if (isOpen()) closePanel(); else openPanel(btn);
     });
-  };
-  const closeDrawer = () => {
-    if (!drawer) return;
-    drawer.classList.remove('open');
-    document.documentElement.classList.remove('drawer-open');
-    if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus({ preventScroll: true });
-  };
+  });
 
   const bump = () => {
     $$('.cart-btn').forEach((el) => {
@@ -158,38 +209,43 @@
   document.addEventListener('click', (e) => {
     const addBtn = e.target.closest('[data-add]');
     if (addBtn) {
-      add(addBtn.dataset.add);
+      const id = addBtn.dataset.add;
+      add(id);
       bump();
-      const arrow = $('.btn__arrow', addBtn);
-      if (arrow) {
-        arrow.textContent = '✓';
-        setTimeout(() => { arrow.textContent = '+'; }, 1600);
-      }
-      openDrawer(addBtn);
+      const inc = $(`[data-stepper="${id}"] [data-qty="inc"]`);
+      if (inc) inc.focus({ preventScroll: true });
       return;
     }
     const q = e.target.closest('[data-qty]');
     if (q) {
       const line = lines.find((l) => l.id === q.dataset.id);
       if (!line) return;
+      const fromCard = q.closest('[data-stepper]');
       if (q.dataset.qty === 'inc') setQty(line.id, line.qty + 1);
       else if (q.dataset.qty === 'dec') setQty(line.id, line.qty - 1);
       else setQty(line.id, 0);
+      if (fromCard && !lines.some((l) => l.id === line.id)) {
+        const back = $(`[data-add="${line.id}"]`);
+        if (back) back.focus({ preventScroll: true });
+      }
       return;
     }
-    if (e.target.closest('[data-drawer-close]')) closeDrawer();
+    if (e.target.closest('[data-minicart-close]')) closePanel(!e.target.closest('a'));
   });
 
+  /* Sluiten met een klik naast het paneel, met Esc, of als de focus het paneel verlaat */
+  document.addEventListener('pointerdown', (e) => {
+    if (!isOpen()) return;
+    if (panel.contains(e.target) || e.target.closest('.cart-btn')) return;
+    closePanel(false);
+  });
   document.addEventListener('keydown', (e) => {
-    if (!drawer || !drawer.classList.contains('open')) return;
-    if (e.key === 'Escape') { closeDrawer(); return; }
-    if (e.key !== 'Tab') return;
-    const focusable = $$('a[href], button:not([disabled])', $('.drawer__panel', drawer)).filter((el) => el.offsetParent !== null);
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (e.shiftKey && (document.activeElement === first || document.activeElement === $('.drawer__panel', drawer))) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    if (e.key === 'Escape' && isOpen()) closePanel();
+  });
+  document.addEventListener('focusin', (e) => {
+    if (!isOpen()) return;
+    if (panel.contains(e.target) || e.target.closest('.cart-btn')) return;
+    closePanel(false);
   });
 
   /* Mandje bijwerken als er in een ander tabblad iets verandert */
@@ -205,6 +261,7 @@
     clear,
     count,
     total,
+    paymentsLive: () => Boolean(catalog && catalog.paymentsLive === true),
     subtotal,
     shipping,
     items: () => lines.filter((l) => product(l.id)).map((l) => ({ id: l.id, name: product(l.id).name, qty: l.qty, priceCents: product(l.id).priceCents }))

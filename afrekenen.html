@@ -30,7 +30,7 @@
         <a href="index.html#zakelijk">Horeca &amp; zakelijk</a>
         <a href="index.html#verhaal">Ons verhaal</a>
         <a href="index.html#over-ons">Over ons</a>
-        <a class="btn btn--primary btn--sm nav__cta" href="index.html#producten"><span class="btn__label">Bestellen</span></a>
+        <a class="btn btn--primary btn--sm nav__cta" href="index.html#producten"><span class="btn__label">Bestel nu</span></a>
       </nav>
       <div class="header__tools">
         <a class="cart-btn" href="afrekenen.html" aria-current="page" aria-label="Winkelmandje, leeg">
@@ -81,6 +81,7 @@
 
           <section class="panel" aria-labelledby="h-adres">
             <h2 id="h-adres">Bezorgadres</h2>
+            <p class="panel__note">We bezorgen in Amsterdam.</p>
             <div class="field">
               <label for="c-straat">Straat en huisnummer</label>
               <input id="c-straat" name="adres" type="text" autocomplete="address-line1" required>
@@ -88,13 +89,14 @@
             <div class="field-row field-row--postcode">
               <div class="field">
                 <label for="c-postcode">Postcode</label>
-                <input id="c-postcode" name="postcode" type="text" autocomplete="postal-code" pattern="[1-9][0-9]{3}\s?[A-Za-z]{2}" title="Bijvoorbeeld 1012 AB" required>
+                <input id="c-postcode" name="postcode" type="text" autocomplete="postal-code" pattern="[1-9][0-9]{3}\s?[A-Za-z]{2}" title="Vier cijfers en twee letters, bijvoorbeeld 1012 AB" aria-describedby="c-postcode-hint" required>
               </div>
               <div class="field">
                 <label for="c-plaats">Plaats</label>
                 <input id="c-plaats" name="plaats" type="text" autocomplete="address-level2" required>
               </div>
             </div>
+            <p class="field__hint field__hint--warn" id="c-postcode-hint" aria-live="polite"></p>
             <div class="field">
               <label for="c-opmerking">Opmerking <small>(optioneel)</small></label>
               <textarea id="c-opmerking" name="opmerking" rows="3"></textarea>
@@ -107,12 +109,12 @@
           <ul class="cart-lines" data-cart-lines data-editable></ul>
           <dl class="sum-rows">
             <div><dt>Subtotaal</dt><dd data-cart-subtotal></dd></div>
-            <div><dt>Verzending</dt><dd data-cart-shipping></dd></div>
-            <div class="sum-rows__total"><dt>Totaal</dt><dd data-cart-total></dd></div>
+            <div><dt>Bezorging</dt><dd data-cart-shipping></dd></div>
+            <div class="sum-rows__total"><dt data-total-label>Totaal</dt><dd data-cart-total></dd></div>
           </dl>
-          <button class="btn btn--primary" type="submit" id="pay"><span class="btn__label">Bestelling afronden</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+          <button class="btn btn--primary" type="submit" id="pay"><span class="btn__label">Bestelling plaatsen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
           <p class="form__msg form__msg--err" role="alert" hidden data-msg-err></p>
-          <p class="summary__note">Veilig betalen via Mollie.</p>
+          <p class="summary__note" data-payment-note>We nemen contact met je op over betaling en bezorging.</p>
         </aside>
       </form>
     </div>
