@@ -22,7 +22,15 @@
 
   const product = (id) => (catalog ? catalog.products.find((p) => p.id === id) : null);
   const count = () => lines.reduce((n, l) => n + l.qty, 0);
-  const subtotal = () => lines.reduce((sum, l) => sum + (product(l.id) ? product(l.id).priceCents * l.qty : 0), 0);
+  /* Producten worden per kilo geprijsd. priceCents is de prijs per verpakking; priceApprox betekent dat het gewicht circa is,
+     priceCents null betekent dat de prijs op gewicht volgt en dat de verpakking dus niet in het totaal meetelt. */
+  const priced = (p) => Number.isInteger(p.priceCents);
+  const subtotal = () => lines.reduce((sum, l) => { const p = product(l.id); return sum + (p && priced(p) ? p.priceCents * l.qty : 0); }, 0);
+  const anyPriced = () => lines.some((l) => { const p = product(l.id); return p && priced(p); });
+  const hasUnpriced = () => lines.some((l) => { const p = product(l.id); return p && !priced(p); });
+  const indicative = () => lines.some((l) => { const p = product(l.id); return p && (p.priceApprox === true || !priced(p)); });
+  const priceLabel = (p) => (!priced(p) ? 'Prijs op gewicht' : (p.priceApprox ? 'ca. ' : '') + fmt(p.priceCents));
+  const lineTotalLabel = (p, qty) => (!priced(p) ? 'Prijs volgt' : (p.priceApprox ? 'ca. ' : '') + fmt(p.priceCents * qty));
   const shipping = () => (catalog && Number.isInteger(catalog.shippingCents) ? catalog.shippingCents : null);
   const total = () => subtotal() + (shipping() || 0);
 
@@ -55,15 +63,17 @@
          <button type="button" class="cart-line__remove" data-qty="remove" data-id="${esc(l.id)}" aria-label="${name} verwijderen">Verwijderen</button>`
       : `<span class="cart-line__qty">Aantal: ${l.qty}</span>`;
     return `<li class="cart-line">
-      <span class="cart-line__img" style="--tile:${esc(p.tile || '#D8ED36')}"><img src="${esc(p.image)}" alt="" width="72" height="72"></span>
+      <span class="cart-line__img${p.photo ? ' cart-line__img--photo' : ''}" style="--tile:${esc(p.tile || '#D8ED36')}"><img src="${esc(p.image)}" alt="" width="72" height="72"></span>
       <div class="cart-line__info">
         <p class="cart-line__name">${name}</p>
-        <p class="cart-line__price">${fmt(p.priceCents)}</p>
+        <p class="cart-line__price">${p.pack ? esc(p.pack) + ' &middot; ' : ''}${priceLabel(p)}</p>
         <div class="cart-line__controls">${controls}</div>
       </div>
-      <p class="cart-line__total">${fmt(p.priceCents * l.qty)}</p>
+      <p class="cart-line__total">${lineTotalLabel(p, l.qty)}</p>
     </li>`;
   };
+
+  const totalLabel = () => (anyPriced() ? (indicative() ? 'ca. ' : '') + fmt(total()) : 'Volgt');
 
   const render = () => {
     const n = count();
@@ -106,10 +116,18 @@
     $$('[data-payment-note]').forEach((el) => {
       el.textContent = catalog.paymentsLive === true ? 'Veilig betalen via Mollie.' : 'We nemen contact met je op over betaling en bezorging.';
     });
-    $$('[data-total-label]').forEach((el) => { el.textContent = ship === null ? 'Totaal exclusief bezorging' : 'Totaal'; });
-    $$('[data-cart-subtotal]').forEach((el) => { el.textContent = fmt(subtotal()); });
+    const ind = indicative();
+    $$('[data-subtotal-label]').forEach((el) => { el.textContent = ind ? 'Subtotaal (indicatief)' : 'Subtotaal'; });
+    $$('[data-total-label]').forEach((el) => {
+      el.textContent = ind ? (ship === null ? 'Indicatief totaal, exclusief bezorging' : 'Indicatief totaal') : (ship === null ? 'Totaal exclusief bezorging' : 'Totaal');
+    });
+    $$('[data-price-note]').forEach((el) => {
+      el.hidden = !ind;
+      el.textContent = 'Het gewicht van een verpakking is circa, dus de prijs is een indicatie.' + (hasUnpriced() ? ' Producten met \u201cPrijs op gewicht\u201d tellen nog niet mee in het totaal.' : '');
+    });
+    $$('[data-cart-subtotal]').forEach((el) => { el.textContent = anyPriced() ? (ind ? 'ca. ' : '') + fmt(subtotal()) : 'Volgt'; });
     $$('[data-cart-shipping]').forEach((el) => { el.textContent = ship === null ? 'Kosten volgen' : ship === 0 ? 'Gratis' : fmt(ship); });
-    $$('[data-cart-total]').forEach((el) => { el.textContent = fmt(total()); });
+    $$('[data-cart-total]').forEach((el) => { el.textContent = totalLabel(); });
   };
 
   const ready = fetch('data/products.json')
@@ -120,7 +138,11 @@
       if (known.length !== lines.length) lines = known;
       $$('[data-price-for]').forEach((el) => {
         const p = product(el.dataset.priceFor);
-        if (p) el.textContent = fmt(p.priceCents);
+        if (p && priced(p)) el.textContent = fmt(p.priceCents);
+      });
+      $$('[data-price-kg-for]').forEach((el) => {
+        const p = product(el.dataset.priceKgFor);
+        if (p && Number.isInteger(p.pricePerKgCents)) el.textContent = fmt(p.pricePerKgCents);
       });
     })
     .catch(() => {})
@@ -150,7 +172,8 @@
       <div class="minicart__filled" data-cart-filled hidden>
         <ul class="cart-lines" data-cart-lines data-editable></ul>
         <div class="minicart__foot">
-          <p class="minicart__sum"><span>Subtotaal</span><strong data-cart-subtotal></strong></p>
+          <p class="minicart__sum"><span data-subtotal-label>Subtotaal</span><strong data-cart-subtotal></strong></p>
+          <p class="minicart__note" data-price-note hidden></p>
           <a class="btn btn--primary btn--block" href="afrekenen.html"><span class="btn__label">Afrekenen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
           <p class="minicart__note" data-payment-note>We nemen contact met je op over betaling en bezorging.</p>
         </div>
@@ -261,10 +284,11 @@
     clear,
     count,
     total,
+    totalLabel,
     paymentsLive: () => Boolean(catalog && catalog.paymentsLive === true),
     subtotal,
     shipping,
-    items: () => lines.filter((l) => product(l.id)).map((l) => ({ id: l.id, name: product(l.id).name, qty: l.qty, priceCents: product(l.id).priceCents }))
+    items: () => lines.filter((l) => product(l.id)).map((l) => ({ id: l.id, name: product(l.id).name, pack: product(l.id).pack || '', qty: l.qty, priceCents: product(l.id).priceCents, priceLabel: priceLabel(product(l.id)) }))
   };
 
   render();

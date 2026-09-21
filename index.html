@@ -153,7 +153,7 @@
     <section class="section products-section" id="producten" aria-labelledby="prod-title">
       <div class="wrap products-head">
         <div>
-          <p class="kicker reveal">Bestsellers</p>
+          <p class="kicker reveal">Prijzen per kilo</p>
           <h2 id="prod-title" data-split>Onze <em>producten</em></h2>
         </div>
         <div class="carousel-nav" role="group" aria-label="Blader door de producten">
@@ -162,59 +162,124 @@
         </div>
       </div>
       <div class="carousel" tabindex="0" role="region" aria-label="Onze producten, scroll of sleep opzij">
-        <!-- Foto's: vervang de illustratie in <img src> door de foto (vierkant, 1:1), zet class="card__img card__img--photo grain"
-             op de wrapper en geef de foto een beschrijvende alt-tekst. De kleurtegel blijft als achtergrond. -->
+        <!-- Producten: elke kaart komt uit data/products.json (prijs, verpakking, ingrediënten). De tekst hieronder is de vaste
+             opmaak; cart.js zet de prijzen uit de json erin. Foto ontbreekt nog? Zet de foto in assets/products/<id>-640.webp
+             en -1200.webp, gebruik dezelfde <img srcset> als bij de andere kaarten en geef de wrapper class "card__img--photo". -->
         <ul class="track">
-          <li class="card" style="--tile:#D8ED36; --tilt:-2.2deg">
-            <div class="card__img grain"><span class="tag">Pita</span><img src="assets/product-shoarma.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
-            <div class="card__meta"><h3>Ganzenshoarma</h3><span class="price" data-price-for="ganzenshoarma">&euro;&nbsp;15,00</span></div>
-            <p>Gekruide reepjes gans, klaar voor in de pita.</p>
-            <button class="btn btn--primary btn--block" type="button" data-add="ganzenshoarma"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
-            <div class="stepper" data-stepper="ganzenshoarma" role="group" aria-label="Aantal Ganzenshoarma" hidden>
-              <button type="button" data-qty="dec" data-id="ganzenshoarma" aria-label="Minder Ganzenshoarma"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
-              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
-              <button type="button" data-qty="inc" data-id="ganzenshoarma" aria-label="Meer Ganzenshoarma"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+          <li class="card" style="--tile:#D8ED36; --tilt:-1.2deg">
+            <div class="card__img card__img--photo grain"><img src="assets/products/ganzenshoarma-640.webp" srcset="assets/products/ganzenshoarma-640.webp 640w, assets/products/ganzenshoarma-1200.webp 1200w" sizes="(min-width: 901px) 360px, 72vw" alt="Ganzenshoarma: gekruide, dieprode reepjes ganzenvlees op een houten plank in het gras" width="640" height="640" loading="lazy" draggable="false"></div>
+            <h3>Ganzenshoarma</h3>
+            <p class="card__tip">Ca. 10 minuten braden. Niet doorbakken, want dan wordt het taai.</p>
+            <div class="pricing">
+              <p class="pricing__kg"><strong data-price-kg-for="ganzenshoarma">&euro;&nbsp;15,00</strong><span>per kg</span></p>
+              <p class="pricing__pack"><span>Zakje van ca. 500 gram</span><span class="pricing__est">ca. <b data-price-for="ganzenshoarma">&euro;&nbsp;7,50</b></span></p>
+            </div>
+            <div class="ingr">
+              <h4 class="ingr__title">Ingrediënten</h4>
+              <p>Ganzenborst, gekruid met shoarmakruiden</p>
+              <p class="ingr__allergen"><span>Allergenen</span>Kan soja, mosterdzaad, selderij en tarwe (gluten) bevatten</p>
+            </div>
+            <div class="card__actions">
+              <button class="btn btn--primary btn--block" type="button" data-add="ganzenshoarma"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+              <div class="stepper" data-stepper="ganzenshoarma" role="group" aria-label="Aantal Ganzenshoarma" hidden>
+                <button type="button" data-qty="dec" data-id="ganzenshoarma" aria-label="Minder Ganzenshoarma"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+                <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+                <button type="button" data-qty="inc" data-id="ganzenshoarma" aria-label="Meer Ganzenshoarma"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              </div>
             </div>
           </li>
-          <li class="card" style="--tile:#F0EADB; --tilt:1.8deg">
-            <div class="card__img grain"><span class="tag">Klassieker</span><img src="assets/product-rookworst.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
-            <div class="card__meta"><h3>Ganzenrookworst</h3><span class="price" data-price-for="ganzenrookworst">&euro;&nbsp;10,00</span></div>
-            <p>Rookworst zoals je hem kent, maar dan van gans.</p>
-            <button class="btn btn--primary btn--block" type="button" data-add="ganzenrookworst"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
-            <div class="stepper" data-stepper="ganzenrookworst" role="group" aria-label="Aantal Ganzenrookworst" hidden>
-              <button type="button" data-qty="dec" data-id="ganzenrookworst" aria-label="Minder Ganzenrookworst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
-              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
-              <button type="button" data-qty="inc" data-id="ganzenrookworst" aria-label="Meer Ganzenrookworst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+          <li class="card" style="--tile:#F0EADB; --tilt:1deg">
+            <div class="card__img card__img--photo grain"><img src="assets/products/gerookte-ganzenborst-640.webp" srcset="assets/products/gerookte-ganzenborst-640.webp 640w, assets/products/gerookte-ganzenborst-1200.webp 1200w" sizes="(min-width: 901px) 360px, 72vw" alt="Gerookte ganzenborst: een hele gerookte borst op een houten plank in het gras" width="640" height="640" loading="lazy" draggable="false"></div>
+            <h3>Gerookte ganzenborst</h3>
+            <p class="card__tip">Borrelhapje: heel dun snijden. Ook lekker in kleine blokjes door de sla.</p>
+            <div class="pricing">
+              <p class="pricing__kg"><small class="approx">ca.</small> <strong data-price-kg-for="gerookte-ganzenborst">&euro;&nbsp;30,00</strong><span>per kg</span></p>
+              <p class="pricing__pack"><span>Ca. 250 gram per stuk</span><span class="pricing__est"><b data-price-for="gerookte-ganzenborst">&euro;&nbsp;7,50</b> per stuk</span></p>
+            </div>
+            <div class="ingr">
+              <h4 class="ingr__title">Ingrediënten</h4>
+              <p>Gerookte ganzenborst</p>
+            </div>
+            <div class="card__actions">
+              <button class="btn btn--primary btn--block" type="button" data-add="gerookte-ganzenborst"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+              <div class="stepper" data-stepper="gerookte-ganzenborst" role="group" aria-label="Aantal Gerookte ganzenborst" hidden>
+                <button type="button" data-qty="dec" data-id="gerookte-ganzenborst" aria-label="Minder Gerookte ganzenborst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+                <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+                <button type="button" data-qty="inc" data-id="gerookte-ganzenborst" aria-label="Meer Gerookte ganzenborst"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              </div>
             </div>
           </li>
-          <li class="card" style="--tile:#D8ED36; --tilt:-1.4deg">
-            <div class="card__img grain"><span class="tag">Bbq &amp; pan</span><img src="assets/product-burger.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
-            <div class="card__meta"><h3>Ganzenburger</h3><span class="price" data-price-for="ganzenburger">&euro;&nbsp;12,50</span></div>
-            <p>Een stevige burger van gans, voor op de bbq of in de pan.</p>
-            <button class="btn btn--primary btn--block" type="button" data-add="ganzenburger"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
-            <div class="stepper" data-stepper="ganzenburger" role="group" aria-label="Aantal Ganzenburger" hidden>
-              <button type="button" data-qty="dec" data-id="ganzenburger" aria-label="Minder Ganzenburger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
-              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
-              <button type="button" data-qty="inc" data-id="ganzenburger" aria-label="Meer Ganzenburger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+          <li class="card" style="--tile:#D8ED36; --tilt:-0.8deg">
+            <div class="card__img card__img--photo grain"><img src="assets/products/ganzenborstfilet-640.webp" srcset="assets/products/ganzenborstfilet-640.webp 640w, assets/products/ganzenborstfilet-1200.webp 1200w" sizes="(min-width: 901px) 360px, 72vw" alt="Ganzenborstfilet: twee filets van grauwe gans op een houten plank in het gras" width="640" height="640" loading="lazy" draggable="false"></div>
+            <h3>Ganzenborstfilet</h3>
+            <p class="card__tip">Van grauwe gans. Geschikt om te roken of te stoven.</p>
+            <div class="pricing">
+              <p class="pricing__kg"><strong data-price-kg-for="ganzenborstfilet">&euro;&nbsp;15,00</strong><span>per kg</span></p>
+              <p class="pricing__pack"><span>Per 2 stuks verpakt, ca. 700 gram</span><span class="pricing__est">ca. <b data-price-for="ganzenborstfilet">&euro;&nbsp;10,50</b></span></p>
+            </div>
+            <div class="ingr">
+              <h4 class="ingr__title">Ingrediënten</h4>
+              <p>Ganzenborstfilet van grauwe gans</p>
+            </div>
+            <div class="card__actions">
+              <button class="btn btn--primary btn--block" type="button" data-add="ganzenborstfilet"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+              <div class="stepper" data-stepper="ganzenborstfilet" role="group" aria-label="Aantal Ganzenborstfilet" hidden>
+                <button type="button" data-qty="dec" data-id="ganzenborstfilet" aria-label="Minder Ganzenborstfilet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+                <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+                <button type="button" data-qty="inc" data-id="ganzenborstfilet" aria-label="Meer Ganzenborstfilet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              </div>
             </div>
           </li>
-          <li class="card" style="--tile:#F0EADB; --tilt:2deg">
-            <div class="card__img grain"><span class="tag">Borrelplank</span><img src="assets/product-pastrami.svg" alt="" width="400" height="400" loading="lazy" draggable="false"></div>
-            <div class="card__meta"><h3>Ganzenpastrami</h3><span class="price" data-price-for="ganzenpastrami">&euro;&nbsp;14,00</span></div>
-            <p>Dungesneden gans pastrami voor op brood of de borrelplank.</p>
-            <button class="btn btn--primary btn--block" type="button" data-add="ganzenpastrami"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
-            <div class="stepper" data-stepper="ganzenpastrami" role="group" aria-label="Aantal Ganzenpastrami" hidden>
-              <button type="button" data-qty="dec" data-id="ganzenpastrami" aria-label="Minder Ganzenpastrami"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
-              <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
-              <button type="button" data-qty="inc" data-id="ganzenpastrami" aria-label="Meer Ganzenpastrami"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+          <li class="card" style="--tile:#F0EADB; --tilt:1.2deg">
+            <div class="card__img card__img--photo grain"><img src="assets/products/ganzenbiefstuk-640.webp" srcset="assets/products/ganzenbiefstuk-640.webp 640w, assets/products/ganzenbiefstuk-1200.webp 1200w" sizes="(min-width: 901px) 360px, 72vw" alt="Ganzenbiefstuk: twee donkerrode biefstukjes van gans op een houten plank in het gras" width="640" height="640" loading="lazy" draggable="false"></div>
+            <h3>Ganzenbiefstuk</h3>
+            <p class="card__tip">Superzachte stukjes borstfilet. Om-en-om braden of op de spies voor de barbecue.</p>
+            <div class="pricing">
+              <p class="pricing__kg"><strong data-price-kg-for="ganzenbiefstuk">&euro;&nbsp;20,00</strong><span>per kg</span></p>
+              <p class="pricing__pack"><span>Per 2 stuks verpakt</span><span class="pricing__est">Prijs op gewicht</span></p>
+            </div>
+            <div class="ingr">
+              <h4 class="ingr__title">Ingrediënten</h4>
+              <p>Speciaal uitgezochte stukjes borstfilet van kol- of brandgans</p>
+            </div>
+            <div class="card__actions">
+              <button class="btn btn--primary btn--block" type="button" data-add="ganzenbiefstuk"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+              <div class="stepper" data-stepper="ganzenbiefstuk" role="group" aria-label="Aantal Ganzenbiefstuk" hidden>
+                <button type="button" data-qty="dec" data-id="ganzenbiefstuk" aria-label="Minder Ganzenbiefstuk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+                <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+                <button type="button" data-qty="inc" data-id="ganzenbiefstuk" aria-label="Meer Ganzenbiefstuk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              </div>
+            </div>
+          </li>
+          <li class="card" style="--tile:#D8ED36; --tilt:-1deg">
+            <div class="card__img card__img--photo grain"><img src="assets/products/ganzenpoten-640.webp" srcset="assets/products/ganzenpoten-640.webp 640w, assets/products/ganzenpoten-1200.webp 1200w" sizes="(min-width: 901px) 360px, 72vw" alt="Ganzenpoten: twee ganzenpoten op een houten plank in het gras" width="640" height="640" loading="lazy" draggable="false"></div>
+            <h3>Ganzenpoten</h3>
+            <p class="card__tip">Om te stoven.</p>
+            <div class="pricing">
+              <p class="pricing__kg"><strong data-price-kg-for="ganzenpoten">&euro;&nbsp;15,00</strong><span>per kg</span></p>
+              <p class="pricing__pack"><span>Verpakt per ongeveer 1 kilo</span><span class="pricing__est">ca. <b data-price-for="ganzenpoten">&euro;&nbsp;15,00</b></span></p>
+            </div>
+            <div class="ingr">
+              <h4 class="ingr__title">Ingrediënten</h4>
+              <p>Ganzenpoten</p>
+            </div>
+            <div class="card__actions">
+              <button class="btn btn--primary btn--block" type="button" data-add="ganzenpoten"><span class="btn__label">In mandje</span><span class="btn__arrow" aria-hidden="true">+</span></button>
+              <div class="stepper" data-stepper="ganzenpoten" role="group" aria-label="Aantal Ganzenpoten" hidden>
+                <button type="button" data-qty="dec" data-id="ganzenpoten" aria-label="Minder Ganzenpoten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+                <span class="stepper__count" aria-live="polite"><span data-step-count>1</span> in je mandje</span>
+                <button type="button" data-qty="inc" data-id="ganzenpoten" aria-label="Meer Ganzenpoten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+              </div>
             </div>
           </li>
         </ul>
       </div>
-      <div class="drag-cursor" aria-hidden="true"><span>Sleep</span></div>
       <div class="wrap products-foot">
         <a class="btn btn--dark btn--cart" href="afrekenen.html"><span class="btn__label">Naar je mandje</span><span class="btn__arrow" aria-hidden="true">&rarr;</span><span class="btn__count" data-cart-count hidden>0</span></a>
         <p class="products-foot__note">We bezorgen in Amsterdam.</p>
+      </div>
+      <div class="wrap">
+        <p class="products-note">Ca. betekent circa: het gewicht van een verpakking kan iets afwijken, dus de prijs per verpakking is een indicatie op basis van de prijs per kilo. Producten met een allergenenmelding kunnen soja, mosterdzaad, selderij en tarwe (gluten) bevatten. Bij producten zonder melding worden geen kruiden toegevoegd.</p>
       </div>
     </section>
 
@@ -327,9 +392,9 @@
             <div class="step__body">
               <span class="step__num">03</span>
               <h3>Naar de keuken</h3>
-              <p>Shoarma, rookworst, burger en pastrami, voor thuiskoks &eacute;n voor horeca en andere zakelijke afnemers.</p>
+              <p>Van shoarma en borstfilet tot biefstuk en poten, voor thuiskoks &eacute;n voor horeca en andere zakelijke afnemers.</p>
             </div>
-            <svg class="step__art" viewBox="0 0 360 280" role="img" aria-label="Ganzenshoarma, ganzenrookworst en ganzenburger">
+            <svg class="step__art" viewBox="0 0 360 280" role="img" aria-label="Producten van gans">
               <circle cx="180" cy="140" r="120" fill="#FFF8E8"/>
               <image href="assets/product-rookworst.svg" x="14" y="130" width="130" height="130" transform="rotate(-8 79 195)"/>
               <image href="assets/product-burger.svg" x="216" y="134" width="130" height="130" transform="rotate(8 281 199)"/>

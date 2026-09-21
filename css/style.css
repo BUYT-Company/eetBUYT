@@ -277,16 +277,33 @@ em {
 .carousel:focus-visible { outline-offset: -4px; }
 .track { --pad: max(var(--gutter), calc((100cqw - var(--maxw)) / 2 + var(--gutter))); list-style: none; margin: 0; padding: 0 var(--pad); display: flex; gap: clamp(18px, 2.4vw, 32px); width: max-content; }
 @media (hover: hover) and (pointer: fine) { .carousel { cursor: grab; } .carousel.is-drag { cursor: grabbing; scroll-snap-type: none; } .carousel.is-drag a, .carousel.is-drag button { pointer-events: none; } }
-.card { flex: 0 0 clamp(250px, 27vw, 350px); scroll-snap-align: start; scroll-margin-inline: var(--pad); transform: rotate(var(--tilt, 0deg)); transform-origin: 50% 100%; transition: transform .7s var(--spring); user-select: none; -webkit-user-select: none; }
+.card { display: flex; flex-direction: column; flex: 0 0 clamp(270px, 27vw, 360px); scroll-snap-align: start; scroll-margin-inline: var(--pad); transform: rotate(calc(var(--tilt, 0deg) * .55)); transform-origin: 50% 100%; transition: transform .7s var(--spring); user-select: none; -webkit-user-select: none; }
 .card:hover, .card:focus-within { transform: rotate(0deg) translateY(-12px); }
 .card__img { position: relative; display: block; border-radius: 24px; background: var(--tile); aspect-ratio: 1; overflow: hidden; margin-bottom: 1rem; }
 .card__img img { width: 100%; height: 100%; object-fit: contain; padding: 6%; transition: transform .7s var(--spring); }
-.card:hover .card__img img { transform: scale(1.07) rotate(-3deg); }
+.card:hover .card__img img { transform: scale(1.05); }
 .tag { position: absolute; z-index: 2; top: 14px; left: 14px; background: var(--cream); color: var(--forest); font: 700 .78rem/1 var(--font-body); letter-spacing: .03em; padding: .5rem .85rem; border-radius: 999px; }
-.card__meta { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.card h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; }
-.price { font-weight: 700; color: var(--olive); white-space: nowrap; font-size: .98rem; }
-.card p { margin: .35rem 0 .7rem; font-size: .95rem; color: var(--muted); line-height: 1.5; }
+.card h3 { font-size: 1.55rem; font-weight: 700; letter-spacing: -.035em; margin-bottom: .35rem; }
+.card__tip { margin: 0 0 .9rem; font-size: .95rem; line-height: 1.45; color: var(--muted); }
+
+/* Prijs per kilo, verpakking en indicatieprijs */
+.pricing { display: grid; gap: .55rem; margin-bottom: .9rem; }
+.pricing p { margin: 0; }
+.pricing__kg { display: flex; align-items: baseline; gap: .4rem; }
+.pricing__kg strong { font: 800 2.15rem/1 var(--font-display); letter-spacing: -.045em; color: var(--ink); white-space: nowrap; }
+.pricing__kg span, .pricing__kg .approx { font-weight: 700; font-size: .95rem; color: var(--muted); }
+.pricing__pack { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: .6rem .9rem; border: 1.5px solid var(--hair); border-radius: 12px; font-size: .92rem; font-weight: 600; line-height: 1.3; }
+.pricing__est { flex: none; white-space: nowrap; color: var(--ink); }
+.pricing__est b { font: 800 1.05rem/1 var(--font-display); letter-spacing: -.02em; }
+
+/* Ingrediënten als een klein etiket */
+.ingr { margin-bottom: 1rem; padding: .9rem 1rem 1rem; border-radius: 16px; background: var(--sand); }
+.ingr__title { margin: 0 0 .3rem; font: 800 1rem/1.1 var(--font-display); letter-spacing: -.025em; color: var(--green-700); }
+.ingr p { margin: 0; font-size: .9rem; line-height: 1.45; color: var(--ink); }
+.ingr .ingr__allergen { margin-top: .65rem; color: var(--muted); }
+.ingr__allergen span { display: inline-block; margin-right: .45rem; padding: .2rem .6rem; border-radius: 999px; background: var(--lime); color: var(--ink); font-weight: 700; font-size: .78rem; line-height: 1.2; }
+.card__actions { margin-top: auto; }
+.card__actions .stepper { margin-top: 0; }
 .link-arrow { font-weight: 700; font-size: .92rem; text-decoration: none; color: var(--forest); border-bottom: 2px solid var(--coral); padding-bottom: 2px; }
 .link-arrow span { display: inline-block; transition: transform .2s ease; }
 .link-arrow:hover span { transform: translateX(4px); }
@@ -294,12 +311,8 @@ em {
 .products-foot__note { margin: 0; font-size: .92rem; color: var(--muted); }
 .btn--block { display: flex; width: 100%; }
 .btn--block .btn__label { flex: 1; }
-.card .btn { margin-top: .4rem; }
+.products-note { margin: 1.2rem 0 0; max-width: 62rem; font-size: .88rem; line-height: 1.5; color: var(--muted); }
 
-.drag-cursor { position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; opacity: 0; transition: opacity .2s ease; will-change: transform; }
-.drag-cursor span { display: grid; place-items: center; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; background: var(--coral); color: var(--forest-deep); font: 700 .92rem/1 var(--font-body); transform: scale(.5); transition: transform .6s var(--spring); }
-.drag-cursor.on { opacity: 1; }
-.drag-cursor.on span { transform: scale(1); }
 
 /* Zo werkt het: kaarten die op elkaar stapelen */
 .steps { padding-top: 0; }
@@ -534,6 +547,7 @@ em {
 .cart-line { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--hair); }
 .cart-line__img { display: block; width: 72px; height: 72px; border-radius: 16px; background: var(--tile); }
 .cart-line__img img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+.cart-line__img--photo img { object-fit: cover; padding: 0; border-radius: inherit; }
 .cart-line__name { margin: 0; font: 700 1.15rem/1.2 var(--font-display); letter-spacing: -.03em; color: var(--ink); }
 .cart-line__price, .cart-line__qty { margin: .15rem 0 0; font-size: .92rem; color: var(--muted); }
 .cart-line__total { margin: 0; font-weight: 700; white-space: nowrap; }

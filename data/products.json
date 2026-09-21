@@ -2,34 +2,78 @@
   "currency": "EUR",
   "paymentsLive": false,
   "shippingCents": null,
+  "_bron": "Prijzen, gewichten en samenstelling: natuurlijkwild.com/bestellen (opgehaald 2026-09-20). CONCEPT, controleren. priceCents = prijs per verpakking; approx = gewicht is circa; priceCents null = prijs op gewicht (verpakkingsgewicht onbekend).",
   "products": [
     {
       "id": "ganzenshoarma",
       "name": "Ganzenshoarma",
+      "pricePerKgCents": 1500,
+      "pack": "Zakje van ca. 500 gram",
+      "packGrams": 500,
+      "priceCents": 750,
+      "priceApprox": true,
+      "ingredients": "Ganzenborst, gekruid met shoarmakruiden",
+      "allergens": true,
+      "image": "assets/products/ganzenshoarma-640.webp",
+      "photo": true,
+      "tile": "#D8ED36"
+    },
+    {
+      "id": "gerookte-ganzenborst",
+      "name": "Gerookte ganzenborst",
+      "pricePerKgCents": 3000,
+      "pack": "Ca. 250 gram per stuk",
+      "packGrams": 250,
+      "priceCents": 750,
+      "priceApprox": false,
+      "ingredients": "Gerookte ganzenborst",
+      "allergens": false,
+      "image": "assets/products/gerookte-ganzenborst-640.webp",
+      "photo": true,
+      "tile": "#F0EADB",
+      "pricePerKgApprox": true
+    },
+    {
+      "id": "ganzenborstfilet",
+      "name": "Ganzenborstfilet",
+      "pricePerKgCents": 1500,
+      "pack": "Per 2 stuks verpakt, ca. 700 gram",
+      "packGrams": 700,
+      "priceCents": 1050,
+      "priceApprox": true,
+      "ingredients": "Ganzenborstfilet van grauwe gans",
+      "allergens": false,
+      "image": "assets/products/ganzenborstfilet-640.webp",
+      "photo": true,
+      "tile": "#D8ED36"
+    },
+    {
+      "id": "ganzenbiefstuk",
+      "name": "Ganzenbiefstuk",
+      "pricePerKgCents": 2000,
+      "pack": "Per 2 stuks verpakt",
+      "packGrams": null,
+      "priceCents": null,
+      "priceApprox": true,
+      "ingredients": "Speciaal uitgezochte stukjes borstfilet van kol- of brandgans",
+      "allergens": false,
+      "image": "assets/products/ganzenbiefstuk-640.webp",
+      "photo": true,
+      "tile": "#F0EADB"
+    },
+    {
+      "id": "ganzenpoten",
+      "name": "Ganzenpoten",
+      "pricePerKgCents": 1500,
+      "pack": "Verpakt per ongeveer 1 kilo",
+      "packGrams": 1000,
       "priceCents": 1500,
-      "image": "assets/product-shoarma.svg",
+      "priceApprox": true,
+      "ingredients": "Ganzenpoten",
+      "allergens": false,
+      "image": "assets/products/ganzenpoten-640.webp",
+      "photo": true,
       "tile": "#D8ED36"
-    },
-    {
-      "id": "ganzenrookworst",
-      "name": "Ganzenrookworst",
-      "priceCents": 1000,
-      "image": "assets/product-rookworst.svg",
-      "tile": "#F0EADB"
-    },
-    {
-      "id": "ganzenburger",
-      "name": "Ganzenburger",
-      "priceCents": 1250,
-      "image": "assets/product-burger.svg",
-      "tile": "#D8ED36"
-    },
-    {
-      "id": "ganzenpastrami",
-      "name": "Ganzenpastrami",
-      "priceCents": 1400,
-      "image": "assets/product-pastrami.svg",
-      "tile": "#F0EADB"
     }
   ]
 }

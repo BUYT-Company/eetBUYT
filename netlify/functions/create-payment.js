@@ -34,7 +34,8 @@ exports.handler = async (event) => {
   for (const item of items) {
     const product = catalog.products.find((p) => p.id === item.id);
     const qty = Number.parseInt(item.qty, 10);
-    if (!product || !(qty >= 1 && qty <= 50)) return json(400, { error: 'invalid_item' });
+    // Producten zonder vaste prijs (prijs op gewicht) kunnen niet online betaald worden.
+    if (!product || !Number.isInteger(product.priceCents) || !(qty >= 1 && qty <= 50)) return json(400, { error: 'invalid_item' });
     totalCents += product.priceCents * qty;
     summary.push(`${qty}x ${product.name}`);
   }

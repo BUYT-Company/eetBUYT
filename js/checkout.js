@@ -48,8 +48,8 @@
     setBusy(true);
 
     const data = new FormData(form);
-    data.set('bestelling_regels', items.map((i) => `${i.qty}x ${i.name} (${cart.fmt(i.priceCents)})`).join('\n'));
-    data.set('bestelling_totaal', cart.fmt(cart.total()));
+    data.set('bestelling_regels', items.map((i) => `${i.qty}x ${i.name}${i.pack ? ', ' + i.pack : ''} (${i.priceLabel})`).join('\n'));
+    data.set('bestelling_totaal', cart.totalLabel());
 
     /* 1. De bestelling vastleggen, zodat we nooit een order kwijtraken */
     try {

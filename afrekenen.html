@@ -108,12 +108,13 @@
           <h2 id="sum-title">Jouw bestelling</h2>
           <ul class="cart-lines" data-cart-lines data-editable></ul>
           <dl class="sum-rows">
-            <div><dt>Subtotaal</dt><dd data-cart-subtotal></dd></div>
+            <div><dt data-subtotal-label>Subtotaal</dt><dd data-cart-subtotal></dd></div>
             <div><dt>Bezorging</dt><dd data-cart-shipping></dd></div>
             <div class="sum-rows__total"><dt data-total-label>Totaal</dt><dd data-cart-total></dd></div>
           </dl>
           <button class="btn btn--primary" type="submit" id="pay"><span class="btn__label">Bestelling plaatsen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
           <p class="form__msg form__msg--err" role="alert" hidden data-msg-err></p>
+          <p class="summary__note" data-price-note hidden></p>
           <p class="summary__note" data-payment-note>We nemen contact met je op over betaling en bezorging.</p>
         </aside>
       </form>
