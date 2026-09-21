@@ -378,9 +378,6 @@ em {
 .cursor-goose { position: absolute; left: 0; top: 0; width: 84px; z-index: 5; pointer-events: none; opacity: 0; transition: opacity .25s ease; will-change: transform; display: none; }
 .cursor-goose.on { opacity: 1; }
 .cursor-goose svg { width: 100%; height: auto; }
-.wing { transform-box: fill-box; transform-origin: 50% 100%; animation: flap .45s ease-in-out infinite alternate; }
-.wing--back { animation-delay: -.12s; }
-@keyframes flap { from { transform: rotate(-22deg) scaleY(1.05); } to { transform: rotate(30deg) scaleY(.75); } }
 @media (hover: hover) and (pointer: fine) { .cursor-goose { display: block; } }
 
 /* Impact */
