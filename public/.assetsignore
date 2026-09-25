@@ -1,0 +1,4 @@
+# Deze map (public/) is de hele openbare site: hier hoort niets gevoeligs te staan.
+# Dit bestand is dus vooral een vangnet tegen rommel, niet de hoofdverdediging (zie ontwerp §4/§16).
+.DS_Store
+Thumbs.db

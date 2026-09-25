@@ -7,8 +7,9 @@
   "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
-    // Dezelfde map als op Netlify (de projectroot). Wat niet openbaar mag staat in .assetsignore.
-    "directory": ".",
+    // Alleen public/ wordt geserveerd: worker/, supabase/, docs/, netlify/ en de configbestanden
+    // staan hier fysiek buiten, in plaats van te vertrouwen op .assetsignore (zie ontwerp §4/§16).
+    "directory": "public",
     "binding": "ASSETS",
     // De Worker draait alleen voor /api/*; alle andere paden komen rechtstreeks uit de bestanden.
     "run_worker_first": ["/api/*"]

@@ -55,8 +55,9 @@ De Worker draait alleen voor `/api/*` (`run_worker_first`), alles daarbuiten kom
 ## 4. Structuur van de branch
 
 ```
-wrangler.jsonc                      # naam, main, assets, run_worker_first, vars
-.assetsignore                       # sluit niet-publieke bestanden uit (zie hieronder)
+wrangler.jsonc                      # naam, main, assets (directory: public), run_worker_first, vars
+public/                             # de hele openbare site (index.html, afrekenen.html, css/, js/, assets/, data/)
+public/.assetsignore                # vangnet tegen rommel (.DS_Store e.d.), niet de hoofdverdediging
 .dev.vars.example                   # voorbeeld voor lokale geheimen (echte .dev.vars staat in .gitignore)
 worker/index.js                     # router en handlers
 worker/lib/supabase.js              # dunne fetch-wrapper voor PostgREST
@@ -69,7 +70,7 @@ supabase/README.md                  # hoe je de migratie toepast
 docs/ontwerp-cloudflare-supabase.md # dit document
 ```
 
-`.assetsignore` (in `.gitignore`-formaat) houdt de volgende zaken **uit de openbare site**: `.git`, `node_modules`, `worker`, `supabase`, `docs`, `netlify`, `netlify.toml`, `wrangler.jsonc`, `.assetsignore`, `.dev.vars*`, `*.md`, `exports`, `.impeccable`. Dit lost meteen op dat de functiecode nu op Netlify openbaar downloadbaar is (`eetbuyt.nl/netlify/functions/create-payment.js`). Terugvaloptie als dit niet werkt zoals verwacht: alle openbare bestanden verhuizen naar een `public/`-map.
+**Bijgewerkt tijdens het bouwen (25 sept 2026):** de terugvaloptie is meteen nodig gebleken. Op de eerste Cloudflare-preview bleken `wrangler.jsonc`, `netlify.toml` en `netlify/functions/create-payment.js` alsnog publiek opvraagbaar (200), ondanks dat ze met de juiste syntax in `.assetsignore` stonden (`worker`, `supabase`, `docs`, `*.md` en `.dev.vars*` werden wél correct geblokkeerd; oorzaak van het verschil niet gevonden in de Cloudflare-documentatie). Daarom is nu **fysiek gescheiden**: `wrangler.jsonc`'s `assets.directory` staat op `public/`, en alle openbare bestanden staan alleen nog dáár. `worker/`, `supabase/`, `docs/`, `netlify/`, `netlify.toml`, `wrangler.jsonc`, `PRODUCT.md` en `.dev.vars*` staan buiten `public/` en zijn dus sowieso nooit onderdeel van wat de Worker als statisch bestand kan serveren, ongeacht ignore-bestanden.
 
 ## 5. Database (Supabase, regio EU Frankfurt)
 

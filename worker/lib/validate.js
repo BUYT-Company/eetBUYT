@@ -1,5 +1,5 @@
 // Invoercontrole en prijsberekening. Prijzen komen altijd uit data/products.json, nooit uit de browser.
-import catalog from '../../data/products.json';
+import catalog from '../../public/data/products.json';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
