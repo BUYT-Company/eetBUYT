@@ -36,6 +36,7 @@
   <script src="js/cart.js" defer></script>
   <script src="js/brand.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#main">Naar de inhoud</a>
@@ -284,8 +285,7 @@
           <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
         </div>
         <div class="order__card reveal">
-          <form name="bestellen" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" class="form">
-            <input type="hidden" name="form-name" value="bestellen">
+          <form name="bestellen" method="POST" action="/api/request" class="form">
             <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
             <div class="field">
               <label for="f-naam">Naam</label>
@@ -305,6 +305,7 @@
               <textarea id="f-bericht" name="bericht" rows="4" aria-describedby="f-bericht-hint"></textarea>
               <p class="field__hint" id="f-bericht-hint">Bijvoorbeeld: welke producten, hoeveel en wanneer je ze wilt hebben.</p>
             </div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
             <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
             <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bericht is verstuurd. We nemen contact met je op.</p>
             <p class="form__msg form__msg--err" role="alert" hidden>Je bericht is niet verstuurd. Controleer je verbinding en probeer het opnieuw.</p>

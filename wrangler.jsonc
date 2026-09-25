@@ -1,0 +1,16 @@
+{
+  // Cloudflare Worker met statische bestanden voor eetbuyt.nl (branch cloudflare-supabase).
+  // Geheimen (SUPABASE_SERVICE_ROLE_KEY, TURNSTILE_SECRET, ...) horen hier NIET; zie .dev.vars.example en supabase/README.md.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "eetbuyt",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    // Dezelfde map als op Netlify (de projectroot). Wat niet openbaar mag staat in .assetsignore.
+    "directory": ".",
+    "binding": "ASSETS",
+    // De Worker draait alleen voor /api/*; alle andere paden komen rechtstreeks uit de bestanden.
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true }
+}

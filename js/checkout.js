@@ -1,5 +1,5 @@
-/* Afrekenen: legt de bestelling vast (Netlify Forms) en start daarna de Mollie-betaling.
-   Is Mollie nog niet ingesteld, dan blijft het bij een bestelaanvraag. */
+/* Afrekenen: stuurt de bestelling naar de Worker (/api/order), die ze in Supabase vastlegt.
+   Online betalen komt in fase 2; nu blijft het bij een bestelaanvraag. */
 (() => {
   const form = document.querySelector('form[name="bestelling"]');
   if (!form) return;
@@ -48,45 +48,56 @@
     setBusy(true);
 
     const data = new FormData(form);
-    data.set('bestelling_regels', items.map((i) => `${i.qty}x ${i.name}${i.pack ? ', ' + i.pack : ''} (${i.priceLabel})`).join('\n'));
-    data.set('bestelling_totaal', cart.totalLabel());
+    if (data.get('bot-field')) { fail('Je bestelling kon niet worden verstuurd.'); return; }
 
-    /* 1. De bestelling vastleggen, zodat we nooit een order kwijtraken */
-    try {
-      const res = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data).toString()
-      });
-      if (!res.ok) throw new Error(String(res.status));
-    } catch (_) {
-      fail('Je bestelling is niet verstuurd. Je mandje staat nog klaar. Controleer je verbinding en probeer het opnieuw.');
-      return;
+    /* Eén verzoek: de server controleert alles, bepaalt de prijzen en legt de bestelling vast.
+       Het request-id voorkomt een dubbele bestelling bij dubbelklikken of opnieuw proberen. */
+    let requestId = null;
+    try { requestId = sessionStorage.getItem('buyt-request-id'); } catch (_) {}
+    if (!requestId) {
+      requestId = crypto.randomUUID();
+      try { sessionStorage.setItem('buyt-request-id', requestId); } catch (_) {}
     }
 
-    /* 2. De betaling starten, alleen als online betalen aan staat (paymentsLive in data/products.json).
-       Prijzen worden op de server opnieuw berekend. */
+    let result = null;
+    let code = '';
     try {
-      if (!cart.paymentsLive()) throw new Error('payments-off');
-      const res = await fetch('/.netlify/functions/create-payment', {
+      const res = await fetch('/api/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          client_request_id: requestId,
           items: items.map(({ id, qty }) => ({ id, qty })),
-          customer: { naam: data.get('naam'), email: data.get('email') }
+          customer: Object.fromEntries(['naam', 'email', 'telefoon', 'adres', 'postcode', 'plaats', 'opmerking'].map((k) => [k, data.get(k) || ''])),
+          turnstile: data.get('cf-turnstile-response'),
+          'bot-field': data.get('bot-field') || ''
         })
       });
-      if (res.ok) {
-        const pay = await res.json();
-        if (pay.checkoutUrl) {
-          try { localStorage.setItem('buyt-pending', pay.paymentId); } catch (_) {}
-          window.location.href = pay.checkoutUrl;
-          return;
-        }
-      }
-    } catch (_) {}
+      const body = await res.json().catch(() => ({}));
+      if (res.ok && body.ok) result = body;
+      else code = body.error || 'server_error';
+    } catch (_) {
+      code = 'network';
+    }
 
-    /* 3. Geen online betaling beschikbaar: de bestelaanvraag is ontvangen */
+    if (!result) {
+      /* Een Turnstile-token werkt maar één keer */
+      if (window.turnstile) window.turnstile.reset();
+      fail({
+        network: 'Je bestelling is niet verstuurd. Je mandje staat nog klaar. Controleer je verbinding en probeer het opnieuw.',
+        invalid_input: 'Controleer je gegevens (naam, e-mailadres, adres en postcode) en probeer het opnieuw.',
+        turnstile_failed: 'We konden niet controleren dat je geen robot bent. Probeer het opnieuw.',
+        rate_limited: 'Je hebt kort achter elkaar meerdere bestellingen geplaatst. Probeer het over een uur opnieuw of neem contact met ons op.'
+      }[code] || 'Je bestelling is niet verstuurd. Je mandje staat nog klaar. Probeer het later opnieuw.');
+      return;
+    }
+
+    try { sessionStorage.removeItem('buyt-request-id'); } catch (_) {}
+    /* Online betalen (fase 2): heeft de server een betaallink gemaakt, dan gaat de klant daarheen */
+    if (result.checkoutUrl) {
+      window.location.href = result.checkoutUrl;
+      return;
+    }
     cart.clear();
     window.location.href = 'bedankt.html?s=aanvraag';
   });

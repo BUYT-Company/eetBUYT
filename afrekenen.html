@@ -15,6 +15,7 @@
   <script src="js/brand.js" defer></script>
   <script src="js/subpage.js" defer></script>
   <script src="js/checkout.js" defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Naar de inhoud</a>
@@ -54,11 +55,8 @@
         <a class="btn btn--primary" href="index.html#producten"><span class="btn__label">Bekijk de producten</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
       </div>
 
-      <form class="checkout__grid" name="bestelling" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" data-cart-filled hidden>
+      <form class="checkout__grid" name="bestelling" data-cart-filled hidden>
         <div class="checkout__form">
-          <input type="hidden" name="form-name" value="bestelling">
-          <input type="hidden" name="bestelling_regels" value="">
-          <input type="hidden" name="bestelling_totaal" value="">
           <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
           <section class="panel" aria-labelledby="h-gegevens">
@@ -101,6 +99,7 @@
               <label for="c-opmerking">Opmerking <small>(optioneel)</small></label>
               <textarea id="c-opmerking" name="opmerking" rows="3"></textarea>
             </div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
           </section>
         </div>
 

@@ -3,3 +3,7 @@ Thumbs.db
 node_modules/
 .env
 .claude/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.wrangler/

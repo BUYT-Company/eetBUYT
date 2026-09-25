@@ -372,10 +372,11 @@
       ok.hidden = true;
       err.hidden = true;
       try {
-        const res = await fetch('/', {
+        const data = Object.fromEntries(new FormData(form));
+        const res = await fetch('/api/request', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(form)).toString()
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, turnstile: data['cf-turnstile-response'] })
         });
         if (!res.ok) throw new Error(String(res.status));
         form.reset();
@@ -383,6 +384,8 @@
       } catch (_) {
         err.hidden = false;
       }
+      /* Een Turnstile-token werkt maar één keer */
+      if (window.turnstile) window.turnstile.reset();
     });
   }
 

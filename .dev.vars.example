@@ -1,0 +1,10 @@
+# Kopieer naar .dev.vars (staat in .gitignore) en vul lokaal in. Zet nooit echte waarden in dit voorbeeldbestand.
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+TURNSTILE_SECRET=
+OWNER_EMAIL=
+# Melding naar de eigenaar (provider nog niet gekozen; zonder deze twee gebeurt er niets):
+NOTIFY_WEBHOOK_URL=
+NOTIFY_WEBHOOK_TOKEN=
+# Fase 2:
+# MOLLIE_API_KEY=
