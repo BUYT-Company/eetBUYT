@@ -2,7 +2,8 @@
   // Cloudflare Worker met statische bestanden voor eetbuyt.nl (branch cloudflare-supabase).
   // Geheimen (SUPABASE_SERVICE_ROLE_KEY, TURNSTILE_SECRET, ...) horen hier NIET; zie .dev.vars.example en supabase/README.md.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "eetbuyt",
+  // Moet overeenkomen met de Worker-naam die al in het Cloudflare-dashboard is aangemaakt.
+  "name": "buyt-website",
   "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
