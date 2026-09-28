@@ -8,14 +8,18 @@ export class SupabaseError extends Error {
 }
 
 async function post(env, path, body) {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new SupabaseError(500, { message: 'supabase_not_configured' });
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!env.SUPABASE_URL || !key) throw new SupabaseError(500, { message: 'supabase_not_configured' });
+
+  // Twee sleutelformaten zijn in omloop (ontwerp §16): de oude, JWT-vormige service_role-sleutel
+  // (begint met "eyJ") hoort ook als Bearer-token mee; de nieuwe, ondoorzichtige "sb_secret_..."-
+  // sleutel hoort alléén in de apikey-header (als Bearer gaf die "Invalid API key").
+  const headers = { apikey: key, 'Content-Type': 'application/json' };
+  if (key.startsWith('eyJ')) headers.Authorization = `Bearer ${key}`;
+
   const res = await fetch(`${env.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/${path}`, {
     method: 'POST',
-    headers: {
-      apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type': 'application/json'
-    },
+    headers,
     body: JSON.stringify(body)
   });
   const text = await res.text();
