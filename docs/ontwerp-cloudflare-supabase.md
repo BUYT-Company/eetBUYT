@@ -293,7 +293,7 @@ Deze punten heb ik in de documentatie gezien maar niet zelf in de praktijk getes
 - Fase 1 volledig: bestelaanvraag en zakelijke aanvraag komen in Supabase terecht (`orders`, `order_lines`, `business_requests`), met server-side prijzen, Turnstile, dubbelklik-bescherming.
 - Bezorgmoment kiezen bij het afrekenen (donderdag/zaterdag, tijdsloten van 2 uur, max. 5 per slot, cutoff 23:59 de dag ervoor) — `worker/lib/delivery.js`, migratie 0004.
 - Pushmelding naar de eigenaar via Pushover bij elke nieuwe bestelling/aanvraag (`worker/lib/notify.js`), met een link naar een eigen beheerscherm.
-- Beheerscherm `/admin/orders` (lijst) en `/admin/orders/:nummer` (detail), alleen-lezen, achter een eigen inlogpagina met wachtwoord + TOTP-2FA (`worker/lib/adminAuth.js`, `worker/lib/totp.js`, `worker/lib/admin.js`). Tijdelijke oplossing tot `eetbuyt.nl` aan Cloudflare hangt (zie §16) en Cloudflare Access met een pad-policy kan.
+- Beheerscherm `/admin/orders` (lijst) en `/admin/orders/:nummer` (detail), alleen-lezen, achter een eigen inlogpagina met wachtwoord + TOTP-2FA, **één los account per persoon** (`ADMIN_ACCOUNTS`, JSON-lijst) — geschikt voor de eigenaar en de mede-oprichters, elk met een eigen wachtwoord en een eigen 2FA-sleutel (QR-code of handmatig, via `/admin/setup-2fa`). Tijdelijke oplossing tot `eetbuyt.nl` aan Cloudflare hangt (zie §16) en Cloudflare Access met een pad-policy kan.
 - `public/`-scheiding: alleen de echte site staat openbaar, de rest (worker, supabase, docs) fysiek erbuiten (zie §4/§16 voor waarom `.assetsignore` alleen niet genoeg bleek).
 
 **Nog open:**
