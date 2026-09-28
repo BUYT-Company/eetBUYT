@@ -287,8 +287,22 @@ Deze punten heb ik in de documentatie gezien maar niet zelf in de praktijk getes
 - Of Supabase-back-ups bij het gratis of Pro-plan aan staan en hoe lang.
 - Een reeds gevonden risico op `main`: `create-payment.js` weigert nu alleen producten zonder prijs, maar een mandje met "ca."-prijzen zou bij `paymentsLive: true` worden afgerekend alsof het een vast bedrag is. Nu staat online betalen uit, dus dit slaapt. In de branch wordt dit direct dichtgezet (geen betaling voor indicatieve mandjes).
 
-## 17. Handoff naar een nieuwe chat
+## 17. Stand van zaken (28 sept 2026) en handoff naar een nieuwe chat
 
-Plak dit als eerste bericht:
+**Klaar en werkend op de preview** (`https://buyt-website.eetbuyt.workers.dev`, Cloudflare Worker `buyt-website`, project Supabase `hfaaufsdonsitjfwzvrk`):
+- Fase 1 volledig: bestelaanvraag en zakelijke aanvraag komen in Supabase terecht (`orders`, `order_lines`, `business_requests`), met server-side prijzen, Turnstile, dubbelklik-bescherming.
+- Bezorgmoment kiezen bij het afrekenen (donderdag/zaterdag, tijdsloten van 2 uur, max. 5 per slot, cutoff 23:59 de dag ervoor) — `worker/lib/delivery.js`, migratie 0004.
+- Pushmelding naar de eigenaar via Pushover bij elke nieuwe bestelling/aanvraag (`worker/lib/notify.js`), met een link naar een eigen beheerscherm.
+- Beheerscherm `/admin/orders` (lijst) en `/admin/orders/:nummer` (detail), alleen-lezen, achter een eigen inlogpagina met wachtwoord + TOTP-2FA (`worker/lib/adminAuth.js`, `worker/lib/totp.js`, `worker/lib/admin.js`). Tijdelijke oplossing tot `eetbuyt.nl` aan Cloudflare hangt (zie §16) en Cloudflare Access met een pad-policy kan.
+- `public/`-scheiding: alleen de echte site staat openbaar, de rest (worker, supabase, docs) fysiek erbuiten (zie §4/§16 voor waarom `.assetsignore` alleen niet genoeg bleek).
 
-> We bouwen fase 1 van `docs/ontwerp-cloudflare-supabase.md` op de branch `cloudflare-supabase` (repo `BUYT-Company/eetBUYT`). Lees dat document en `PRODUCT.md` eerst. Raak `main` en de Netlify-site niet aan. Werk in het Nederlands. Commit en push alleen als ik het vraag. Zet nooit sleutels in bestanden of in het gesprek. Begin met `wrangler.jsonc`, `.assetsignore`, `worker/` en `supabase/migrations/0001_init.sql`.
+**Nog open:**
+1. **Klant-e-mail** ("bedankt voor je bestelling" + het gekozen bezorgmoment) via **Resend** — nog te bouwen, dit is de eerstvolgende taak.
+2. Testdata opruimen in Supabase (een paar testbestellingen uit de bouwfase).
+3. Kleinere testplan-punten (hoofdstuk 13): zakelijke aanvraag zonder JavaScript, en gedrag bij een tijdelijk onbereikbare Supabase.
+4. Fase 2 (online betalen, Mollie) en fase 3 (producten/voorraad/teller): nog niet begonnen.
+5. Bij livegang: Cloudflare Access met pad-policy instellen op `/admin/*` en dan wachtwoord/2FA daar uitzetten (zie §16).
+
+Plak dit als eerste bericht in een nieuwe chat:
+
+> We werken verder aan `docs/ontwerp-cloudflare-supabase.md` op de branch `cloudflare-supabase` (repo `BUYT-Company/eetBUYT`). Lees dat document (vooral hoofdstuk 17, "Stand van zaken") en `PRODUCT.md` eerst. Raak `main` en de Netlify-site niet aan. Werk in het Nederlands. Commit en push alleen als ik het vraag. Zet nooit sleutels in bestanden of in het gesprek. Fase 1 werkt al volledig op de preview, inclusief bezorgmoment kiezen, een pushmelding naar mij via Pushover, en een beheerscherm op `/admin/orders` met wachtwoord + 2FA. De eerstvolgende taak: een bevestigingsmail naar de klant ("bedankt voor je bestelling", met het gekozen bezorgmoment) via **Resend**. Ik heb nog geen Resend-account; loop met me mee door het opzetten ervan, net zoals we eerder met Supabase, Cloudflare en Pushover deden.
