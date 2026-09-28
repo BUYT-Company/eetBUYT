@@ -1,5 +1,6 @@
 // Invoercontrole en prijsberekening. Prijzen komen altijd uit data/products.json, nooit uit de browser.
 import catalog from '../../public/data/products.json';
+import { isValidSlot } from './delivery.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -42,6 +43,12 @@ export function validateOrder(data) {
   if (!EMAIL.test(customer.email)) return fail();
   if (!POSTCODE.test(customer.postcode)) return fail();
 
+  // Bezorgmoment: verplicht, en moet een echt bestaand, nog boekbaar slot zijn (donderdag/
+  // zaterdag, vóór de cutoff van 23:59 de dag ervoor) — zie worker/lib/delivery.js.
+  const deliveryDate = clean(data.delivery_date, 10);
+  const deliveryWindow = clean(data.delivery_window, 11);
+  if (!isValidSlot(deliveryDate, deliveryWindow)) return fail();
+
   let total = 0;
   let indicative = false;
   let unpriced = false;
@@ -69,6 +76,8 @@ export function validateOrder(data) {
     value: {
       client_request_id: clientRequestId,
       customer,
+      delivery_date: deliveryDate,
+      delivery_window: deliveryWindow,
       total_estimate_cents: total,
       is_indicative: indicative,
       has_unpriced: unpriced,

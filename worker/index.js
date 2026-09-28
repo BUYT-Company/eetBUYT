@@ -2,8 +2,11 @@
 // Fase 1: bestelaanvragen (POST /api/order) en zakelijke aanvragen (POST /api/request) vastleggen in Supabase.
 import { validateOrder, validateRequest, formatEuro } from './lib/validate.js';
 import { verifyTurnstile } from './lib/turnstile.js';
-import { rpc, insert, SupabaseError } from './lib/supabase.js';
+import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
+import { upcomingDates } from './lib/delivery.js';
+
+const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004 (daar is het de echte grens)
 
 const MAX_BODY_BYTES = 20 * 1024;
 
@@ -55,6 +58,7 @@ function orderMessage(order, result) {
     subject: `Nieuwe bestelaanvraag BUYT-${result.order_number}`,
     text: [
       `Bestelaanvraag BUYT-${result.order_number}`,
+      `Bezorgmoment: ${order.delivery_date} ${order.delivery_window}`,
       '',
       lines,
       `Totaal (indicatief): ${total}${order.has_unpriced ? ' (prijs volgt voor sommige producten)' : ''}`,
@@ -87,6 +91,7 @@ async function handleOrder(request, env, ctx) {
     result = await rpc(env, 'create_order', { payload: order });
   } catch (e) {
     if (e instanceof SupabaseError && e.detail?.message === 'rate_limited') return error(429, 'rate_limited');
+    if (e instanceof SupabaseError && e.detail?.message === 'slot_full') return error(409, 'slot_full');
     console.error('create_order_failed', e instanceof SupabaseError ? e.status : 'unknown');
     return error(500, 'server_error');
   }
@@ -130,9 +135,46 @@ async function handleRequest(request, env, ctx) {
   return wantsRedirect ? redirect(request, '/bedankt.html?s=aanvraag') : json(200, { ok: true });
 }
 
+// Openbare, alleen-lezen lijst met de eerstvolgende boekbare bezorgmomenten en hun vrije plekken.
+// Geen persoonsgegevens, dus geen Turnstile/honeypot nodig voor dit ene, informatieve endpoint.
+async function handleDeliverySlots(request, env) {
+  const dates = upcomingDates();
+  if (!dates.length) return json(200, { slots: [] });
+
+  const from = dates[0].date;
+  let counts = [];
+  try {
+    counts = await select(
+      env,
+      'orders',
+      `select=delivery_date,delivery_window&delivery_date=gte.${from}&status=neq.geannuleerd`
+    );
+  } catch (e) {
+    console.error('delivery_slots_failed', e instanceof SupabaseError ? e.status : 'unknown');
+    return error(500, 'server_error');
+  }
+
+  const taken = new Map();
+  for (const row of counts) {
+    const key = `${row.delivery_date}|${row.delivery_window}`;
+    taken.set(key, (taken.get(key) || 0) + 1);
+  }
+
+  const slots = dates.flatMap((d) =>
+    d.windows.map((window) => ({
+      date: d.date,
+      weekday: d.weekday,
+      window,
+      remaining: Math.max(0, MAX_PER_SLOT - (taken.get(`${d.date}|${window}`) || 0))
+    }))
+  );
+  return json(200, { slots });
+}
+
 const routes = {
-  '/api/order': handleOrder,
-  '/api/request': handleRequest
+  '/api/order': { POST: handleOrder },
+  '/api/request': { POST: handleRequest },
+  '/api/delivery-slots': { GET: handleDeliverySlots }
 };
 
 export default {
@@ -140,13 +182,14 @@ export default {
     const { pathname } = new URL(request.url);
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
 
-    const handler = routes[pathname];
-    if (!handler) return error(404, 'not_found');
-    if (request.method !== 'POST') return new Response(JSON.stringify({ ok: false, error: 'method_not_allowed' }), {
+    const route = routes[pathname];
+    if (!route) return error(404, 'not_found');
+    const handler = route[request.method];
+    if (!handler) return new Response(JSON.stringify({ ok: false, error: 'method_not_allowed' }), {
       status: 405,
-      headers: { 'Content-Type': 'application/json; charset=utf-8', Allow: 'POST', 'Cache-Control': 'no-store' }
+      headers: { 'Content-Type': 'application/json; charset=utf-8', Allow: Object.keys(route).join(', '), 'Cache-Control': 'no-store' }
     });
-    if (!sameOrigin(request)) return error(403, 'forbidden');
+    if (request.method === 'POST' && !sameOrigin(request)) return error(403, 'forbidden');
 
     try {
       return await handler(request, env, ctx);

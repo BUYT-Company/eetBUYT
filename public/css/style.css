@@ -599,6 +599,15 @@ em {
 .field__hint--warn { color: var(--ink); background: var(--lime); border-radius: 12px; padding: .7rem .9rem; }
 .field__hint:empty { display: none; }
 .panel__note { margin: -6px 0 0; color: var(--muted); }
+
+/* Bezorgmoment: dag-groepen met tijdslot-radio's, zelfde look als de andere velden */
+.delivery-slots { display: grid; gap: 18px; }
+.delivery-day legend { margin-bottom: 2px; }
+.delivery-day label { justify-content: space-between; border: 1.5px solid var(--hair); border-radius: 12px; padding: .7rem .9rem; font-weight: 600 !important; }
+.delivery-day label:has(input:checked) { border-color: var(--olive); background: rgba(0, 127, 79, .06); }
+.delivery-day label:has(input:disabled) { opacity: .55; cursor: not-allowed; }
+.delivery-slot__cap { font-size: .82rem; font-weight: 600; color: var(--muted); }
+.delivery-day label:has(input:checked) .delivery-slot__cap { color: var(--olive); }
 .faq__soon { padding: clamp(24px, 3.5vw, 40px); border-radius: var(--radius); background: var(--sand); }
 .faq__soon-title { margin: 0 0 .4rem; font: 700 1.4rem/1.2 var(--font-display); letter-spacing: -.035em; color: var(--ink); }
 .faq__soon p:last-child { margin: 0; color: var(--muted); max-width: 32em; }

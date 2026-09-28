@@ -50,6 +50,10 @@
     const data = new FormData(form);
     if (data.get('bot-field')) { fail('Je bestelling kon niet worden verstuurd.'); return; }
 
+    const slot = data.get('delivery_slot');
+    if (!slot) { fail('Kies eerst een bezorgmoment.'); return; }
+    const [deliveryDate, deliveryWindow] = String(slot).split('|');
+
     /* Eén verzoek: de server controleert alles, bepaalt de prijzen en legt de bestelling vast.
        Het request-id voorkomt een dubbele bestelling bij dubbelklikken of opnieuw proberen. */
     let requestId = null;
@@ -69,6 +73,8 @@
           client_request_id: requestId,
           items: items.map(({ id, qty }) => ({ id, qty })),
           customer: Object.fromEntries(['naam', 'email', 'telefoon', 'adres', 'postcode', 'plaats', 'opmerking'].map((k) => [k, data.get(k) || ''])),
+          delivery_date: deliveryDate,
+          delivery_window: deliveryWindow,
           turnstile: data.get('cf-turnstile-response'),
           'bot-field': data.get('bot-field') || ''
         })
@@ -83,11 +89,14 @@
     if (!result) {
       /* Een Turnstile-token werkt maar één keer */
       if (window.turnstile) window.turnstile.reset();
+      /* Bezorgmoment bleek intussen vol: laat de actuele stand opnieuw ophalen */
+      if (code === 'slot_full' && window.BuytDelivery) window.BuytDelivery.refresh();
       fail({
         network: 'Je bestelling is niet verstuurd. Je mandje staat nog klaar. Controleer je verbinding en probeer het opnieuw.',
-        invalid_input: 'Controleer je gegevens (naam, e-mailadres, adres en postcode) en probeer het opnieuw.',
+        invalid_input: 'Controleer je gegevens (naam, e-mailadres, adres, postcode en bezorgmoment) en probeer het opnieuw.',
         turnstile_failed: 'We konden niet controleren dat je geen robot bent. Probeer het opnieuw.',
-        rate_limited: 'Je hebt kort achter elkaar meerdere bestellingen geplaatst. Probeer het over een uur opnieuw of neem contact met ons op.'
+        rate_limited: 'Je hebt kort achter elkaar meerdere bestellingen geplaatst. Probeer het over een uur opnieuw of neem contact met ons op.',
+        slot_full: 'Dit bezorgmoment is intussen vol. Kies hierboven een ander moment en probeer het opnieuw.'
       }[code] || 'Je bestelling is niet verstuurd. Je mandje staat nog klaar. Probeer het later opnieuw.');
       return;
     }
