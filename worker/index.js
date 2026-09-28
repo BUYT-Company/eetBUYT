@@ -6,7 +6,7 @@ import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
 import { upcomingDates } from './lib/delivery.js';
 import { listOrders, orderDetail } from './lib/admin.js';
-import { checkAdminAuth, authChallenge } from './lib/adminAuth.js';
+import { isLoggedIn, handleLogin, handleLogout, redirectToLogin } from './lib/adminAuth.js';
 
 const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004 (daar is het de echte grens)
 
@@ -188,8 +188,13 @@ export default {
     const { pathname } = new URL(request.url);
 
     if (pathname.startsWith('/admin/')) {
+      if (pathname === '/admin/login') {
+        if (request.method === 'GET' || request.method === 'POST') return handleLogin(request, env);
+        return error(405, 'method_not_allowed');
+      }
+      if (pathname === '/admin/logout') return handleLogout();
       if (request.method !== 'GET') return error(405, 'method_not_allowed');
-      if (!checkAdminAuth(request, env)) return authChallenge();
+      if (!(await isLoggedIn(request, env))) return redirectToLogin(pathname);
       if (pathname === '/admin/orders') return listOrders(env);
       const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
       if (m) return orderDetail(env, m[1]);

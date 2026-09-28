@@ -1,10 +1,9 @@
-// Alleen-lezen beheerpagina's (/admin/orders, /admin/orders/:nummer). Geen eigen inlogcode hier:
-// de toegang wordt afgeschermd door Cloudflare Access, vóór dit verzoek de Worker al bereikt
-// (zie supabase/README.md of het ontwerpdocument voor hoe je dat instelt).
+// Alleen-lezen beheerpagina's (/admin/orders, /admin/orders/:nummer). De toegang zelf (inloggen,
+// cookie) zit in adminAuth.js, dat ook deze page()-wrapper gebruikt voor de inlogpagina.
 import { select, SupabaseError } from './supabase.js';
 import { formatEuro } from './validate.js';
 
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const STATUS_LABEL = {
   aanvraag: 'Nieuw',
@@ -24,16 +23,20 @@ const fmtDelivery = (date, window) => {
 };
 const fmtTotal = (o) => (o.has_unpriced && !o.total_final_cents ? `${o.is_indicative ? 'ca. ' : ''}${formatEuro(o.total_estimate_cents)} (+ prijs op gewicht)` : `${o.is_indicative ? 'ca. ' : ''}${formatEuro(o.total_final_cents ?? o.total_estimate_cents)}`);
 
-function page(title, body) {
+// bare: true laat de topbalk (titel + uitloggen) weg — gebruikt door de inlogpagina zelf.
+export function page(title, body, { bare = false } = {}) {
   return new Response(
     `<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
 <title>${esc(title)} · BUYT beheer</title>
 <style>
   :root { color-scheme: light; }
-  body { font: 16px/1.5 system-ui, sans-serif; color: #123326; background: #FFF8E8; margin: 0; padding: 24px 16px 64px; }
+  body { font: 16px/1.5 system-ui, sans-serif; color: #123326; background: #FFF8E8; margin: 0; padding: 0 16px 64px; }
   a { color: #007F4F; }
   h1 { font-size: 1.4rem; margin: 0 0 4px; }
   .back { display: inline-block; margin-bottom: 18px; font-size: .9rem; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; margin-bottom: 8px; border-bottom: 1px solid rgba(18,51,38,.12); font-size: .85rem; }
+  .topbar strong { font-weight: 800; }
+  .topbar a { color: #4D6456; }
   table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1.5px rgba(18,51,38,.16); }
   th, td { text-align: left; padding: 10px 12px; font-size: .92rem; border-bottom: 1px solid rgba(18,51,38,.1); }
   th { background: rgba(18,51,38,.05); font-weight: 700; }
@@ -46,7 +49,10 @@ function page(title, body) {
   dd { margin: 0; }
   .empty { color: #4D6456; }
 </style>
-<body>${body}</body></html>`,
+<body>
+${bare ? '' : '<div class="topbar"><strong>BUYT beheer</strong><a href="/admin/logout">Uitloggen</a></div>'}
+<div style="padding-top:${bare ? '0' : '24px'}">${body}</div>
+</body></html>`,
     { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }
   );
 }
