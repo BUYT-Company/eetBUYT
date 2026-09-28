@@ -185,7 +185,7 @@ Omdat de gewichten "ca." zijn, kun je vooraf geen definitief bedrag afrekenen. D
 | Naam | Waar | Wie zet het |
 |---|---|---|
 | `SUPABASE_URL` | Worker-variabele | eigenaar (uit Supabase-project) |
-| `SUPABASE_SECRET_KEY` (de nieuwe `sb_secret_...`-sleutel; de oude `service_role` wordt eind 2026 uitgefaseerd) | **Worker-geheim** (nooit in de repo of browser) | eigenaar |
+| `SUPABASE_SERVICE_ROLE_KEY` (naam die de code gebruikt; werkt met zowel de nieuwe `sb_secret_...`-sleutel als de oude, JWT-vormige `service_role`-sleutel) | **Worker-geheim** (nooit in de repo of browser) | eigenaar |
 | `MOLLIE_API_KEY` | Worker-geheim | eigenaar (eerst `test_`-sleutel) |
 | `TURNSTILE_SECRET` | Worker-geheim | eigenaar |
 | `TURNSTILE_SITEKEY` | staat openbaar in de HTML | eigenaar levert, ik zet hem erin |
@@ -276,7 +276,8 @@ Ik:
 ## 16. Nog te verifiëren tijdens het bouwen
 
 Deze punten heb ik in de documentatie gezien maar niet zelf in de praktijk getest:
-- De nieuwe Supabase-sleutel (`sb_secret_...`) moet bij PostgREST in de **`apikey`-header** worden meegestuurd (niet als Bearer-token). Er is een meldbaar probleem dat nieuwe secret-sleutels op sommige nieuwe projecten "Invalid API key" geven; dat testen we meteen, met de oude `service_role`-sleutel als terugval.
+- **Bevestigd tijdens het bouwen (28 sept 2026):** de nieuwe Supabase-sleutel (`sb_secret_...`) hoort bij PostgREST alleen in de **`apikey`-header**, niet ook als Bearer-token (`worker/lib/supabase.js` stuurt Bearer alleen mee als de sleutel op de oude, JWT-vormige `service_role`-sleutel lijkt, herkenbaar aan "eyJ" vooraan). Los daarvan bleek de eerste testbestelling ook nog te mislukken door een tweede, apart probleem: `create_order()` was geen `security definer`, waardoor hij met de rechten van de aanroeper draaide in plaats van met die van de eigenaar, en dus `permission denied for table orders` gaf ondanks een geldige service-rol-sleutel — hersteld in `supabase/migrations/0002_create_order_security_definer.sql`. Gevonden door de Worker-aanroep rechtstreeks met curl te reproduceren tegen PostgREST, buiten de Worker om.
+- **Let op bij het bewerken van Worker-variabelen in het Cloudflare-dashboard:** het los bewerken van één secret liet tijdens het bouwen de twee gewone variabelen (`SUPABASE_URL`, `OWNER_EMAIL`) uit de lijst verdwijnen (vermoedelijk een UI-eigenaardigheid van deze dashboardversie). Controleer na elke wijziging aan Runtime-variabelen dat alle vier er nog staan.
 - Of `_headers` en `_redirects` in Workers-statische-bestanden werken zoals in Pages (de samenvatting van de documentatie was hierover onduidelijk).
 - Of `.assetsignore` alle genoemde paden weghoudt (test staat in het testplan).
 - Hoe geheimen precies worden gezet bij Workers Builds (dashboard, per Worker).
