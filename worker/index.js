@@ -69,8 +69,8 @@ function orderMessage(order, result, origin) {
   const items = order.lines.map((l) => `${l.qty}x ${l.name}`).join(', ');
   const total = order.has_unpriced && order.total_estimate_cents === 0 ? 'volgt' : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
   return {
-    title: `Nieuwe bestelling BUYT-${result.order_number}`,
-    message: `${c.customer_name} · ${c.city}\n${items} — ${total}\n${formatDelivery(order.delivery_date, order.delivery_window)}`,
+    title: `\u{1F7E2} Nieuwe BUYT-bestelling — ${total}`,
+    message: `${c.customer_name} · ${c.city}\n${items}\n${formatDelivery(order.delivery_date, order.delivery_window)}`,
     url: `${origin}/admin/orders/${result.order_number}`,
     urlTitle: 'Bekijk bestelling'
   };
