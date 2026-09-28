@@ -14,5 +14,12 @@
     // De Worker draait alleen voor /api/*; alle andere paden komen rechtstreeks uit de bestanden.
     "run_worker_first": ["/api/*"]
   },
+  // Alleen niet-geheime waarden. Zonder dit blok zet "wrangler deploy" bij elke nieuwe build de
+  // gewone variabelen terug op niets (secrets blijven wel staan, die worden apart beheerd) — dat
+  // verklaart waarom SUPABASE_URL/OWNER_EMAIL steeds uit het dashboard leken te verdwijnen.
+  "vars": {
+    "SUPABASE_URL": "https://hfaaufsdonsitjfwzvrk.supabase.co",
+    "OWNER_EMAIL": "eetbuyt@gmail.com"
+  },
   "observability": { "enabled": true }
 }
