@@ -6,7 +6,7 @@ import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
 import { upcomingDates } from './lib/delivery.js';
 import { listOrders, orderDetail } from './lib/admin.js';
-import { isLoggedIn, handleLogin, handleLogout, redirectToLogin, setup2fa } from './lib/adminAuth.js';
+import { currentUserName, handleLogin, handleLogout, redirectToLogin, setup2fa } from './lib/adminAuth.js';
 
 const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004 (daar is het de echte grens)
 
@@ -185,7 +185,8 @@ const routes = {
 
 export default {
   async fetch(request, env, ctx) {
-    const { pathname } = new URL(request.url);
+    const url = new URL(request.url);
+    const { pathname } = url;
 
     if (pathname.startsWith('/admin/')) {
       if (pathname === '/admin/login') {
@@ -194,11 +195,12 @@ export default {
       }
       if (pathname === '/admin/logout') return handleLogout();
       if (request.method !== 'GET') return error(405, 'method_not_allowed');
-      if (!(await isLoggedIn(request, env))) return redirectToLogin(pathname);
-      if (pathname === '/admin/orders') return listOrders(env);
-      if (pathname === '/admin/setup-2fa') return setup2fa();
+      const userName = await currentUserName(request, env);
+      if (!userName) return redirectToLogin(pathname);
+      if (pathname === '/admin/orders') return listOrders(env, userName);
+      if (pathname === '/admin/setup-2fa') return setup2fa(url, userName);
       const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
-      if (m) return orderDetail(env, m[1]);
+      if (m) return orderDetail(env, m[1], userName);
       return error(404, 'not_found');
     }
 

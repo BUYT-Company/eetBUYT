@@ -24,7 +24,7 @@ const fmtDelivery = (date, window) => {
 const fmtTotal = (o) => (o.has_unpriced && !o.total_final_cents ? `${o.is_indicative ? 'ca. ' : ''}${formatEuro(o.total_estimate_cents)} (+ prijs op gewicht)` : `${o.is_indicative ? 'ca. ' : ''}${formatEuro(o.total_final_cents ?? o.total_estimate_cents)}`);
 
 // bare: true laat de topbalk (titel + uitloggen) weg — gebruikt door de inlogpagina zelf.
-export function page(title, body, { bare = false } = {}) {
+export function page(title, body, { bare = false, userName = null } = {}) {
   return new Response(
     `<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
 <title>${esc(title)} · BUYT beheer</title>
@@ -50,14 +50,14 @@ export function page(title, body, { bare = false } = {}) {
   .empty { color: #4D6456; }
 </style>
 <body>
-${bare ? '' : '<div class="topbar"><strong>BUYT beheer</strong><a href="/admin/logout">Uitloggen</a></div>'}
+${bare ? '' : `<div class="topbar"><strong>BUYT beheer</strong><a href="/admin/logout">Uitloggen${userName ? ` (${esc(userName)})` : ''}</a></div>`}
 <div style="padding-top:${bare ? '0' : '24px'}">${body}</div>
 </body></html>`,
     { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } }
   );
 }
 
-export async function listOrders(env) {
+export async function listOrders(env, userName) {
   let orders;
   try {
     orders = await select(
@@ -67,7 +67,7 @@ export async function listOrders(env) {
     );
   } catch (e) {
     console.error('admin_list_failed', e instanceof SupabaseError ? e.status : 'unknown');
-    return page('Bestellingen', '<h1>Bestellingen</h1><p class="empty">Kon de bestellingen niet ophalen. Probeer het later opnieuw.</p>');
+    return page('Bestellingen', '<h1>Bestellingen</h1><p class="empty">Kon de bestellingen niet ophalen. Probeer het later opnieuw.</p>', { userName });
   }
 
   const rows = orders.map((o) => `
@@ -82,22 +82,22 @@ export async function listOrders(env) {
 
   return page('Bestellingen', `
     <h1>Bestellingen</h1>
-    <p class="empty">Laatste ${orders.length} bestellingen. Status wijzigen doe je nog in <a href="https://supabase.com/dashboard/project/hfaaufsdonsitjfwzvrk/editor" target="_blank" rel="noopener">Supabase</a>. <a href="/admin/setup-2fa">2FA instellen</a></p>
+    <p class="empty">Laatste ${orders.length} bestellingen. Status wijzigen doe je nog in <a href="https://supabase.com/dashboard/project/hfaaufsdonsitjfwzvrk/editor" target="_blank" rel="noopener">Supabase</a>. <a href="/admin/setup-2fa">2FA instellen (voor mezelf of iemand anders)</a></p>
     ${orders.length ? `<table><thead><tr><th>Bestelling</th><th>Klant</th><th>Bezorgmoment</th><th>Totaal</th><th>Status</th><th>Geplaatst</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="empty">Nog geen bestellingen.</p>'}
-  `);
+  `, { userName });
 }
 
-export async function orderDetail(env, orderNumber) {
+export async function orderDetail(env, orderNumber, userName) {
   let rows;
   try {
     rows = await select(env, 'orders', `select=*,order_lines(*)&order_number=eq.${orderNumber}`);
   } catch (e) {
     console.error('admin_detail_failed', e instanceof SupabaseError ? e.status : 'unknown');
-    return page('Bestelling', '<a class="back" href="/admin/orders">&larr; Alle bestellingen</a><p class="empty">Kon de bestelling niet ophalen. Probeer het later opnieuw.</p>');
+    return page('Bestelling', '<a class="back" href="/admin/orders">&larr; Alle bestellingen</a><p class="empty">Kon de bestelling niet ophalen. Probeer het later opnieuw.</p>', { userName });
   }
 
   const o = rows[0];
-  if (!o) return page('Bestelling', '<a class="back" href="/admin/orders">&larr; Alle bestellingen</a><p class="empty">Deze bestelling bestaat niet (meer).</p>');
+  if (!o) return page('Bestelling', '<a class="back" href="/admin/orders">&larr; Alle bestellingen</a><p class="empty">Deze bestelling bestaat niet (meer).</p>', { userName });
 
   const lines = (o.order_lines || [])
     .map((l) => `<div><dt>${l.qty}× ${esc(l.name)}</dt><dd>${esc(l.pack)} · ${esc(l.price_label)}</dd></div>`)
@@ -129,5 +129,5 @@ export async function orderDetail(env, orderNumber) {
       <dl>${lines || '<div><dt>–</dt><dd>Geen regels gevonden</dd></div>'}</dl>
       <p style="margin:14px 0 0;font-weight:700">Totaal: ${fmtTotal(o)}${o.has_unpriced ? ' — sommige producten zijn "prijs op gewicht"' : ''}</p>
     </div>
-  `);
+  `, { userName });
 }

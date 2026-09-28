@@ -6,9 +6,11 @@ TURNSTILE_SECRET=
 PUSHOVER_TOKEN=
 PUSHOVER_USER_KEY=
 # Inloggen voor /admin/orders (tijdelijk tot eetbuyt.nl aan Cloudflare hangt en Cloudflare Access
-# met een pad-policy kan, zie ontwerp §9/§16). ADMIN_TOTP_SECRET zet je pas nadat je bent ingelogd
-# en /admin/setup-2fa hebt bezocht (die genereert 'm) — leeg laten totdat je dat hebt gedaan.
-ADMIN_PASSWORD=
-ADMIN_TOTP_SECRET=
+# met een pad-policy kan, zie ontwerp §9/§16). Eén account per persoon, elk met eigen wachtwoord
+# en 2FA-sleutel (via /admin/setup-2fa, achter de login). Voorbeeld:
+# ADMIN_ACCOUNTS=[{"name":"Skip","password":"...","totp":"..."},{"name":"Partner","password":"...","totp":"..."}]
+ADMIN_ACCOUNTS=
+# Los van ieders wachtwoord: ondertekent alleen de sessiecookie. Zelf een willekeurige tekst kiezen.
+ADMIN_SESSION_SECRET=
 # Fase 2:
 # MOLLIE_API_KEY=
