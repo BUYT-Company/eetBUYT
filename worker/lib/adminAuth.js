@@ -23,11 +23,13 @@ function timingSafeEqual(a, b) {
 }
 
 // ADMIN_ACCOUNTS is één secret: een JSON-lijst [{ "name": "...", "password": "...", "totp": "..." }, ...].
-// Ongeldige of onvolledige items worden genegeerd (fail closed per account, niet in zijn geheel).
+// "totp" mag leeg zijn zolang iemand nog geen 2FA heeft ingesteld (dan volstaat het wachtwoord,
+// zie handleLoginPost) — anders zou niemand ooit voor het eerst bij /admin/setup-2fa kunnen komen.
+// Ongeldige of onvolledige items (geen naam/wachtwoord) worden genegeerd, niet de hele lijst.
 function parseAccounts(env) {
   try {
     const list = JSON.parse(env.ADMIN_ACCOUNTS || '[]');
-    return Array.isArray(list) ? list.filter((a) => a && typeof a.name === 'string' && a.password && a.totp) : [];
+    return Array.isArray(list) ? list.filter((a) => a && typeof a.name === 'string' && a.password) : [];
   } catch (_) {
     return [];
   }
@@ -89,8 +91,8 @@ function loginPage(next, errorMsg) {
           <input id="pw" name="password" type="password" autofocus required style="font:inherit;padding:.7rem .85rem;border:1.5px solid rgba(18,51,38,.3);border-radius:10px">
         </div>
         <div style="display:grid;gap:6px">
-          <label for="code" style="font-size:.88rem;font-weight:700">Authenticatiecode</label>
-          <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required style="font:inherit;padding:.7rem .85rem;border:1.5px solid rgba(18,51,38,.3);border-radius:10px;letter-spacing:.2em">
+          <label for="code" style="font-size:.88rem;font-weight:700">Authenticatiecode <small>(leeg laten als je nog geen 2FA hebt ingesteld)</small></label>
+          <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456" style="font:inherit;padding:.7rem .85rem;border:1.5px solid rgba(18,51,38,.3);border-radius:10px;letter-spacing:.2em">
         </div>
         ${errorMsg ? `<p style="margin:0;color:#b3261e;font-size:.88rem">${esc(errorMsg)}</p>` : ''}
         <button type="submit" style="font:inherit;font-weight:700;background:#123326;color:#FFF8E8;border:0;border-radius:10px;padding:.75rem;cursor:pointer">Inloggen</button>
@@ -120,7 +122,9 @@ async function handleLoginPost(form, accounts, env) {
     // Beide checks altijd uitvoeren (niet vroegtijdig stoppen op het wachtwoord), zodat de
     // resterende accounts qua timing niet verraden welk wachtwoord wél goed was.
     const passOk = timingSafeEqual(password, acc.password);
-    const codeOk = await verifyTotp(acc.totp, code);
+    // Nog geen 2FA voor déze persoon ingesteld (acc.totp leeg): wachtwoord alleen is dan genoeg,
+    // zodat iemand voor het eerst bij /admin/setup-2fa kan komen.
+    const codeOk = acc.totp ? await verifyTotp(acc.totp, code) : true;
     if (passOk && codeOk) matched = acc;
   }
   if (!matched) return loginPage(next, 'Onjuist wachtwoord of onjuiste code.');
