@@ -5,5 +5,8 @@ TURNSTILE_SECRET=
 # Pushmelding naar de eigenaar via Pushover (pushover.net); zonder deze twee gebeurt er niets:
 PUSHOVER_TOKEN=
 PUSHOVER_USER_KEY=
+# Wachtwoord voor /admin/orders (HTTP Basic Auth, tijdelijk tot eetbuyt.nl aan Cloudflare hangt
+# en Cloudflare Access met een pad-policy kan, zie ontwerp §9/§16):
+ADMIN_PASSWORD=
 # Fase 2:
 # MOLLIE_API_KEY=

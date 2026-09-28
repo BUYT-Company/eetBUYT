@@ -5,6 +5,8 @@ import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
 import { upcomingDates } from './lib/delivery.js';
+import { listOrders, orderDetail } from './lib/admin.js';
+import { checkAdminAuth, authChallenge } from './lib/adminAuth.js';
 
 const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004 (daar is het de echte grens)
 
@@ -61,16 +63,16 @@ const formatDelivery = (dateStr, window) => {
 };
 
 // Kort en scanbaar: alleen genoeg om te weten dát er iets is en of het druk wordt. De volledige
-// bestelling (adres, telefoon, opmerking) staat in Supabase, niet in de pushmelding zelf.
-function orderMessage(order, result) {
+// bestelling (adres, telefoon, opmerking) staat achter de link, niet in de pushmelding zelf.
+function orderMessage(order, result, origin) {
   const c = order.customer;
   const items = order.lines.map((l) => `${l.qty}x ${l.name}`).join(', ');
   const total = order.has_unpriced && order.total_estimate_cents === 0 ? 'volgt' : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
   return {
     title: `Nieuwe bestelling BUYT-${result.order_number}`,
     message: `${c.customer_name} · ${c.city}\n${items} — ${total}\n${formatDelivery(order.delivery_date, order.delivery_window)}`,
-    url: SUPABASE_DASHBOARD_URL,
-    urlTitle: 'Bekijk in Supabase'
+    url: `${origin}/admin/orders/${result.order_number}`,
+    urlTitle: 'Bekijk bestelling'
   };
 }
 
@@ -99,7 +101,7 @@ async function handleOrder(request, env, ctx) {
   }
 
   // Alleen de eerste keer melden; een herhaald verzoek (dubbelklik) geeft dezelfde bestelling terug.
-  if (!result.existing) ctx.waitUntil(notifyOwner(env, orderMessage(order, result)));
+  if (!result.existing) ctx.waitUntil(notifyOwner(env, orderMessage(order, result, new URL(request.url).origin)));
 
   return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token });
 }
@@ -184,6 +186,16 @@ const routes = {
 export default {
   async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
+
+    if (pathname.startsWith('/admin/')) {
+      if (request.method !== 'GET') return error(405, 'method_not_allowed');
+      if (!checkAdminAuth(request, env)) return authChallenge();
+      if (pathname === '/admin/orders') return listOrders(env);
+      const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
+      if (m) return orderDetail(env, m[1]);
+      return error(404, 'not_found');
+    }
+
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
 
     const route = routes[pathname];
