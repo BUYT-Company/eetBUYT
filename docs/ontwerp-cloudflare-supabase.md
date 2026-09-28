@@ -189,8 +189,8 @@ Omdat de gewichten "ca." zijn, kun je vooraf geen definitief bedrag afrekenen. D
 | `MOLLIE_API_KEY` | Worker-geheim | eigenaar (eerst `test_`-sleutel) |
 | `TURNSTILE_SECRET` | Worker-geheim | eigenaar |
 | `TURNSTILE_SITEKEY` | staat openbaar in de HTML | eigenaar levert, ik zet hem erin |
-| `NOTIFY_*` (afhankelijk van e-mailprovider) | Worker-geheim | eigenaar (na beslissing 2) |
-| `OWNER_EMAIL` | Worker-variabele | eigenaar |
+| `PUSHOVER_TOKEN`, `PUSHOVER_USER_KEY` | Worker-geheim | eigenaar (pushover.net, beslissing genomen 28 sept 2026) |
+| `OWNER_EMAIL` | Worker-variabele (in `wrangler.jsonc`, niet geheim) | eigenaar |
 
 Lokaal testen gebeurt met een `.dev.vars`-bestand dat in `.gitignore` staat. Sleutels worden nooit in het gesprek of in commits gezet.
 

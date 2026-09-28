@@ -1,16 +1,21 @@
-// Melding naar de eigenaar. Provider-onafhankelijk: de e-mailprovider is nog niet gekozen (beslissing 2).
-// Zolang NOTIFY_WEBHOOK_URL of OWNER_EMAIL ontbreekt gebeurt er niets; de bestelling staat dan alleen in Supabase.
-// Faalt nooit hardop: een mislukte melding mag een bestelling niet laten mislukken. Geen persoonsgegevens in logboeken.
-export async function notifyOwner(env, { subject, text }) {
-  if (!env.NOTIFY_WEBHOOK_URL || !env.OWNER_EMAIL) return { sent: false };
+// Pushmelding naar de eigenaar via Pushover (pushover.net). Kort bericht, geen volledige
+// bestelgegevens erin (dat blijft in Supabase); een link opent direct het Supabase-dashboard.
+// Zolang PUSHOVER_TOKEN of PUSHOVER_USER_KEY ontbreekt gebeurt er niets; de bestelling staat
+// dan alleen in Supabase. Faalt nooit hardop: een mislukte melding mag een bestelling niet laten
+// mislukken. Geen persoonsgegevens in logboeken.
+export async function notifyOwner(env, { title, message, url, urlTitle }) {
+  if (!env.PUSHOVER_TOKEN || !env.PUSHOVER_USER_KEY) return { sent: false };
   try {
-    const headers = { 'Content-Type': 'application/json' };
-    if (env.NOTIFY_WEBHOOK_TOKEN) headers.Authorization = `Bearer ${env.NOTIFY_WEBHOOK_TOKEN}`;
-    const res = await fetch(env.NOTIFY_WEBHOOK_URL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ to: env.OWNER_EMAIL, subject, text })
+    const body = new URLSearchParams({
+      token: env.PUSHOVER_TOKEN,
+      user: env.PUSHOVER_USER_KEY,
+      title,
+      message
     });
+    if (url) body.set('url', url);
+    if (urlTitle) body.set('url_title', urlTitle);
+
+    const res = await fetch('https://api.pushover.net/1/messages.json', { method: 'POST', body });
     if (!res.ok) console.error('notify_failed', res.status);
     return { sent: res.ok };
   } catch (_) {

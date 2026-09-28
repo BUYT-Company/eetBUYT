@@ -50,25 +50,27 @@ async function readBody(request) {
 
 const turnstileToken = (data) => data.turnstile ?? data['cf-turnstile-response'];
 
+// Opent het Supabase-dashboard (project buyt) op de tabel met bestellingen. Geen geheim:
+// het projectadres staat toch al in elke API-aanroep die deze Worker doet.
+const SUPABASE_DASHBOARD_URL = 'https://supabase.com/dashboard/project/hfaaufsdonsitjfwzvrk/editor';
+
+const formatDelivery = (dateStr, window) => {
+  const d = new Date(`${dateStr}T00:00:00`);
+  const label = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+  return `${label}, ${window.replace('-', '–')} uur`;
+};
+
+// Kort en scanbaar: alleen genoeg om te weten dát er iets is en of het druk wordt. De volledige
+// bestelling (adres, telefoon, opmerking) staat in Supabase, niet in de pushmelding zelf.
 function orderMessage(order, result) {
   const c = order.customer;
-  const lines = order.lines.map((l) => `${l.qty}x ${l.name}${l.pack ? ', ' + l.pack : ''} (${l.price_label})`).join('\n');
-  const total = order.has_unpriced && order.total_estimate_cents === 0 ? 'Volgt' : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
+  const items = order.lines.map((l) => `${l.qty}x ${l.name}`).join(', ');
+  const total = order.has_unpriced && order.total_estimate_cents === 0 ? 'volgt' : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
   return {
-    subject: `Nieuwe bestelaanvraag BUYT-${result.order_number}`,
-    text: [
-      `Bestelaanvraag BUYT-${result.order_number}`,
-      `Bezorgmoment: ${order.delivery_date} ${order.delivery_window}`,
-      '',
-      lines,
-      `Totaal (indicatief): ${total}${order.has_unpriced ? ' (prijs volgt voor sommige producten)' : ''}`,
-      '',
-      c.customer_name,
-      c.email,
-      c.phone,
-      `${c.street}, ${c.postcode} ${c.city}`,
-      c.note ? `Opmerking: ${c.note}` : ''
-    ].filter((line, i, all) => line !== '' || all[i - 1] !== '').join('\n')
+    title: `Nieuwe bestelling BUYT-${result.order_number}`,
+    message: `${c.customer_name} · ${c.city}\n${items} — ${total}\n${formatDelivery(order.delivery_date, order.delivery_window)}`,
+    url: SUPABASE_DASHBOARD_URL,
+    urlTitle: 'Bekijk in Supabase'
   };
 }
 
@@ -128,8 +130,10 @@ async function handleRequest(request, env, ctx) {
 
   const v = checked.value;
   ctx.waitUntil(notifyOwner(env, {
-    subject: `Nieuwe ${v.type === 'zakelijk' ? 'zakelijke aanvraag' : 'vraag'} via eetbuyt.nl`,
-    text: [v.name, v.email, `Soort: ${v.type}`, '', v.message].join('\n')
+    title: `Nieuwe ${v.type === 'zakelijk' ? 'zakelijke aanvraag' : 'vraag'}`,
+    message: `${v.name} · ${v.email}\n${v.message.slice(0, 200)}`,
+    url: SUPABASE_DASHBOARD_URL,
+    urlTitle: 'Bekijk in Supabase'
   }));
 
   return wantsRedirect ? redirect(request, '/bedankt.html?s=aanvraag') : json(200, { ok: true });

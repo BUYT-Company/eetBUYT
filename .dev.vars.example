@@ -1,10 +1,9 @@
 # Kopieer naar .dev.vars (staat in .gitignore) en vul lokaal in. Zet nooit echte waarden in dit voorbeeldbestand.
-SUPABASE_URL=
+# SUPABASE_URL en OWNER_EMAIL staan als gewone (niet-geheime) vars al in wrangler.jsonc.
 SUPABASE_SERVICE_ROLE_KEY=
 TURNSTILE_SECRET=
-OWNER_EMAIL=
-# Melding naar de eigenaar (provider nog niet gekozen; zonder deze twee gebeurt er niets):
-NOTIFY_WEBHOOK_URL=
-NOTIFY_WEBHOOK_TOKEN=
+# Pushmelding naar de eigenaar via Pushover (pushover.net); zonder deze twee gebeurt er niets:
+PUSHOVER_TOKEN=
+PUSHOVER_USER_KEY=
 # Fase 2:
 # MOLLIE_API_KEY=
