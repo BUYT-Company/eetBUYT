@@ -87,7 +87,8 @@ async function handleOrder(request, env, ctx) {
     result = await rpc(env, 'create_order', { payload: order });
   } catch (e) {
     if (e instanceof SupabaseError && e.detail?.message === 'rate_limited') return error(429, 'rate_limited');
-    console.error('create_order_failed', e instanceof SupabaseError ? e.status : 'unknown');
+    // Tijdelijk uitgebreide log om de 500 te doorgronden; geen persoonsgegevens of sleutels hierin.
+    console.error('create_order_failed', e instanceof SupabaseError ? e.status : 'unknown', e.message, e instanceof SupabaseError ? JSON.stringify(e.detail) : String(e));
     return error(500, 'server_error');
   }
 
