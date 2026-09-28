@@ -6,7 +6,7 @@ import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
 import { upcomingDates } from './lib/delivery.js';
 import { listOrders, orderDetail } from './lib/admin.js';
-import { isLoggedIn, handleLogin, handleLogout, redirectToLogin } from './lib/adminAuth.js';
+import { isLoggedIn, handleLogin, handleLogout, redirectToLogin, setup2fa } from './lib/adminAuth.js';
 
 const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004 (daar is het de echte grens)
 
@@ -196,6 +196,7 @@ export default {
       if (request.method !== 'GET') return error(405, 'method_not_allowed');
       if (!(await isLoggedIn(request, env))) return redirectToLogin(pathname);
       if (pathname === '/admin/orders') return listOrders(env);
+      if (pathname === '/admin/setup-2fa') return setup2fa();
       const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
       if (m) return orderDetail(env, m[1]);
       return error(404, 'not_found');

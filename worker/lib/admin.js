@@ -82,7 +82,7 @@ export async function listOrders(env) {
 
   return page('Bestellingen', `
     <h1>Bestellingen</h1>
-    <p class="empty">Laatste ${orders.length} bestellingen. Status wijzigen doe je nog in <a href="https://supabase.com/dashboard/project/hfaaufsdonsitjfwzvrk/editor" target="_blank" rel="noopener">Supabase</a>.</p>
+    <p class="empty">Laatste ${orders.length} bestellingen. Status wijzigen doe je nog in <a href="https://supabase.com/dashboard/project/hfaaufsdonsitjfwzvrk/editor" target="_blank" rel="noopener">Supabase</a>. <a href="/admin/setup-2fa">2FA instellen</a></p>
     ${orders.length ? `<table><thead><tr><th>Bestelling</th><th>Klant</th><th>Bezorgmoment</th><th>Totaal</th><th>Status</th><th>Geplaatst</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="empty">Nog geen bestellingen.</p>'}
   `);
 }
