@@ -135,6 +135,59 @@ Team BUYT`;
   return { to: c.email, subject, html, text };
 }
 
+// Interne mail naar de eigenaar met de volledige bestelgegevens (naast de korte pushmelding via
+// Pushover), zodat een bestelling ook terug te vinden is in de mailbox van orders@eetbuyt.nl —
+// zoals bij de meeste webshops naast het beheerscherm.
+const OWNER_ORDER_EMAIL = 'orders@eetbuyt.nl';
+
+function orderInternalEmail(order, result, origin) {
+  const c = order.customer;
+  const safeName = escapeHtml(c.customer_name);
+  const itemsHtml = order.lines.map((l) => `<li>${l.qty}× ${l.name}${l.pack ? ` (${l.pack})` : ''} — ${l.price_label}</li>`).join('');
+  const itemsText = order.lines.map((l) => `- ${l.qty}x ${l.name}${l.pack ? ` (${l.pack})` : ''} — ${l.price_label}`).join('\n');
+  const total = order.has_unpriced && order.total_estimate_cents === 0
+    ? 'volgt (prijs op gewicht)'
+    : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
+  const delivery = formatDelivery(order.delivery_date, order.delivery_window);
+  const adminUrl = `${origin}/admin/orders/${result.order_number}`;
+  const noteHtml = c.note ? `<p><strong>Opmerking:</strong><br>${escapeHtml(c.note).replace(/\n/g, '<br>')}</p>` : '';
+  const noteText = c.note ? `\nOpmerking:\n${c.note}\n` : '';
+  const subject = `Nieuwe bestelling BUYT-${result.order_number} — ${c.customer_name.replace(/[\r\n]/g, ' ').trim()}`;
+
+  const html = `<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<body style="font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;max-width:32rem;margin:0 auto;padding:2rem 1rem;line-height:1.5">
+<h1 style="font-size:1.25rem">Nieuwe bestelling BUYT-${result.order_number}</h1>
+<p><strong>Klant:</strong> ${safeName}<br>
+<strong>E-mail:</strong> ${escapeHtml(c.email)}<br>
+<strong>Telefoon:</strong> ${escapeHtml(c.phone)}<br>
+<strong>Adres:</strong> ${escapeHtml(c.street)}, ${escapeHtml(c.postcode)} ${escapeHtml(c.city)}</p>
+<p><strong>Bezorgmoment:</strong> ${delivery}</p>
+<p><strong>Producten:</strong></p>
+<ul>${itemsHtml}</ul>
+<p><strong>Geschat bedrag:</strong> ${total}</p>
+${noteHtml}
+<p><a href="${adminUrl}">Bekijk in het beheerscherm</a></p>
+</body></html>`;
+
+  const text = `Nieuwe bestelling BUYT-${result.order_number}
+
+Klant: ${c.customer_name}
+E-mail: ${c.email}
+Telefoon: ${c.phone}
+Adres: ${c.street}, ${c.postcode} ${c.city}
+
+Bezorgmoment: ${delivery}
+
+Producten:
+${itemsText}
+
+Geschat bedrag: ${total}
+${noteText}
+Bekijk in het beheerscherm: ${adminUrl}`;
+
+  return { to: OWNER_ORDER_EMAIL, subject, html, text };
+}
+
 async function handleOrder(request, env, ctx) {
   const body = await readBody(request);
   if (body.tooLarge) return error(413, 'invalid_input');
@@ -161,8 +214,10 @@ async function handleOrder(request, env, ctx) {
 
   // Alleen de eerste keer melden/mailen; een herhaald verzoek (dubbelklik) geeft dezelfde bestelling terug.
   if (!result.existing) {
-    ctx.waitUntil(notifyOwner(env, orderMessage(order, result, new URL(request.url).origin)));
+    const origin = new URL(request.url).origin;
+    ctx.waitUntil(notifyOwner(env, orderMessage(order, result, origin)));
     ctx.waitUntil(sendOrderConfirmation(env, orderConfirmationEmail(order, result)));
+    ctx.waitUntil(sendOrderConfirmation(env, orderInternalEmail(order, result, origin)));
   }
 
   return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token });
