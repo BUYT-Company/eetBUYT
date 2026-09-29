@@ -39,6 +39,13 @@ export function upcomingDates(now = amsterdamNow()) {
 
 // Voor de server-controle bij het plaatsen van de bestelling: onafhankelijk van de getoonde lijst,
 // zodat een geldige datum altijd geldig blijft, ook als de picker een andere lookahead gebruikt.
+// Voor weergave (pushmelding, e-mail): "do 1 okt, 17:00–19:00 uur".
+export function formatDelivery(dateStr, window) {
+  const d = new Date(`${dateStr}T00:00:00`);
+  const label = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+  return `${label}, ${window.replace('-', '–')} uur`;
+}
+
 export function isValidSlot(dateStr, window, now = amsterdamNow()) {
   if (typeof dateStr !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
   const [y, m, day] = dateStr.split('-').map(Number);

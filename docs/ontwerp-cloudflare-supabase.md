@@ -302,15 +302,14 @@ Deze punten heb ik in de documentatie gezien maar niet zelf in de praktijk getes
   - Beide verzonden vanaf het subdomein **`mail.eetbuyt.nl`** (DNS bij TransIP, apart van de bestaande zakelijke e-mail op `eetbuyt.nl` zelf — zie beslissing in dit hoofdstuk), domein geverifieerd in Resend (DKIM/SPF/DMARC), Ierland-regio (eu-west-1). `reply_to` staat op `orders@eetbuyt.nl` zodat een antwoord van de klant in de echte mailbox belandt.
   - Zonder `RESEND_API_KEY` gebeurt er niets (zelfde patroon als Pushover).
   - **Nog te doen:** styling van de e-mails (nu kale HTML, geen huisstijl/logo) — bewust uitgesteld tot na de functionele test.
-  - **Losstaand probleem gevonden (nog niet opgelost):** de bestaande mailbox `orders@eetbuyt.nl` (TransIP) geeft een SMTP-authenticatiefout (`535 5.7.0 authentication rejected` op `smtp.transip.email:465`) bij het **versturen** vanuit Outlook. Ontvangen werkt wel (de interne Resend-mail komt aan). Dit staat los van Resend/Cloudflare en moet de eigenaar zelf oplossen bij TransIP (wachtwoord/gebruikersnaam van de mailbox controleren).
+  - **Losstaand probleem gevonden tijdens het testen, inmiddels opgelost door de eigenaar (29 sept 2026):** de bestaande mailbox `orders@eetbuyt.nl` (TransIP) gaf een SMTP-authenticatiefout (`535 5.7.0 authentication rejected` op `smtp.transip.email:465`) bij het versturen vanuit Outlook. Stond los van Resend/Cloudflare.
 
 **Nog open:**
-1. Testdata opruimen in Supabase (een paar testbestellingen uit de bouwfase, inclusief de nieuwste testbestellingen van de Resend-test).
-2. Kleinere testplan-punten (hoofdstuk 13): zakelijke aanvraag zonder JavaScript, en gedrag bij een tijdelijk onbereikbare Supabase.
-3. Styling van de bevestigings- en interne mail (huisstijl/logo).
-4. SMTP-probleem bij `orders@eetbuyt.nl` (TransIP-mailbox, zie hierboven) — eigenaar lost dit zelf op.
-5. Fase 2 (online betalen, Mollie) en fase 3 (producten/voorraad/teller): nog niet begonnen.
-6. Bij livegang: Cloudflare Access met pad-policy instellen op `/admin/*` en dan wachtwoord/2FA daar uitzetten (zie §16).
+1. **Styling van de bevestigings- en interne mail** (huisstijl/logo) — eerstvolgende taak.
+2. Testdata opruimen in Supabase (een paar testbestellingen uit de bouwfase, inclusief de nieuwste testbestellingen van de Resend-test).
+3. Kleinere testplan-punten (hoofdstuk 13): zakelijke aanvraag zonder JavaScript, en gedrag bij een tijdelijk onbereikbare Supabase.
+4. Fase 2 (online betalen, Mollie) en fase 3 (producten/voorraad/teller): nog niet begonnen.
+5. Bij livegang: Cloudflare Access met pad-policy instellen op `/admin/*` en dan wachtwoord/2FA daar uitzetten (zie §16).
 
 Plak dit als eerste bericht in een nieuwe chat:
 
