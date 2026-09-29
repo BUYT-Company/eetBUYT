@@ -4,6 +4,7 @@ import { validateOrder, validateRequest, formatEuro } from './lib/validate.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
+import { sendOrderConfirmation } from './lib/resend.js';
 import { upcomingDates } from './lib/delivery.js';
 import { listOrders, orderDetail } from './lib/admin.js';
 import { currentUserName, handleLogin, handleLogout, redirectToLogin, setup2fa } from './lib/adminAuth.js';
@@ -76,6 +77,64 @@ function orderMessage(order, result, origin) {
   };
 }
 
+// Bevestigingsmail aan de klant: kort en feitelijk (wat besteld, bezorgmoment, geschat bedrag).
+// Bij een indicatief bedrag ("ca.") wordt uitgelegd dat het definitieve bedrag na het wegen volgt
+// (zie ontwerp §7, stroom C) — geen valse belofte van een vast bedrag.
+// Alleen nodig voor de HTML-mail: klantnaam komt van de klant en mag geen opmaak kunnen
+// inbreken in de e-mail. Productnaam/verpakking komen uit de eigen catalogus, niet van de klant.
+const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function orderConfirmationEmail(order, result) {
+  const c = order.customer;
+  const safeName = escapeHtml(c.customer_name);
+  const itemsHtml = order.lines.map((l) => `<li>${l.qty}× ${l.name}${l.pack ? ` (${l.pack})` : ''}</li>`).join('');
+  const itemsText = order.lines.map((l) => `- ${l.qty}x ${l.name}${l.pack ? ` (${l.pack})` : ''}`).join('\n');
+  const total = order.has_unpriced && order.total_estimate_cents === 0
+    ? 'we laten je het bedrag weten na het wegen'
+    : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
+  const delivery = formatDelivery(order.delivery_date, order.delivery_window);
+  // Regeleindes eruit: de naam komt in de e-mail-subject terecht en mag daar geen headers kunnen injecteren.
+  const firstName = c.customer_name.replace(/[\r\n]/g, ' ').trim().split(' ')[0];
+  const subject = `Bedankt voor je bestelling, ${firstName}! — BUYT-${result.order_number}`;
+  const indicativeNote = order.is_indicative
+    ? '<p style="color:#555;font-size:0.9rem">Dit bedrag is een schatting, want het gewicht per verpakking varieert. We nemen contact met je op na het wegen.</p>'
+    : '';
+  const indicativeNoteText = order.is_indicative
+    ? '\nDit bedrag is een schatting, want het gewicht per verpakking varieert. We nemen contact met je op na het wegen.\n'
+    : '';
+
+  const html = `<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<body style="font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;max-width:32rem;margin:0 auto;padding:2rem 1rem;line-height:1.5">
+<h1 style="font-size:1.25rem">Bedankt voor je bestelling, ${c.customer_name}!</h1>
+<p>We hebben je bestelling <strong>BUYT-${result.order_number}</strong> ontvangen.</p>
+<p><strong>Bezorgmoment:</strong> ${delivery}</p>
+<p><strong>Wat je besteld hebt:</strong></p>
+<ul>${itemsHtml}</ul>
+<p><strong>Geschat bedrag:</strong> ${total}</p>
+${indicativeNote}
+<p>Heb je een vraag over je bestelling? Antwoord gerust op deze e-mail.</p>
+<p>Tot snel,<br>Team BUYT</p>
+</body></html>`;
+
+  const text = `Bedankt voor je bestelling, ${c.customer_name}!
+
+We hebben je bestelling BUYT-${result.order_number} ontvangen.
+
+Bezorgmoment: ${delivery}
+
+Wat je besteld hebt:
+${itemsText}
+
+Geschat bedrag: ${total}
+${indicativeNoteText}
+Heb je een vraag over je bestelling? Antwoord gerust op deze e-mail.
+
+Tot snel,
+Team BUYT`;
+
+  return { to: c.email, subject, html, text };
+}
+
 async function handleOrder(request, env, ctx) {
   const body = await readBody(request);
   if (body.tooLarge) return error(413, 'invalid_input');
@@ -100,8 +159,11 @@ async function handleOrder(request, env, ctx) {
     return error(500, 'server_error');
   }
 
-  // Alleen de eerste keer melden; een herhaald verzoek (dubbelklik) geeft dezelfde bestelling terug.
-  if (!result.existing) ctx.waitUntil(notifyOwner(env, orderMessage(order, result, new URL(request.url).origin)));
+  // Alleen de eerste keer melden/mailen; een herhaald verzoek (dubbelklik) geeft dezelfde bestelling terug.
+  if (!result.existing) {
+    ctx.waitUntil(notifyOwner(env, orderMessage(order, result, new URL(request.url).origin)));
+    ctx.waitUntil(sendOrderConfirmation(env, orderConfirmationEmail(order, result)));
+  }
 
   return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token });
 }

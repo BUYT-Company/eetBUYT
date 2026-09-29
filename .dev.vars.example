@@ -12,5 +12,8 @@ PUSHOVER_USER_KEY=
 ADMIN_ACCOUNTS=
 # Los van ieders wachtwoord: ondertekent alleen de sessiecookie. Zelf een willekeurige tekst kiezen.
 ADMIN_SESSION_SECRET=
+# Bevestigingsmail aan de klant via Resend (resend.com), verzonden vanaf mail.eetbuyt.nl;
+# zonder deze sleutel gebeurt er niets:
+RESEND_API_KEY=
 # Fase 2:
 # MOLLIE_API_KEY=

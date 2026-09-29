@@ -190,6 +190,7 @@ Omdat de gewichten "ca." zijn, kun je vooraf geen definitief bedrag afrekenen. D
 | `TURNSTILE_SECRET` | Worker-geheim | eigenaar |
 | `TURNSTILE_SITEKEY` | staat openbaar in de HTML | eigenaar levert, ik zet hem erin |
 | `PUSHOVER_TOKEN`, `PUSHOVER_USER_KEY` | Worker-geheim | eigenaar (pushover.net, beslissing genomen 28 sept 2026) |
+| `RESEND_API_KEY` | Worker-geheim | eigenaar (resend.com, beslissing genomen 28 sept 2026; verzendt vanaf subdomein `mail.eetbuyt.nl`, DNS bij TransIP, zie §17) |
 | `ADMIN_ACCOUNTS` (JSON-lijst, één account per persoon), `ADMIN_SESSION_SECRET` | Worker-geheim | eigenaar (voor `/admin/orders`, zie hieronder; elke 2FA-sleutel via `/admin/setup-2fa`, wachtwoorden kiest de eigenaar en deelt die rechtstreeks met de mede-oprichters) |
 | `OWNER_EMAIL` | Worker-variabele (in `wrangler.jsonc`, niet geheim) | eigenaar |
 
