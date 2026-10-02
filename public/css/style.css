@@ -234,7 +234,7 @@ em {
 
 /* Ticker */
 .marquee { overflow: hidden; margin-top: 28px; padding: 18px 0; border-block: 1px solid var(--hair); }
-.marquee__track { display: flex; align-items: center; gap: 40px; width: max-content; animation: marquee 44s linear infinite; }
+.marquee__track { display: flex; align-items: center; gap: 40px; width: max-content; animation: marquee 44s linear infinite reverse; }
 .marquee__track span { font: 800 1.5rem/1 var(--font-display); letter-spacing: -.03em; color: var(--ink); white-space: nowrap; }
 .marquee__icon { width: 44px; height: 27px; color: var(--coral); flex: none; }
 .marquee:hover .marquee__track { animation-play-state: paused; }
@@ -440,7 +440,7 @@ em {
 /* Bestellen */
 .section--order { margin-bottom: var(--inset); }
 .order { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(36px, 6vw, 96px); align-items: start; }
-#order-title .order-title__sub { display: block; margin-top: .3em; font-size: .42em; letter-spacing: -.01em; }
+#order-title .order-title__sub { display: block; margin-top: .15em; }
 .order__text p { font-size: 1.15rem; color: rgba(255, 248, 232, .88); }
 .order__text .order__small { font-size: .9rem; opacity: .8; }
 .order__card { background: var(--cream); color: var(--ink); border-radius: var(--radius); padding: clamp(24px, 3.5vw, 40px); }
