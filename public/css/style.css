@@ -111,18 +111,21 @@ em {
 }
 .js.force .split .c, .js.force [data-in] { opacity: 1 !important; transform: none !important; }
 
-/* Knoppen: label en pijl los van elkaar, zoals een jelly-pill */
+/* Knoppen: label en pijl vormen samen één pil die als geheel animeert */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: stretch;
-  gap: 4px;
+  gap: 0;
   padding: 0;
   border: 0;
+  border-radius: 999px;
   background: none;
   color: inherit;
   font: 700 .98rem/1 var(--font-body);
   text-decoration: none;
   cursor: pointer;
+  transition: transform .6s var(--spring), background-color .2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .btn__label, .btn__arrow {
@@ -130,22 +133,18 @@ em {
   align-items: center;
   justify-content: center;
   border: 2px solid transparent;
-  border-radius: 999px;
-  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .6s var(--spring);
 }
 .btn__label { display: inline-block; padding: .95rem 1.6rem; text-align: center; }
-.btn__arrow { min-width: 3.15rem; padding: 0; }
-.btn--primary .btn__label, .btn--primary .btn__arrow { background: var(--coral); color: var(--forest-deep); }
-.btn--dark .btn__label, .btn--dark .btn__arrow { background: var(--forest); color: var(--cream); }
-.btn--outline .btn__label { border-color: rgba(255, 248, 232, .6); color: var(--cream); }
+.btn__arrow { min-width: 2.5rem; padding: 0; }
+.btn--primary { background: var(--coral); color: var(--forest-deep); }
+.btn--dark { background: var(--forest); color: var(--cream); }
+.btn--outline .btn__label { border-radius: 999px; border-color: rgba(255, 248, 232, .6); color: var(--cream); }
 .btn--sm .btn__label { padding: .65rem 1.3rem; font-size: .92rem; }
-.btn:hover .btn__label { transform: scale(1.04); }
-.btn:hover .btn__arrow { animation: jelly .75s var(--ease-out); }
-.btn--primary:hover .btn__label, .btn--primary:hover .btn__arrow { background: var(--lime); }
-.btn--dark:hover .btn__label, .btn--dark:hover .btn__arrow { background: var(--green); }
+.btn:hover { transform: scale(1.04); }
+.btn--primary:hover { background: var(--lime); }
+.btn--dark:hover { background: var(--green); }
 .btn--outline:hover .btn__label { background: var(--cream); color: var(--forest); border-color: var(--cream); }
-.btn:active .btn__label { transform: scale(.95); }
-.btn:active .btn__arrow { animation: none; transform: scale(.88); }
+.btn:active { transform: scale(.95); }
 .btn:hover .ch { animation: hop .55s var(--ease-out) both; animation-delay: calc(var(--i) * 18ms); }
 .btn:focus-visible { outline-offset: 5px; border-radius: 999px; }
 
