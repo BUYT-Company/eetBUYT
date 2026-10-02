@@ -288,12 +288,12 @@ em {
 /* Prijs per kilo, verpakking en indicatieprijs */
 .pricing { display: grid; gap: .55rem; margin-bottom: .9rem; }
 .pricing p { margin: 0; }
-.pricing__kg { display: flex; align-items: baseline; gap: .4rem; }
-.pricing__kg strong { font: 800 2.15rem/1 var(--font-display); letter-spacing: -.045em; color: var(--ink); white-space: nowrap; }
-.pricing__kg span, .pricing__kg .approx { font-weight: 700; font-size: .95rem; color: var(--muted); }
-.pricing__pack { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: .6rem .9rem; border: 1.5px solid var(--hair); border-radius: 12px; font-size: .92rem; font-weight: 600; line-height: 1.3; }
+.pricing__pack { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: .8rem 1.1rem; border: 1.5px solid var(--hair); border-radius: 14px; font-size: .95rem; font-weight: 700; line-height: 1.3; }
 .pricing__est { flex: none; white-space: nowrap; color: var(--ink); }
-.pricing__est b { font: 800 1.05rem/1 var(--font-display); letter-spacing: -.02em; }
+.pricing__est b { font: 800 2.15rem/1 var(--font-display); letter-spacing: -.045em; }
+.pricing__kg { display: flex; align-items: baseline; gap: .35rem; font-weight: 600; font-size: .85rem; color: var(--muted); }
+.pricing__kg strong { font: 700 .85rem/1 var(--font-body); color: var(--muted); white-space: nowrap; }
+.pricing__kg span, .pricing__kg .approx { font-weight: 600; font-size: .85rem; color: var(--muted); }
 
 /* Ingrediënten als een klein etiket */
 .ingr { margin-bottom: 1rem; padding: .9rem 1rem 1rem; border-radius: 16px; background: var(--sand); }
