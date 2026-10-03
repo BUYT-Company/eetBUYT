@@ -233,10 +233,10 @@ em {
 
 
 /* Ticker */
-.marquee { overflow: hidden; margin-top: 28px; padding: 18px 0; border-block: 1px solid var(--hair); }
+.marquee { overflow: hidden; margin-top: 28px; padding: 20px 0; background: var(--coral); }
 .marquee__track { display: flex; align-items: center; gap: 40px; width: max-content; animation: marquee 44s linear infinite reverse; }
-.marquee__track span { font: 800 1.5rem/1 var(--font-display); letter-spacing: -.03em; color: var(--ink); white-space: nowrap; }
-.marquee__icon { width: 44px; height: 27px; color: var(--coral); flex: none; }
+.marquee__track span { font: 800 1.5rem/1 var(--font-display); letter-spacing: -.03em; color: #fff; white-space: nowrap; }
+.marquee__icon { width: 44px; height: 27px; color: #fff; flex: none; }
 .marquee:hover .marquee__track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
