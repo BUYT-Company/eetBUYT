@@ -542,6 +542,7 @@
     <section class="section section--forest section--order" id="vragen" aria-labelledby="vragen-title">
       <div class="wrap order">
         <div class="order__text reveal">
+          <svg class="order__art" viewBox="0 0 130 80" aria-hidden="true" focusable="false"><use href="#goose-fly"/></svg>
           <p class="kicker kicker--light">Zakelijk &amp; Thuiskok</p>
           <h2 id="vragen-title">Heb je <span class="nowrap"><em>vragen?</em></span> Stel ze <em>hier.</em></h2>
           <p>Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
@@ -569,7 +570,7 @@
               <p class="field__hint" id="f-bericht-hint">Bijvoorbeeld: welke producten, hoeveel en wanneer je ze wilt hebben.</p>
             </div>
             <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
-            <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+            <button class="btn btn--primary btn--block" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
             <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bericht is verstuurd. We nemen contact met je op.</p>
             <p class="form__msg form__msg--err" role="alert" hidden>Je bericht is niet verstuurd. Controleer je verbinding en probeer het opnieuw.</p>
           </form>
@@ -579,23 +580,24 @@
     </section>
 
     <section class="section newsletter" aria-labelledby="newsletter-title">
-      <div class="wrap">
-        <div class="newsletter__card reveal">
-          <svg class="newsletter__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <h2 id="newsletter-title">Blijf op de hoogte!</h2>
-          <form name="nieuwsbrief" method="POST" action="/api/newsletter" class="newsletter__form">
-            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-            <div class="newsletter__row">
-              <label class="sr-only" for="f-nieuwsbrief">E-mailadres</label>
-              <input id="f-nieuwsbrief" name="email" type="email" placeholder="Voer je e-mailadres in" autocomplete="email" required>
-              <button class="btn btn--dark" type="submit"><span class="btn__label">Verzenden</span></button>
-            </div>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
-            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven.</p>
-            <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
-          </form>
+      <div class="newsletter__panel reveal">
+        <div class="newsletter__copy">
+          <svg class="newsletter__icon" viewBox="0 0 130 80" aria-hidden="true" focusable="false"><use href="#goose-fly"/></svg>
+          <p class="kicker">Nieuwsbrief</p>
+          <h2 id="newsletter-title">Blijf <em>op de hoogte!</em></h2>
           <p class="newsletter__text">Meer weten over nieuwe producten en het verhaal van de gans? Schrijf je in voor onze nieuwsbrief en mis niets.</p>
         </div>
+        <form name="nieuwsbrief" method="POST" action="/api/newsletter" class="newsletter__form">
+          <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="newsletter__row">
+            <label class="sr-only" for="f-nieuwsbrief">E-mailadres</label>
+            <input id="f-nieuwsbrief" name="email" type="email" placeholder="Voer je e-mailadres in" autocomplete="email" required>
+            <button class="btn btn--dark" type="submit"><span class="btn__label">Verzenden</span></button>
+          </div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
+          <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven.</p>
+          <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
+        </form>
       </div>
     </section>
   </main>
@@ -613,7 +615,7 @@
           <li><a href="#producten">Producten</a></li>
           <li><a href="afrekenen.html">Winkelmandje</a></li>
           <li><a href="#zakelijk">Zakelijk</a></li>
-          <li><a href="#verhaal">Ons verhaal</a></li>
+          <li><a href="#verhaal">Onze missie</a></li>
           <li><a href="#over-ons">Over ons</a></li>
           <li><a href="#faq">Veelgestelde vragen</a></li>
         </ul>
@@ -621,8 +623,37 @@
     </div>
     <p class="footer__mark" aria-hidden="true" data-mark>BUYT</p>
     <div class="wrap footer__bottom">
-      <p>&copy; 2026 BUYT. Daar word je wild van.</p>
+      <p>&copy; 2026 BUYT. Daar word je wild van. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- Pop-up nieuwsbrief. Een native dialog: focus blijft erin en Escape sluit hem. main.js toont hem na 25 seconden of halverwege de pagina. -->
+  <dialog class="popup" id="nieuwsbrief-popup" aria-labelledby="popup-title" aria-describedby="popup-text">
+    <div class="popup__card">
+      <div class="popup__top" aria-hidden="true">
+        <svg viewBox="0 0 130 80" focusable="false"><use href="#goose-fly"/></svg>
+      </div>
+      <button class="popup__close" type="button" data-popup-close aria-label="Pop-up sluiten">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="popup__body">
+        <p class="kicker">Nieuwsbrief</p>
+        <h2 id="popup-title" tabindex="-1">Schrijf je in voor de <em>nieuwsbrief</em></h2>
+        <p id="popup-text">Nieuwe producten en het verhaal van de gans, rechtstreeks in je inbox.</p>
+        <form name="nieuwsbrief-popup" method="POST" action="/api/newsletter" class="popup__form">
+          <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="field">
+            <label for="f-popup-email">E-mailadres</label>
+            <input id="f-popup-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="popup__turnstile" data-popup-turnstile></div>
+          <button class="btn btn--primary btn--block" type="submit"><span class="btn__label">Inschrijven</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+          <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven.</p>
+          <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
+        </form>
+        <button class="popup__later" type="button" data-popup-close>Nu niet</button>
+      </div>
+    </div>
+  </dialog>
 </body>
 </html>
