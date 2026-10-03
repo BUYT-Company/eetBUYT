@@ -229,6 +229,7 @@
     scroller.addEventListener('scroll', updateArrows, { passive: true });
     window.addEventListener('resize', updateArrows);
     updateArrows();
+    if (window.matchMedia('(min-width: 900px)').matches && scroller.scrollLeft < 4) scroller.scrollLeft = stepSize();
 
     if (finePointer) {
       let down = false, startX = 0, startLeft = 0, moved = 0;
