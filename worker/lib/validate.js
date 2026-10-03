@@ -11,6 +11,7 @@ const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g;
 const clean = (value, max) => (typeof value === 'string' ? value.replace(CONTROL, '').trim() : '').slice(0, max);
 const fail = () => ({ ok: false });
 
+export const isValidEmail = (value) => typeof value === 'string' && value.length <= 200 && EMAIL.test(value);
 export const formatEuro = (cents) => '€ ' + (cents / 100).toFixed(2).replace('.', ',');
 const priceLabel = (p) => (!Number.isInteger(p.priceCents) ? 'Prijs op gewicht' : (p.priceApprox ? 'ca. ' : '') + formatEuro(p.priceCents));
 

@@ -389,5 +389,31 @@
     });
   }
 
+  const news = $('form[name="nieuwsbrief"]');
+  if (news) {
+    const card = news.closest('.newsletter__card');
+    const ok = $('.form__msg--ok', card);
+    const err = $('.form__msg--err', card);
+    news.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.hidden = true;
+      err.hidden = true;
+      try {
+        const data = Object.fromEntries(new FormData(news));
+        const res = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, turnstile: data['cf-turnstile-response'] })
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        news.reset();
+        ok.hidden = false;
+      } catch (_) {
+        err.hidden = false;
+      }
+      if (window.turnstile) window.turnstile.reset($('.cf-turnstile', news));
+    });
+  }
+
   scrollTasks.forEach((fn) => fn());
 })();

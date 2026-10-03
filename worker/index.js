@@ -1,6 +1,6 @@
 // Worker voor eetbuyt.nl: alleen /api/*. Alle andere paden komen uit de statische bestanden (env.ASSETS).
 // Fase 1: bestelaanvragen (POST /api/order) en zakelijke aanvragen (POST /api/request) vastleggen in Supabase.
-import { validateOrder, validateRequest, formatEuro } from './lib/validate.js';
+import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/validate.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
@@ -142,6 +142,32 @@ async function handleRequest(request, env, ctx) {
   return wantsRedirect ? redirect(request, '/bedankt.html?s=aanvraag') : json(200, { ok: true });
 }
 
+async function handleNewsletter(request, env) {
+  const body = await readBody(request);
+  if (body.tooLarge || body.bad || !body.data || typeof body.data !== 'object') return error(400, 'invalid_input');
+  const data = body.data;
+
+  if (data['bot-field']) return error(400, 'invalid_input');
+  if (!(await verifyTurnstile(env, turnstileToken(data), request.headers.get('CF-Connecting-IP')))) {
+    return error(400, 'turnstile_failed');
+  }
+
+  const email = typeof data.email === 'string' ? data.email.trim() : '';
+  if (!isValidEmail(email)) return error(400, 'invalid_input');
+
+  try {
+    await insert(env, 'newsletter_signups', { email, source: 'website' });
+  } catch (e) {
+    // 409 = dit adres stond er al in: voor de bezoeker is dat hetzelfde als net ingeschreven.
+    if (!(e instanceof SupabaseError && e.status === 409)) {
+      console.error('newsletter_failed', e instanceof SupabaseError ? e.status : 'unknown');
+      return error(500, 'server_error');
+    }
+  }
+
+  return json(200, { ok: true });
+}
+
 // Openbare, alleen-lezen lijst met de eerstvolgende boekbare bezorgmomenten en hun vrije plekken.
 // Geen persoonsgegevens, dus geen Turnstile/honeypot nodig voor dit ene, informatieve endpoint.
 async function handleDeliverySlots(request, env) {
@@ -181,6 +207,7 @@ async function handleDeliverySlots(request, env) {
 const routes = {
   '/api/order': { POST: handleOrder },
   '/api/request': { POST: handleRequest },
+  '/api/newsletter': { POST: handleNewsletter },
   '/api/delivery-slots': { GET: handleDeliverySlots }
 };
 

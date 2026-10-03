@@ -242,41 +242,14 @@
       </div>
     </section>
 
-    <section class="section section--forest section--order" id="zakelijk" aria-labelledby="order-title">
-      <div class="wrap order">
-        <div class="order__text reveal">
-          <p class="kicker kicker--light">Zakelijk &amp; Thuiskok</p>
-          <h2 id="order-title">Zakelijk <em>bestellen</em> <span class="order-title__sub">of vragen voor thuis</span></h2>
-          <p>Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. We nemen contact met je op over je bestelling of offerte. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
-          <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
+    <section class="section section--forest zakelijk-cta" id="zakelijk" aria-labelledby="zakelijk-title">
+      <div class="wrap zakelijk-cta__inner reveal">
+        <div>
+          <p class="kicker kicker--light">Zakelijk</p>
+          <h2 id="zakelijk-title">Zakelijk <em>bestellen</em></h2>
+          <p>Ben je chef of horecaondernemer? Bestel zakelijk via onze zakelijke bestelpagina.</p>
         </div>
-        <div class="order__card reveal">
-          <form name="bestellen" method="POST" action="/api/request" class="form">
-            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-            <div class="field">
-              <label for="f-naam">Naam</label>
-              <input id="f-naam" name="naam" type="text" autocomplete="name" required>
-            </div>
-            <div class="field">
-              <label for="f-email">E-mailadres</label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required>
-            </div>
-            <fieldset class="field field--choice">
-              <legend>Ik ben</legend>
-              <label><input type="radio" name="type" value="particulier"> Particulier</label>
-              <label><input type="radio" name="type" value="zakelijk" checked> Zakelijk</label>
-            </fieldset>
-            <div class="field">
-              <label for="f-bericht">Wat heb je nodig?</label>
-              <textarea id="f-bericht" name="bericht" rows="4" aria-describedby="f-bericht-hint"></textarea>
-              <p class="field__hint" id="f-bericht-hint">Bijvoorbeeld: welke producten, hoeveel en wanneer je ze wilt hebben.</p>
-            </div>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
-            <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
-            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bericht is verstuurd. We nemen contact met je op.</p>
-            <p class="form__msg form__msg--err" role="alert" hidden>Je bericht is niet verstuurd. Controleer je verbinding en probeer het opnieuw.</p>
-          </form>
-        </div>
+        <a class="btn btn--primary" href="zakelijk-bestellen.html"><span class="btn__label">Naar zakelijk bestellen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </section>
 
@@ -551,7 +524,7 @@
           <p class="kicker">Veelgestelde vragen</p>
           <h2 id="faq-title">Vragen? <em>Stel ze gerust.</em></h2>
           <p>Heb je nu al een vraag? Stuur ons een bericht, dan komen we erop terug.</p>
-          <a class="btn btn--dark" href="#zakelijk"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--dark" href="#vragen"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
         <!-- Zodra de vragen er zijn: zet hier de accordeon terug, in <div class="faq__list">, met per vraag:
              <details class="faq__item reveal"><summary><span>Vraag</span><span class="faq__icon" aria-hidden="true"></span></summary>
@@ -559,6 +532,65 @@
         <div class="faq__soon reveal">
           <p class="faq__soon-title">De antwoorden volgen.</p>
           <p>We verzamelen de vragen die klanten het vaakst hebben. Ze komen hier te staan zodra ze er zijn.</p>
+        </div>
+      </div>
+    </section>
+    <section class="section section--forest section--order" id="vragen" aria-labelledby="vragen-title">
+      <div class="wrap order">
+        <div class="order__text reveal">
+          <p class="kicker kicker--light">Zakelijk &amp; Thuiskok</p>
+          <h2 id="vragen-title">Zakelijke <em>vragen</em> of vragen voor thuis</h2>
+          <p>Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. We nemen contact met je op over je bestelling of offerte. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
+          <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
+        </div>
+        <div class="order__card reveal">
+          <form name="bestellen" method="POST" action="/api/request" class="form">
+            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+            <div class="field">
+              <label for="f-naam">Naam</label>
+              <input id="f-naam" name="naam" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="f-email">E-mailadres</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <fieldset class="field field--choice">
+              <legend>Ik ben</legend>
+              <label><input type="radio" name="type" value="particulier"> Particulier</label>
+              <label><input type="radio" name="type" value="zakelijk" checked> Zakelijk</label>
+            </fieldset>
+            <div class="field">
+              <label for="f-bericht">Wat heb je nodig?</label>
+              <textarea id="f-bericht" name="bericht" rows="4" aria-describedby="f-bericht-hint"></textarea>
+              <p class="field__hint" id="f-bericht-hint">Bijvoorbeeld: welke producten, hoeveel en wanneer je ze wilt hebben.</p>
+            </div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
+            <button class="btn btn--primary" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bericht is verstuurd. We nemen contact met je op.</p>
+            <p class="form__msg form__msg--err" role="alert" hidden>Je bericht is niet verstuurd. Controleer je verbinding en probeer het opnieuw.</p>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section newsletter" aria-labelledby="newsletter-title">
+      <div class="wrap">
+        <div class="newsletter__card reveal">
+          <svg class="newsletter__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h2 id="newsletter-title">Blijf op de hoogte!</h2>
+          <form name="nieuwsbrief" method="POST" action="/api/newsletter" class="newsletter__form">
+            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+            <div class="newsletter__row">
+              <label class="sr-only" for="f-nieuwsbrief">E-mailadres</label>
+              <input id="f-nieuwsbrief" name="email" type="email" placeholder="Voer je e-mailadres in" autocomplete="email" required>
+              <button class="btn btn--dark" type="submit"><span class="btn__label">Verzenden</span></button>
+            </div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
+            <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven.</p>
+            <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
+          </form>
+          <p class="newsletter__text">Meer weten over nieuwe producten en het verhaal van de gans? Schrijf je in voor onze nieuwsbrief en mis niets.</p>
         </div>
       </div>
     </section>

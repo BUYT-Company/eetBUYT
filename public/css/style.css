@@ -444,7 +444,18 @@ em {
 /* Bestellen */
 .section--order { margin-bottom: var(--inset); }
 .order { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(36px, 6vw, 96px); align-items: start; }
-#order-title .order-title__sub { display: block; margin-top: .15em; }
+.zakelijk-cta__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; }
+.zakelijk-cta__inner h2 { margin: 0 0 .8rem; }
+.zakelijk-cta__inner p:not(.kicker) { color: rgba(255, 248, 232, .88); margin: 0; font-size: 1.15rem; }
+.newsletter__card { position: relative; background: var(--cream); color: var(--ink); border: 1.5px solid var(--hair); border-radius: var(--radius); padding: clamp(28px, 4vw, 56px); }
+.newsletter__icon { width: 44px; height: 44px; color: var(--ink); display: block; }
+.newsletter h2 { margin: 1rem 0 1.4rem; font-size: clamp(2rem, 3.6vw, 2.8rem); }
+.newsletter__form { display: grid; gap: 14px; max-width: 36rem; }
+.newsletter__row { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 18px; background: #fff; border: 1.5px solid var(--hair); border-radius: 999px; }
+.newsletter__row input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; color: var(--ink); padding: .7rem 0; outline: none; }
+.newsletter__row input::placeholder { color: var(--muted); }
+.newsletter__row .btn { flex: none; }
+.newsletter__text { margin: 1.4rem 0 0; color: var(--muted); max-width: 36rem; }
 .order__text p { font-size: 1.15rem; color: rgba(255, 248, 232, .88); }
 .order__text .order__small { font-size: .9rem; opacity: .8; }
 .order__card { background: var(--cream); color: var(--ink); border-radius: var(--radius); padding: clamp(24px, 3.5vw, 40px); }
