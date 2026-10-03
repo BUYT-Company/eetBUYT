@@ -89,7 +89,7 @@ em {
   padding-bottom: .08em;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q12.5 1 25 6T50 6T75 6T100 6' fill='none' stroke='%23FF6652' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .24em;
 }
-.hero em, .section--forest em {
+.hero em, .section--forest em, .zakelijk-banner em {
   color: var(--lime);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q12.5 1 25 6T50 6T75 6T100 6' fill='none' stroke='%23D8ED36' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
 }
@@ -444,9 +444,16 @@ em {
 /* Bestellen */
 .section--order { margin-bottom: var(--inset); }
 .order { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(36px, 6vw, 96px); align-items: start; }
-.zakelijk-cta__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; }
-.zakelijk-cta__inner h2 { margin: 0 0 .8rem; }
-.zakelijk-cta__inner p:not(.kicker) { color: rgba(255, 248, 232, .88); margin: 0; font-size: 1.15rem; }
+.zakelijk-banner { position: relative; isolation: isolate; overflow: hidden; margin: 0 var(--inset) clamp(64px, 8vw, 112px); border-radius: var(--panel-radius); min-height: clamp(460px, 62vh, 620px); display: flex; align-items: center; justify-content: center; text-align: center; color: var(--cream); background: var(--ink); }
+.zakelijk-banner__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.zakelijk-banner::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(18, 51, 38, .55), rgba(18, 51, 38, .82)); }
+.zakelijk-banner__content { position: relative; max-width: 60rem; padding: clamp(48px, 8vw, 96px) clamp(20px, 4vw, 48px); }
+.zakelijk-banner h2 { color: var(--cream); font-weight: 800; font-size: clamp(2.6rem, 7vw, 6rem); line-height: .95; letter-spacing: -.035em; text-transform: uppercase; margin: 0 0 1.2rem; }
+.zakelijk-banner p:not(.kicker) { color: rgba(255, 248, 232, .92); font-size: clamp(1.05rem, 1.6vw, 1.25rem); max-width: 40rem; margin: 0 auto 2rem; }
+.zakelijk-banner__actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.zakelijk-banner .kicker { margin-bottom: 1.2rem; }
+.btn--light { background: var(--cream); color: var(--ink); }
+.btn--light:hover { background: var(--lime); }
 .newsletter__card { position: relative; background: var(--cream); color: var(--ink); border: 1.5px solid var(--hair); border-radius: var(--radius); padding: clamp(28px, 4vw, 56px); }
 .newsletter__icon { width: 44px; height: 44px; color: var(--ink); display: block; }
 .newsletter h2 { margin: 1rem 0 1.4rem; font-size: clamp(2rem, 3.6vw, 2.8rem); }
