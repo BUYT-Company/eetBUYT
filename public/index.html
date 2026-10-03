@@ -626,29 +626,25 @@
   <!-- Pop-up nieuwsbrief. Een native dialog: focus blijft erin en Escape sluit hem. main.js toont hem na 25 seconden of halverwege de pagina. -->
   <dialog class="popup" id="nieuwsbrief-popup" aria-labelledby="popup-title" aria-describedby="popup-text">
     <div class="popup__card">
-      <div class="popup__top" aria-hidden="true">
-        <svg class="popup__goose" viewBox="0 0 130 80" focusable="false"><use href="#goose-fly"/></svg>
-      </div>
       <button class="popup__close" type="button" data-popup-close aria-label="Pop-up sluiten">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       </button>
-      <div class="popup__body">
-        <p class="kicker">Wilde updates</p>
-        <h2 id="popup-title" tabindex="-1">Word wild van <em>de gans</em></h2>
-        <p id="popup-text">Willekeuriger dan de Staatsloterij, en altijd over de gans: nieuwe producten en hoe we de gans een betere bestemming geven.</p>
-        <form name="nieuwsbrief-popup" method="POST" action="/api/newsletter" class="popup__form">
-          <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-          <div class="field">
-            <label for="f-popup-email">E-mailadres</label>
-            <input id="f-popup-email" name="email" type="email" autocomplete="email" required>
-          </div>
-          <div class="popup__turnstile" data-popup-turnstile></div>
-          <button class="btn btn--primary btn--block" type="submit"><span class="btn__label">Inschrijven</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
-          <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven.</p>
-          <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
-        </form>
-        <button class="popup__later" type="button" data-popup-close>Nu niet</button>
-      </div>
+      <svg class="popup__goose" viewBox="0 0 130 80" aria-hidden="true" focusable="false"><use href="#goose-fly"/></svg>
+      <p class="popup__tag">Wilde updates</p>
+      <h2 id="popup-title" class="popup__title" tabindex="-1">Word wild van de gans</h2>
+      <p id="popup-text" class="popup__text">Willekeuriger dan de Staatsloterij, en altijd over de gans: nieuwe producten en hoe we de gans een betere bestemming geven.</p>
+      <form name="nieuwsbrief-popup" method="POST" action="/api/newsletter" class="popup__form">
+        <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="popup__row">
+          <label class="sr-only" for="f-popup-email">E-mailadres</label>
+          <input id="f-popup-email" name="email" type="email" placeholder="Jouw e-mailadres" autocomplete="email" required>
+          <button class="btn btn--dark" type="submit"><span class="btn__label">Ik vlieg mee</span></button>
+        </div>
+        <div class="popup__turnstile" data-popup-turnstile></div>
+        <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven. Wild!</p>
+        <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
+      </form>
+      <button class="popup__later" type="button" data-popup-close>Nu niet</button>
     </div>
   </dialog>
 </body>
