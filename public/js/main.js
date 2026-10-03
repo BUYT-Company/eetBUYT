@@ -390,29 +390,90 @@
     });
   }
 
+  /* Nieuwsbrief: het blok op de pagina en de pop-up sturen hetzelfde naar /api/newsletter.
+     De keuze onthouden we in localStorage, zodat de pop-up niemand opnieuw lastigvalt. */
+  const NEWS_KEY = 'buyt-nieuwsbrief';
+  const newsState = () => { try { return localStorage.getItem(NEWS_KEY); } catch (_) { return null; } };
+  const rememberNews = (value) => { try { localStorage.setItem(NEWS_KEY, value); } catch (_) {} };
+
+  const subscribe = async (form, ok, err, widget) => {
+    ok.hidden = true;
+    err.hidden = true;
+    let done = false;
+    try {
+      const data = Object.fromEntries(new FormData(form));
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, turnstile: data['cf-turnstile-response'] })
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      form.reset();
+      ok.hidden = false;
+      rememberNews('ingeschreven');
+      done = true;
+    } catch (_) {
+      err.hidden = false;
+    }
+    /* Een Turnstile-token werkt maar één keer */
+    if (window.turnstile && widget) window.turnstile.reset(widget);
+    return done;
+  };
+
   const news = $('form[name="nieuwsbrief"]');
   if (news) {
-    const card = news.closest('.newsletter__card');
+    const card = news.closest('.newsletter__panel');
     const ok = $('.form__msg--ok', card);
     const err = $('.form__msg--err', card);
-    news.addEventListener('submit', async (e) => {
+    news.addEventListener('submit', (e) => {
       e.preventDefault();
-      ok.hidden = true;
-      err.hidden = true;
-      try {
-        const data = Object.fromEntries(new FormData(news));
-        const res = await fetch('/api/newsletter', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...data, turnstile: data['cf-turnstile-response'] })
-        });
-        if (!res.ok) throw new Error(String(res.status));
-        news.reset();
-        ok.hidden = false;
-      } catch (_) {
-        err.hidden = false;
-      }
-      if (window.turnstile) window.turnstile.reset($('.cf-turnstile', news));
+      subscribe(news, ok, err, $('.cf-turnstile', news));
+    });
+  }
+
+  /* Pop-up: na 25 seconden of halverwege de pagina, één keer. Niet opnieuw na sluiten of inschrijven. */
+  const popup = $('#nieuwsbrief-popup');
+  if (popup && typeof popup.showModal === 'function' && newsState() === null) {
+    const popForm = $('form', popup);
+    const popOk = $('.form__msg--ok', popup);
+    const popErr = $('.form__msg--err', popup);
+    const popTitle = $('h2', popup);
+    const box = $('[data-popup-turnstile]', popup);
+    const siteKey = $('.cf-turnstile').dataset.sitekey;
+    let widgetId = null;
+    let shown = false;
+
+    /* Turnstile laadt asynchroon en een token verloopt, dus de widget pas tonen als de pop-up opengaat */
+    const freshToken = () => {
+      if (!window.turnstile) return;
+      if (widgetId === null) widgetId = window.turnstile.render(box, { sitekey: siteKey, language: 'nl' });
+      else window.turnstile.reset(widgetId);
+    };
+
+    const open = () => {
+      /* Pas tonen als de intro klaar is, en nooit twee keer */
+      if (shown || popup.open || !root.classList.contains('is-ready')) return;
+      shown = true;
+      popup.showModal();
+      popTitle.focus();
+      freshToken();
+    };
+
+    setTimeout(open, 25000);
+    scrollTasks.push(() => {
+      if (window.scrollY + window.innerHeight > document.documentElement.scrollHeight * 0.5) open();
+    });
+
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup || e.target.closest('[data-popup-close]')) popup.close();
+    });
+    popup.addEventListener('close', () => {
+      if (newsState() === null) rememberNews('gesloten');
+    });
+    popForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const done = await subscribe(popForm, popOk, popErr, widgetId === null ? null : box);
+      if (done) setTimeout(() => popup.close(), 2200);
     });
   }
 

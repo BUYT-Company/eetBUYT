@@ -474,15 +474,34 @@ em {
 .zakelijk-banner .kicker { margin-bottom: 1.2rem; }
 .btn--light { background: var(--cream); color: var(--ink); }
 .btn--light:hover { background: var(--lime); }
-.newsletter__card { position: relative; background: var(--cream); color: var(--ink); border: 1.5px solid var(--hair); border-radius: var(--radius); padding: clamp(28px, 4vw, 56px); }
-.newsletter__icon { width: 44px; height: 44px; color: var(--ink); display: block; }
-.newsletter h2 { margin: 1rem 0 1.4rem; font-size: clamp(2rem, 3.6vw, 2.8rem); }
-.newsletter__form { display: grid; gap: 14px; max-width: 36rem; }
-.newsletter__row { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 18px; background: #fff; border: 1.5px solid var(--hair); border-radius: 999px; }
-.newsletter__row input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; color: var(--ink); padding: .7rem 0; outline: none; }
+/* Nieuwsbrief, Joy Rush-stijl. Kop, balk, Turnstile en zin staan als losse onderdelen in één kolom.
+   De balk valt tussen de twee regels van de kop; de Turnstile en de zin komen daaronder. De DOM blijft gelijk, dus het formulier verstuurt hetzelfde. */
+.newsletter__panel { position: relative; isolation: isolate; overflow: hidden; --nl-f: clamp(3rem, 14.5vw, 16rem); --nl-l: 1.2; --nl-h: 124px; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: clamp(560px, 66vw, 680px); margin-inline: var(--inset); padding: clamp(40px, 5vw, 72px) clamp(20px, 4vw, 56px); background: var(--lime); color: var(--ink); border-radius: var(--panel-radius); }
+.newsletter .newsletter__title { order: 0; width: 100%; margin: 0; font: 800 var(--nl-f)/var(--nl-l) var(--font-display); letter-spacing: -.05em; text-transform: uppercase; color: var(--green-800); text-wrap: balance; }
+.newsletter__form { display: contents; }
+.newsletter__row { order: 1; position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; width: min(100%, 680px); margin-top: calc(-1 * var(--nl-f) * var(--nl-l) - var(--nl-h) / 2); padding: 8px 8px 8px 32px; background: var(--cream); border: 3px solid var(--ink); border-radius: 999px; box-shadow: 8px 8px 0 var(--ink); transform: rotate(-4deg); transition: box-shadow .25s ease; }
+.newsletter__row:focus-within { box-shadow: 8px 8px 0 var(--coral); }
+.newsletter__row input { flex: 1; min-width: 0; border: 0; background: transparent; font: 700 1.3rem var(--font-body); color: var(--ink); padding: .7rem 0; outline: none; }
 .newsletter__row input::placeholder { color: var(--muted); }
 .newsletter__row .btn { flex: none; }
-.newsletter__text { margin: 1.4rem 0 0; color: var(--muted); max-width: 36rem; }
+.newsletter__row .btn__label { font-size: 1.2rem; padding: 1.25rem 2.2rem; }
+.newsletter .cf-turnstile { order: 3; margin-top: 18px; }
+.newsletter__line { position: relative; top: -.18em; }
+.newsletter .form__msg { order: 4; text-align: center; }
+.newsletter .form__msg--ok { background: var(--ink); color: var(--lime); }
+.newsletter .form__msg--err { background: var(--cream); color: var(--ink); }
+.newsletter__text { order: 2; margin: calc(var(--nl-f) * var(--nl-l) - var(--nl-h) / 2) 0 0; max-width: none; white-space: nowrap; font: 700 clamp(1rem, 2vw, 1.6rem)/1.2 var(--font-display); letter-spacing: -.01em; color: var(--ink); }
+
+@keyframes goose-bob { from { transform: rotate(-8deg) translateY(0); } to { transform: rotate(-4deg) translateY(-8px); } }
+
+@media (max-width: 520px) {
+  .newsletter__panel { --nl-f: 12.5vw; --nl-l: 2.8; --nl-h: 76px; min-height: 0; }
+  .newsletter__row { padding: 5px 5px 5px 16px; }
+  .newsletter__row input { font-size: .95rem; }
+  .newsletter__row .btn__label { font-size: 1rem; padding: .8rem 1.1rem; }
+  .newsletter__text { font-size: 3.7vw; }
+  .newsletter__line { top: -.35em; }
+}
 .order__text p { font-size: 1.15rem; color: rgba(255, 248, 232, .88); }
 .order__text .order__small { font-size: .9rem; opacity: .8; }
 .order__card { background: var(--cream); color: var(--ink); border-radius: var(--radius); padding: clamp(24px, 3.5vw, 40px); }
@@ -500,6 +519,47 @@ em {
 .form__msg { margin: 0; padding: .85rem 1.1rem; border-radius: 12px; font-weight: 600; }
 .form__msg--ok { background: var(--lime); color: var(--ink); }
 .form__msg--err { background: var(--coral); color: var(--ink); }
+
+/* Zakelijk & thuiskok: kaart met een segmentkeuze voor "Ik ben". De radio's blijven gewoon in het formulier. */
+.order__art { width: clamp(84px, 9vw, 110px); height: auto; color: var(--lime); display: block; margin-bottom: 1.4rem; }
+.order .order__card { box-shadow: 0 30px 60px -36px rgba(0, 0, 0, .55); }
+.order .field--choice { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.order .field--choice legend { margin-bottom: 2px; }
+.order .field--choice label { position: relative; justify-content: center; padding: .8rem 1rem; border: 1.5px solid rgba(18, 51, 38, .4); border-radius: 999px; background: #fff; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.order .field--choice label:hover { border-color: var(--green); }
+.order .field--choice label:has(input:checked) { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.order .field--choice label:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 3px; }
+.order .field--choice input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.order .form > .btn--block { margin-top: 4px; }
+
+/* Pop-up nieuwsbrief: native dialog met een kaart in de huisstijl */
+.popup { width: min(calc(100vw - 2 * var(--gutter)), 460px); max-width: none; max-height: calc(100dvh - 32px); margin: auto; padding: 0; border: 0; background: transparent; color: var(--ink); overflow: visible; }
+.popup[open] { animation: popup-in .45s var(--ease-out); }
+.popup::backdrop { background: rgba(18, 51, 38, .55); backdrop-filter: blur(3px); }
+.popup[open]::backdrop { animation: popup-fade .3s ease; }
+@keyframes popup-in { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes popup-fade { from { opacity: 0; } to { opacity: 1; } }
+.popup__card { position: relative; background: var(--cream); border-radius: var(--radius); overflow: hidden; box-shadow: 0 30px 60px -20px rgba(18, 51, 38, .6); }
+.popup__top { display: grid; place-items: center; padding: 26px 0 22px; background: var(--forest); color: var(--lime); }
+.popup__goose { width: 110px; height: auto; display: block; transform: rotate(-8deg); animation: goose-bob 3.6s ease-in-out infinite alternate; }
+.popup__close { position: absolute; top: 14px; right: 14px; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--ink); cursor: pointer; transition: background-color .2s ease, transform .5s var(--spring); }
+.popup__close:hover { background: var(--lime); }
+.popup__close:active { transform: scale(.88); }
+.popup__close svg { width: 20px; height: 20px; }
+.popup__body { display: grid; gap: 14px; padding: clamp(24px, 4vw, 36px); }
+.popup__body > .kicker { margin: 0; }
+.popup__body h2 { margin: 0; font-size: clamp(2rem, 6vw, 2.5rem); line-height: 1.02; letter-spacing: -.035em; transform: rotate(-2deg); transform-origin: left center; }
+.popup__body h2:focus { outline: none; }
+.popup__body > p { margin: 0; color: var(--muted); }
+.popup__form { display: grid; gap: 14px; }
+.popup__form .btn--block { margin-top: 2px; }
+.popup__turnstile { min-height: 65px; }
+.popup__later { justify-self: center; padding: 6px; border: 0; background: none; font: 600 .92rem var(--font-body); color: var(--muted); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.popup__later:hover { color: var(--ink); }
+@media (max-width: 560px) {
+  .popup { width: 100%; max-width: 100%; max-height: 92dvh; margin: auto 0 0; }
+  .popup__card { border-radius: var(--radius) var(--radius) 0 0; }
+}
 
 /* Footer */
 .footer { background: var(--ink); color: rgba(255, 248, 232, .82); padding-top: 64px; overflow: hidden; }
