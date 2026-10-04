@@ -425,7 +425,7 @@ em {
 .about-band .pillar p { color: var(--muted); }
 .about-band .about__photo { max-width: 900px; margin: 0 auto; transform: rotate(-1.5deg); }
 .about-band .about__photo img { box-shadow: 0 24px 48px -20px rgba(18, 51, 38, .5); }
-.about-band .about__photo figcaption { color: var(--ink); text-align: center; }
+.about-band .about__photo figcaption { margin-top: 1rem; color: var(--ink); text-align: center; font-size: 1.1rem; font-weight: 600; line-height: 1.5; }
 @media (max-width: 720px) { .about-band .pillars { grid-template-columns: minmax(0, 1fr); } }
 .pillar h3 { font-size: 1.9rem; margin-bottom: .4rem; }
 .pillar p { margin: 0; color: var(--muted); max-width: 32em; }
