@@ -525,7 +525,7 @@
       <div class="wrap faq__grid">
         <div class="faq__intro reveal">
           <p class="kicker">Veelgestelde vragen</p>
-          <h2 id="faq-title">Vragen? <em>Stel ze gerust.</em></h2>
+          <h2 id="faq-title">Vragen?<br><em>Wij hebben<br>de antwoorden.</em></h2>
           <p>Heb je nu al een vraag? Stuur ons een bericht, dan komen we erop terug.</p>
           <a class="btn btn--dark" href="#vragen"><span class="btn__label">Stel je vraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
         </div>
@@ -538,43 +538,58 @@
         </div>
       </div>
     </section>
-    <section class="section section--forest section--order" id="vragen" aria-labelledby="vragen-title">
-      <div class="wrap order">
-        <div class="order__text reveal">
-          <svg class="order__art" viewBox="0 0 130 80" aria-hidden="true" focusable="false"><use href="#goose-fly"/></svg>
-          <p class="kicker kicker--light">Zakelijk &amp; Thuiskok</p>
-          <h2 id="vragen-title">Heb je <span class="nowrap"><em>vragen?</em></span> Stel ze <em>hier.</em></h2>
-          <p>Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
-          <p class="order__small">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
+    <section class="contact" id="vragen" aria-labelledby="vragen-title">
+      <div class="contact__top">
+        <div class="wrap contact__hero">
+          <p class="order__tag">Zakelijk &amp; Thuiskok</p>
+          <h2 id="vragen-title" class="contact__title">Contact</h2>
+          <a class="contact__mail" href="mailto:info@eetbuyt.nl">info@eetbuyt.nl</a>
+          <p class="contact__lead">Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
         </div>
-        <div class="order__card reveal">
-          <form name="bestellen" method="POST" action="/api/request" class="form">
+        <svg class="contact__wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 70C240 10 480 130 720 70S1200 10 1440 70V120H0Z"/></svg>
+      </div>
+      <div class="contact__bottom">
+        <div class="wrap">
+          <div class="order__card reveal">
+            <h3 class="contact__formtitle">Stuur ons<br>een <em>bericht</em></h3>
+            <form name="bestellen" method="POST" action="/api/request" class="form">
             <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
             <div class="field">
-              <label for="f-naam">Naam</label>
-              <input id="f-naam" name="naam" type="text" autocomplete="name" required>
+              <label for="f-naam">Naam <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-naam" name="naam" type="text" autocomplete="name" placeholder="Voor- en achternaam" required>
             </div>
             <div class="field">
-              <label for="f-email">E-mailadres</label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required>
+              <label for="f-email">E-mailadres <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" placeholder="naam@voorbeeld.nl" required>
             </div>
+            <div class="field-group">
             <fieldset class="field field--choice">
               <legend>Ik ben</legend>
               <label><input type="radio" name="type" value="particulier"> Particulier</label>
               <label><input type="radio" name="type" value="zakelijk" checked> Zakelijk</label>
             </fieldset>
+            <div class="field-phone" data-phone>
+              <div class="field-phone__inner">
+                <div class="field">
+                  <label for="f-telefoon"><svg class="phone-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.5 9 3l1.6 4-1.9 1.3a12 12 0 0 0 5.9 5.9L16 12.3l4 1.6-.5 2.4c-.2 1-1 1.7-2 1.7A15 15 0 0 1 3.5 5.5c0-1 .7-1.8 1.7-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Telefoonnummer <span class="opt">(optioneel)</span></label>
+                  <input id="f-telefoon" name="telefoon" type="tel" inputmode="tel" autocomplete="tel" placeholder="06 12 34 56 78">
+                </div>
+              </div>
+            </div>
+            </div>
             <div class="field">
               <label for="f-bericht">Wat heb je nodig?</label>
-              <textarea id="f-bericht" name="bericht" rows="4" aria-describedby="f-bericht-hint"></textarea>
-              <p class="field__hint" id="f-bericht-hint">Bijvoorbeeld: welke producten, hoeveel en wanneer je ze wilt hebben.</p>
+              <textarea id="f-bericht" name="bericht" rows="4" placeholder="Vertel ons wat je bezighoudt: een vraag, een idee of wat er op tafel mag komen."></textarea>
             </div>
             <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
-            <button class="btn btn--primary btn--block" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+            <button class="btn btn--dark btn--block" type="submit"><span class="btn__label">Verstuur aanvraag</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
             <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bericht is verstuurd. We nemen contact met je op.</p>
             <p class="form__msg form__msg--err" role="alert" hidden>Je bericht is niet verstuurd. Controleer je verbinding en probeer het opnieuw.</p>
           </form>
+          </div>
+          <p class="contact__note">We gebruiken je gegevens alleen om je bericht te beantwoorden.</p>
         </div>
-
+        <svg class="contact__wave contact__wave--end" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 70C240 10 480 130 720 70S1200 10 1440 70V120H0Z"/></svg>
       </div>
     </section>
 

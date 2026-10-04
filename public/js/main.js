@@ -374,6 +374,10 @@
       err.hidden = true;
       try {
         const data = Object.fromEntries(new FormData(form));
+        /* De database heeft geen telefoonkolom: een nummer bij een zakelijke aanvraag gaat bovenaan het bericht mee. */
+        const tel = (data.telefoon || '').trim();
+        delete data.telefoon;
+        if (tel && data.type === 'zakelijk') data.bericht = `Telefoon: ${tel}\n\n${data.bericht || ''}`.trim();
         const res = await fetch('/api/request', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

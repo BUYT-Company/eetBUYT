@@ -424,6 +424,7 @@ em {
 .about-band .about__intro { text-align: center; max-width: 46rem; margin: 0 auto clamp(48px, 6vw, 80px); }
 .about-band .kicker { color: var(--ink); }
 #vragen-title em { background-image: none; padding-bottom: 0; }
+#faq-title em { background-image: none; padding-bottom: 0; }
 #vragen-title .nowrap { white-space: nowrap; }
 .about-band h2 { font-size: clamp(2.6rem, 6vw, 4.8rem); line-height: 1; letter-spacing: -.035em; margin: 0 0 1.2rem; }
 .about-band .about__intro p { color: var(--ink); font-size: 1.2rem; margin: 0 auto; }
@@ -531,17 +532,59 @@ em {
 .form__msg--ok { background: var(--lime); color: var(--ink); }
 .form__msg--err { background: var(--coral); color: var(--ink); }
 
-/* Zakelijk & thuiskok: kaart met een segmentkeuze voor "Ik ben". De radio's blijven gewoon in het formulier. */
-.order__art { width: clamp(84px, 9vw, 110px); height: auto; color: var(--lime); display: block; margin-bottom: 1.4rem; }
-.order .order__card { box-shadow: 0 30px 60px -36px rgba(0, 0, 0, .55); }
-.order .field--choice { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
-.order .field--choice legend { margin-bottom: 2px; }
-.order .field--choice label { position: relative; justify-content: center; padding: .8rem 1rem; border: 1.5px solid rgba(18, 51, 38, .4); border-radius: 999px; background: #fff; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
-.order .field--choice label:hover { border-color: var(--green); }
-.order .field--choice label:has(input:checked) { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-.order .field--choice label:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 3px; }
-.order .field--choice input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
-.order .form > .btn--block { margin-top: 4px; }
+/* Contact (vragenblok): volle breedte. Koraalband met een enorme kop, het e-mailadres groot, golven naar een donker vlak met contactblokken en het formulier. */
+.contact { position: relative; }
+.contact__top { position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(180deg, #BDDFCF 0%, #D3E7D0 52%, #F7E6BC 100%); color: var(--ink); text-align: center; padding: clamp(56px, 8vw, 112px) 0 calc(clamp(40px, 6vw, 90px) + clamp(56px, 8vw, 110px)); }
+.contact__hero { position: relative; z-index: 2; display: grid; justify-items: center; }
+.contact .contact__title { margin: 0; font: 800 clamp(4.2rem, 21vw, 17rem)/.86 var(--font-display); letter-spacing: -.05em; color: #E8472F; background: linear-gradient(180deg, #FF8A5C 0%, #F2603F 45%, #D93A25 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.contact__mail { display: inline-block; margin-top: clamp(20px, 3vw, 36px); padding: .3em .75em; border: 3px solid var(--ink); border-radius: 999px; background-color: var(--cream); background-image: linear-gradient(100deg, #FF6652 0%, #FF8A5C 55%, #FFB35C 100%); background-repeat: no-repeat; background-size: 0% 100%; color: var(--ink); box-shadow: 6px 6px 0 var(--coral); font: 800 clamp(1.5rem, 4.6vw, 3.4rem)/1.1 var(--font-display); letter-spacing: -.03em; text-decoration: none; overflow-wrap: anywhere; rotate: -2deg; transition: rotate .5s var(--spring), translate .3s var(--ease-out), box-shadow .3s var(--ease-out), background-size .5s var(--ease-out); }
+.contact__mail:hover, .contact__mail:focus-visible { rotate: 0deg; translate: 4px 4px; box-shadow: 2px 2px 0 var(--ink); background-size: 100% 100%; }
+.contact__mail:active { translate: 6px 6px; box-shadow: 0 0 0 var(--ink); }
+.contact__lead { max-width: 40rem; margin: clamp(20px, 3vw, 32px) 0 0; font: 700 clamp(1.05rem, 1.9vw, 1.35rem)/1.4 var(--font-display); color: var(--ink); }
+.contact__wave { position: absolute; left: 0; bottom: -1px; z-index: 1; display: block; width: 100%; height: clamp(40px, 6vw, 90px); fill: var(--green); }
+.contact__bottom { position: relative; background: var(--green); color: var(--cream); padding: clamp(16px, 3vw, 40px) 0 calc(clamp(72px, 9vw, 128px) + clamp(40px, 6vw, 90px)); }
+.contact__wave--end { fill: var(--cream); }
+.contact__formtitle { margin: 0 0 1.8rem; font: 800 clamp(2.4rem, 5vw, 3.8rem)/.96 var(--font-display); letter-spacing: -.045em; color: var(--ink); }
+.contact__formtitle em { background: linear-gradient(180deg, #F2603F 0%, #D93A25 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #E8472F; padding-bottom: 0; }
+.contact__formtitle em::after { content: ""; display: inline-block; width: .075em; height: .8em; margin-left: .1em; border-radius: 2px; background: var(--coral); vertical-align: -.04em; animation: caret-blink 1.1s steps(1) infinite; }
+@keyframes caret-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+.contact__note { max-width: 40rem; margin: 28px auto 0; text-align: center; font-size: .92rem; color: rgba(255, 248, 232, .85); }
+.order__tag { margin: 0 0 1.2rem; color: var(--ink); font: 700 .85rem/1 var(--font-body); letter-spacing: .16em; text-transform: uppercase; }
+.contact .order__card { max-width: 760px; margin-inline: auto; }
+.contact .order__card { position: relative; padding: clamp(28px, 4vw, 48px); background: var(--cream); border: 0; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .5); rotate: 0deg; color: var(--ink); }
+/* Zakelijk & thuiskok, speelse versie: grote schuine kop, lime kaart met harde schaduw en een gans-sticker.
+   De radio's blijven gewoon in het formulier; de kaart gebruikt `rotate` zodat de reveal-transform niets overschrijft. */
+.contact .field label, .contact .field legend { color: var(--ink); }
+.contact .field input[type="text"], .contact .field input[type="email"], .contact .field input[type="tel"], .contact .field textarea { background: #fff; border: 2px solid var(--ink); border-radius: 14px; box-shadow: none; font-weight: 600; transition: border-color .2s ease, box-shadow .2s ease; }
+.contact .field input[type="text"]:focus, .contact .field input[type="email"]:focus, .contact .field input[type="tel"]:focus, .contact .field textarea:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(0, 127, 79, .22); }
+.contact .field__hint { color: var(--cream); opacity: .8; }
+.contact .field--choice { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.contact .field--choice legend { margin-bottom: 2px; }
+.contact .field--choice label { color: var(--ink); position: relative; justify-content: center; padding: .8rem 1rem; border: 2px solid var(--ink); border-radius: 999px; background: #fff; box-shadow: none; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .3s var(--spring); }
+.contact .field--choice label:hover { transform: translateY(-2px); }
+.contact .field--choice label:has(input:checked) { background: var(--green); color: var(--cream); border-color: var(--green); }
+.contact .field--choice label:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 3px; }
+.contact .field--choice input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.contact .form__msg--ok { background: var(--green); color: var(--cream); }
+.contact .form__msg--err { background: var(--coral); color: var(--ink); }
+.contact .req { color: #D93A25; font-weight: 800; }
+.contact .opt { font-weight: 500; opacity: .6; }
+.contact .field input::placeholder, .contact .field textarea::placeholder { color: rgba(18, 51, 38, .45); font-weight: 500; opacity: 1; }
+/* Telefoonvak: schuift open zodra "Zakelijk" gekozen is. De grid-rij animeert van 0fr naar 1fr, de negatieve marge vangt de formuliergap op. */
+.contact .field-group { display: grid; }
+.contact .field-phone { display: grid; grid-template-rows: 0fr; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: grid-template-rows .5s var(--ease-out), opacity .35s ease, transform .5s var(--spring), visibility 0s .5s; }
+.contact .field-phone__inner { min-height: 0; overflow: hidden; padding: 0 6px; margin: 0 -6px; transition: padding .5s var(--ease-out); }
+.contact .form:has(input[name="type"][value="zakelijk"]:checked) .field-phone__inner { padding: 24px 6px 6px; margin: 0 -6px -6px; }
+.contact .form:has(input[name="type"][value="zakelijk"]:checked) .field-phone { grid-template-rows: 1fr; opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.contact .phone-ico { display: inline-block; width: 1.05em; height: 1.05em; margin: -.15em .45em 0 0; vertical-align: middle; color: var(--green); transform-origin: 50% 80%; }
+.contact .form:has(input[name="type"][value="zakelijk"]:checked) .phone-ico { animation: phone-ring .9s .25s ease-in-out 1; }
+@keyframes phone-ring { 0%, 100% { rotate: 0deg; } 15% { rotate: -18deg; } 30% { rotate: 16deg; } 45% { rotate: -12deg; } 60% { rotate: 9deg; } 75% { rotate: -4deg; } }
+@media (max-width: 900px) {
+  .contact .order__card { rotate: 0deg; }
+}
+.contact .form > .btn--block { display: inline-flex; width: auto; justify-self: start; margin-top: 4px; background: var(--coral); color: var(--ink); }
+.contact .form > .btn--block .btn__label { flex: none; }
+.contact .form > .btn--block:hover { background: var(--lime); color: var(--ink); }
 
 /* Pop-up nieuwsbrief: dezelfde taal als het blok onderaan. Lime kaart, grote kop, schuine pill-balk. */
 .popup { width: min(calc(100vw - 2 * var(--gutter)), 520px); max-width: none; max-height: calc(100dvh - 32px); margin: auto; padding: 0; border: 0; background: transparent; color: var(--ink); overflow: visible; }
