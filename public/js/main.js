@@ -98,6 +98,52 @@
   nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
 
+  /* Zachte anker-scroll: ease-in-out, duur naar afstand, koraallijn onder de header als voortgang,
+     */
+  const line = document.createElement('span');
+  line.className = 'scroll-line';
+  line.setAttribute('aria-hidden', 'true');
+  header.appendChild(line);
+  let glide = null;
+  const stopGlide = () => { if (glide) { cancelAnimationFrame(glide); glide = null; line.classList.remove('on'); } };
+  const ease = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const glideTo = (target, hash) => {
+    stopGlide();
+    const pad = parseFloat(getComputedStyle(root).scrollPaddingTop) || 0;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const from = window.scrollY;
+    const to = Math.max(0, Math.min(max, target.getBoundingClientRect().top + from - pad));
+    const dist = Math.abs(to - from);
+    const land = () => {
+      target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    };
+    if (hash && location.hash !== hash) history.pushState(null, '', hash);
+    if (reduceMotion || dist < 4) { window.scrollTo(0, to); land(); return; }
+    const dur = Math.min(1400, 520 + dist * 0.16);
+    const t0 = performance.now();
+    line.classList.add('on');
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      window.scrollTo(0, from + (to - from) * ease(p));
+      line.style.setProperty('--p', p);
+      if (p < 1) glide = requestAnimationFrame(step);
+      else { glide = null; line.classList.remove('on'); land(); }
+    };
+    glide = requestAnimationFrame(step);
+  };
+  ['wheel', 'touchstart', 'keydown'].forEach((ev) => window.addEventListener(ev, stopGlide, { passive: true }));
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    const hash = a.getAttribute('href');
+    if (hash.length < 2) return;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!target) return;
+    e.preventDefault();
+    glideTo(target, hash);
+  });
+
   /* Intro: logo, dan een groene golf. Eén keer per sessie, overslaan met een klik of toets. */
   const ready = () => {
     root.classList.add('is-ready');

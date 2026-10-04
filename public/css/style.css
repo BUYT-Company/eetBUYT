@@ -51,7 +51,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); }
+html { scroll-padding-top: calc(var(--header-h) + 16px); }
 html.intro-on { overflow: hidden; }
 body {
   margin: 0;
@@ -177,6 +177,10 @@ em {
 /* Tijdens de opstart-animatie blijft de balk weg; hij schuift pas in als de golf voorbij is (intro-on verdwijnt dan). */
 .intro-on .site-header { transform: translateY(-100%); opacity: 0; }
 .site-header.is-scrolled { box-shadow: 0 1px 0 var(--hair); }
+/* Voortgangslijn tijdens anker-scroll */
+.scroll-line { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--coral); transform: scaleX(var(--p, 0)); transform-origin: left; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
+.scroll-line.on { opacity: 1; transition: none; }
+[tabindex="-1"]:focus { outline: none; }
 .header__inner { height: 100%; display: flex; align-items: center; gap: 24px; }
 .header__tools { display: flex; align-items: center; gap: 10px; }
 .brand { display: inline-flex; align-items: center; gap: 0; text-decoration: none; }
