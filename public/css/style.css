@@ -173,7 +173,9 @@ em {
 .intro__wave { position: absolute; left: 0; top: 0; width: 100%; height: 200vh; transform: translateY(100vh); will-change: transform; }
 
 /* Header */
-.site-header { position: sticky; top: 0; z-index: 50; background: var(--cream); height: var(--header-h); transition: box-shadow .2s ease; }
+.site-header { position: sticky; top: 0; z-index: 50; background: var(--cream); height: var(--header-h); transition: box-shadow .2s ease, transform .6s var(--ease-out), opacity .4s ease; }
+/* Tijdens de opstart-animatie blijft de balk weg; hij schuift pas in als de golf voorbij is (intro-on verdwijnt dan). */
+.intro-on .site-header { transform: translateY(-100%); opacity: 0; }
 .site-header.is-scrolled { box-shadow: 0 1px 0 var(--hair); }
 .header__inner { height: 100%; display: flex; align-items: center; gap: 24px; }
 .header__tools { display: flex; align-items: center; gap: 10px; }
