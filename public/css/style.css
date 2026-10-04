@@ -382,8 +382,17 @@ em {
 @media (hover: hover) and (pointer: fine) { .cursor-goose { display: block; } }
 
 /* Impact */
-.section--impact { margin-bottom: clamp(72px, 9vw, 128px); background: linear-gradient(180deg, rgba(18, 51, 38, .4), rgba(18, 51, 38, .7)), url("../assets/impact-ganzen-zonsondergang.jpg") center 40% / cover no-repeat; }
+/* Achtergrond in drie lagen: foto, een koraal-verloop dat de lucht inkleurt (multiply, de foto blijft zichtbaar) en een donkere sluier onderaan voor de cijfers. */
+.section--impact { margin-bottom: clamp(72px, 9vw, 128px); background-color: var(--forest); background-image: linear-gradient(180deg, rgba(18, 51, 38, 0) 52%, rgba(18, 51, 38, .85) 74%), linear-gradient(180deg, var(--coral) 0%, #FF9A6B 38%, #fff 70%), url("../assets/impact-ganzen-zonsondergang.jpg"); background-blend-mode: normal, multiply, normal; background-position: center, center, center 40%; background-size: cover, cover, cover; background-repeat: no-repeat; }
+.section--impact .kicker { color: var(--cream); }
+/* Op smalle schermen staan de cijfers onder elkaar en is het blok veel hoger: het oranje blijft bij de kop, de donkere sluier begint eerder. */
+@media (max-width: 900px) {
+  .section--impact { background-image: linear-gradient(180deg, rgba(18, 51, 38, 0) 28%, rgba(18, 51, 38, .88) 44%), linear-gradient(180deg, var(--coral) 0%, #FF9A6B 24%, #fff 48%), url("../assets/impact-ganzen-zonsondergang.jpg"); }
+}
 .section--impact .wrap { position: relative; z-index: 1; }
+/* Ruimte tussen kop en tellers: de ganzen op de foto vliegen daar doorheen en de tellers vallen op het donkere veld. */
+.section--impact .stats { margin-top: clamp(150px, 22vw, 300px); }
+@media (max-width: 900px) { .section--impact .stats { margin-top: clamp(40px, 6vw, 72px); } }
 .section--impact h2 { max-width: 16em; }
 .stats { container-type: inline-size; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(40px, 6vw, 72px); border-top: 1px solid var(--hair-light); }
 .stat { padding: 32px 32px 0 0; }
