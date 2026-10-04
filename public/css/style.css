@@ -255,8 +255,9 @@ em {
 .section--forest h2 { color: var(--cream); }
 
 /* Ons doel */
-.hero .lead .lead__more { color: var(--lime); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; white-space: nowrap; transition: text-underline-offset .25s var(--ease-out), color .2s ease; }
-.hero .lead .lead__more:hover { text-underline-offset: 7px; color: var(--cream); }
+/* "Lees meer": de onderlijn vult op tot een limoenvlak */
+.hero .lead .lead__more { margin: 0 -.25em; padding: 0 .25em; border-radius: 6px; color: var(--lime); font-weight: 700; text-decoration: none; white-space: nowrap; background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 100% / 100% 2px; transition: background-size .4s var(--ease-out), color .25s ease; }
+.hero .lead .lead__more:hover, .hero .lead .lead__more:focus-visible { background-size: 100% 100%; color: var(--ink); }
 .why { background: var(--sand); }
 .why__title { max-width: 16em; margin: 0 0 clamp(32px, 5vw, 56px); font: 800 clamp(2rem, 5vw, 4rem)/1.02 var(--font-display); letter-spacing: -.045em; color: var(--ink); text-wrap: balance; }
 .why__title { margin-bottom: 1.2rem; }
