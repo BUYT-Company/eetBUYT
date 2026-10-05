@@ -1,9 +1,9 @@
 # BUYT-logo in de mailbox (BIMI), stap voor stap
 
-Doel: het BUYT-logo naast elke mail van `@eetbuyt.nl` en `@mail.eetbuyt.nl` (bestelbevestigingen via Resend en gewone mail via TransIP).
+Doel: het BUYT-logo naast elke mail van `@eetbuyt.nl` en `@mail.eetbuyt.nl` (bestelbevestigingen via Resend en gewone mail via de TransIP-mailboxen). De DNS staat in Cloudflare; TransIP is alleen registrar en mailhost.
 Het blauwe vinkje (VMC) valt buiten deze stappen en volgt later.
 
-Stand van zaken op 5 okt 2026 (zo uitgelezen uit de DNS):
+Beginstand op 5 okt 2026 (zo uitgelezen uit de DNS, vóór de stappen hieronder; de actuele stand staat onderaan):
 
 | Onderdeel | Nu | Nodig |
 |---|---|---|
@@ -22,8 +22,8 @@ Open de mail in Gmail, kies "Origineel weergeven" en kijk of er staat: `SPF: PAS
 Pas als alles PASS is, ga je door. Zo niet, dan zou een strenger DMARC die mail in de spam zetten.
 Stuurt er nog een andere dienst mail namens `@eetbuyt.nl` (bijvoorbeeld een nieuwsbrieftool of een boekhoudpakket)? Controleer die ook.
 
-## Stap 2. DMARC streng zetten (TransIP, DNS)
-Pas twee bestaande TXT-records aan (niet extra toevoegen):
+## Stap 2. DMARC streng zetten (Cloudflare, DNS)
+Pas in Cloudflare onder DNS → Records twee bestaande TXT-records aan (niet extra toevoegen):
 
 | Naam | Type | Waarde |
 |---|---|---|
@@ -38,9 +38,9 @@ Het bestand staat in `public/assets/bimi-logo.svg`. Het moet bereikbaar zijn op:
 `https://eetbuyt.nl/assets/bimi-logo.svg`
 Eisen: https met geldig certificaat, geen doorverwijzing, bestand wordt als SVG geleverd.
 Open die url in je browser; je moet het logo op een crèmekleurige achtergrond zien.
-Deze url werkt zodra de Cloudflare-versie van de site op `eetbuyt.nl` draait.
+Deze url werkt sinds 5 okt 2026, toen `eetbuyt.nl` naar de Cloudflare-versie van de site is overgezet.
 
-## Stap 4. BIMI-record toevoegen (TransIP, DNS)
+## Stap 4. BIMI-record toevoegen (Cloudflare, DNS)
 Twee TXT-records met dezelfde waarde (het tweede dekt de bestelmails):
 
 | Naam | Type | Waarde |
@@ -63,11 +63,12 @@ Twee TXT-records met dezelfde waarde (het tweede dekt de bestelmails):
 Voor Gmail en Apple Mail is dus een certificaat nodig, ook voor het logo zonder vinkje.
 Een **CMC** vraagt geen merkregistratie en is goedkoper dan een **VMC**. Dit is een latere, aparte stap.
 
-## Stand van zaken op 5 okt 2026
+## Actuele stand (5 okt 2026, na de overstap naar Cloudflare)
 - DMARC staat streng (`p=quarantine; pct=100`) op `eetbuyt.nl` en `mail.eetbuyt.nl`. Alle vijf afzenders slagen voor SPF, DKIM en DMARC.
-- **DNS staat in Cloudflare** (nameservers `robin` en `remy`), niet in TransIP. TransIP is alleen de registrar. Alle DNS-wijzigingen doe je in Cloudflare.
-- BIMI-records staan er, met tijdelijk de logo-url `https://buyt-website.eetbuyt.workers.dev/assets/bimi-logo.svg`.
-- **Te doen na de overstap van `eetbuyt.nl` naar Cloudflare:** pas in `default._bimi` en `default._bimi.mail` de waarde `l=` aan naar `https://eetbuyt.nl/assets/bimi-logo.svg`.
+- **DNS staat in Cloudflare** (nameservers `robin` en `remy`), niet in TransIP. TransIP is alleen de registrar en mailhost. Alle DNS-wijzigingen doe je in Cloudflare.
+- `eetbuyt.nl` en `www.eetbuyt.nl` draaien op de Worker `buyt-website`. Het logo is bereikbaar op `https://eetbuyt.nl/assets/bimi-logo.svg` (200, `image/svg+xml`).
+- De BIMI-records staan er nog met de tijdelijke logo-url `https://buyt-website.eetbuyt.workers.dev/assets/bimi-logo.svg`.
+- **Nog te doen:** pas in `default._bimi` en `default._bimi.mail` de waarde `l=` aan naar `https://eetbuyt.nl/assets/bimi-logo.svg`, zodat de logo-url niet van het workers.dev-adres afhangt.
 - Zonder certificaat toont alleen Yahoo/AOL het logo. Gmail en Apple Mail wachten op een certificaat.
 
 ## Later: een certificaat voor Gmail en Apple Mail (CMC)
