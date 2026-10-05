@@ -3,7 +3,7 @@
    - Accepteren en Weigeren staan gelijkwaardig naast elkaar; de keuze is te wijzigen via "Cookie-instellingen" in de footer.
    - Vul hieronder het Measurement ID in (Analytics > Beheer > Gegevensstreams). Zolang er een placeholder staat, wordt niets geladen. */
 (() => {
-  const GA_ID = 'G-XXXXXXXXXX';
+  const GA_ID = 'G-6250HQTQH2';
   const KEY = 'buyt-cookies';
   const hasId = /^G-[A-Z0-9]{6,}$/.test(GA_ID) && GA_ID !== 'G-XXXXXXXXXX';
 
