@@ -86,9 +86,13 @@ p { margin: 0 0 1em; }
 em {
   font-style: normal;
   color: var(--green);
-  padding-bottom: .08em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q12.5 1 25 6T50 6T75 6T100 6' fill='none' stroke='%23FF6652' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .24em;
+  /* De golflijn ligt onder de staarten van g, j, p, q en y, zodat ze de lijn niet raken. */
+  padding-bottom: .13em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q12.5 1 25 6T50 6T75 6T100 6' fill='none' stroke='%23FF6652' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .2em;
 }
+/* Kapitalen hebben geen staarten: daar mag de lijn dichter op de letters. */
+.zakelijk-banner em { padding-bottom: .1em; background-size: 100% .24em; }
+.zb-hero__title em { white-space: nowrap; }
 .hero em, .section--forest em, .zakelijk-banner em {
   color: var(--lime);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q12.5 1 25 6T50 6T75 6T100 6' fill='none' stroke='%23D8ED36' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
