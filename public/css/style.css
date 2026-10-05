@@ -1290,3 +1290,38 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .shop-devtag { position: fixed; z-index: 80; right: 12px; bottom: 12px; margin: 0; padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--cream); font-size: .78rem; font-weight: 700; pointer-events: none; }
 @media (max-width: 520px) { .shop-devtag { left: 12px; right: auto; bottom: 76px; } }
 @media (prefers-reduced-motion: reduce) { .shop-area__body { transition: none; } }
+
+/* Zakelijk bestellen (zakelijk-bestellen.html) */
+.zb-hero { padding: clamp(56px, 8vw, 104px) 0; margin-top: var(--inset); }
+.zb-hero__title { font-size: clamp(2.8rem, 8vw, 6.5rem); line-height: .95; letter-spacing: -.035em; color: var(--cream); margin: 0 0 1.2rem; max-width: 12em; }
+.zb-hero__title em { color: var(--lime); font-style: normal; }
+.zb-hero__lead { font-size: clamp(1.1rem, 1.8vw, 1.35rem); max-width: 36rem; margin: 0 0 2rem; color: rgba(255, 248, 232, .92); }
+.zb-types__list, .zb-steps__list, .zb-team__list, .zb-products__list { list-style: none; margin: clamp(28px, 4vw, 48px) 0 0; padding: 0; display: grid; gap: 20px; }
+.zb-types__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.zb-types__list li { display: grid; gap: .5rem; align-content: start; padding: clamp(20px, 2.5vw, 28px); border-radius: var(--radius); background: var(--sand); }
+.zb-types__list strong, .zb-steps__list strong { font: 700 1.3rem/1.2 var(--font-display); letter-spacing: -.03em; }
+.zb-types__list span, .zb-steps__list li > span:not(.zb-steps__n) { color: var(--muted); }
+.zb-products__list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.zb-product { display: grid; gap: 12px; align-content: start; }
+.zb-product img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+.zb-product h3 { margin: 0 0 .25rem; font-size: 1.15rem; }
+.zb-product p { margin: 0; color: var(--muted); font-size: .95rem; }
+.zb-note { margin: 28px 0 0; color: var(--muted); }
+.zb-steps__list { grid-template-columns: repeat(3, minmax(0, 1fr)); counter-reset: none; }
+.zb-steps__list li { display: grid; gap: .5rem; align-content: start; }
+.zb-steps__n { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--lime); color: var(--ink); font: 800 1.3rem/1 var(--font-display); }
+.zb-team__list { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 52rem; }
+.zb-person { display: grid; gap: .3rem; justify-items: center; text-align: center; }
+.zb-person img { display: block; width: clamp(120px, 16vw, 170px); height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 50%; margin-bottom: .6rem; }
+.zb-person strong { font: 700 1.3rem/1.2 var(--font-display); letter-spacing: -.03em; }
+.zb-person a { color: var(--green-700); font-weight: 600; overflow-wrap: anywhere; }
+.zb-form { margin-top: clamp(72px, 9vw, 128px); margin-bottom: var(--inset); padding: clamp(48px, 7vw, 96px) 0; }
+.zb-form__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.zb-form__intro h2 { font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1; letter-spacing: -.035em; }
+.zb-form__intro em { color: var(--lime); font-style: normal; background-image: none; padding-bottom: 0; }
+.zb-form__intro p:not(.kicker) { color: rgba(255, 248, 232, .9); font-size: 1.15rem; max-width: 24rem; }
+.zb-form__note { margin: 16px 0 0; font-size: .85rem; color: var(--muted); }
+.nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+@media (max-width: 1000px) { .zb-types__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .zb-products__list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .zb-steps__list, .zb-form__grid { grid-template-columns: minmax(0, 1fr); } .zb-products__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .zb-team__list { gap: 8px; } .zb-person a { font-size: .8rem; } }
+@media (max-width: 480px) { .zb-types__list { grid-template-columns: 1fr; } }

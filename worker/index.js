@@ -4,7 +4,7 @@ import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
-import { sendOrderConfirmation } from './lib/resend.js';
+import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
 import { orderConfirmationEmail, orderInternalEmail } from './lib/emailTemplates.js';
 import { upcomingDates, formatDelivery } from './lib/delivery.js';
 import { listOrders, orderDetail } from './lib/admin.js';
@@ -144,6 +144,7 @@ async function handleRequest(request, env, ctx) {
   }
 
   const v = checked.value;
+  if (v.type === 'zakelijk') ctx.waitUntil(sendBusinessRequestMail(env, v));
   ctx.waitUntil(notifyOwner(env, {
     title: `Nieuwe ${v.type === 'zakelijk' ? 'zakelijke aanvraag' : 'vraag'}`,
     message: `${v.name} · ${v.email}\n${v.message.slice(0, 200)}`,

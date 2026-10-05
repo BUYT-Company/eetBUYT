@@ -97,5 +97,8 @@ export function validateRequest(data) {
   };
   if (!value.name || !EMAIL.test(value.email)) return fail();
   if (value.type !== 'particulier' && value.type !== 'zakelijk') return fail();
+  // De database heeft geen bedrijfskolom: de bedrijfsnaam gaat bovenaan het bericht mee.
+  const company = clean(data.bedrijf, 120);
+  if (company) value.message = `Bedrijf: ${company}\n\n${value.message}`.trim();
   return { ok: true, value };
 }

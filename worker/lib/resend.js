@@ -24,3 +24,26 @@ export async function sendOrderConfirmation(env, { to, subject, html, text }) {
     return { sent: false };
   }
 }
+
+// Zakelijke aanvraag door naar de zakelijke mailbox. Verzonden vanaf mail.eetbuyt.nl; reply_to is het
+// adres van de aanvrager, zodat "beantwoorden" direct naar de klant gaat. Faalt nooit hardop.
+const BUSINESS_INBOX = 'zakelijk@eetbuyt.nl';
+const escapeHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+export async function sendBusinessRequestMail(env, { name, email, message }) {
+  if (!env.RESEND_API_KEY) return { sent: false };
+  try {
+    const text = `Nieuwe zakelijke aanvraag\n\nNaam: ${name}\nE-mail: ${email}\n\n${message || '(geen bericht)'}`;
+    const html = `<p><strong>Nieuwe zakelijke aanvraag</strong></p><p>Naam: ${escapeHtml(name)}<br>E-mail: <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p><p>${escapeHtml(message || '(geen bericht)').replace(/\n/g, '<br>')}</p>`;
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: FROM, to: BUSINESS_INBOX, reply_to: email, subject: `Zakelijke aanvraag van ${name}`, html, text })
+    });
+    if (!res.ok) console.error('resend_business_failed', res.status);
+    return { sent: res.ok };
+  } catch (_) {
+    console.error('resend_business_failed');
+    return { sent: false };
+  }
+}
