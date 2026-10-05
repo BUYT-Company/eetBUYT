@@ -41,7 +41,7 @@ Confirmed facts that may be stated on the site:
 - Products are priced per kilo; pack weights are "ca." (approximate), so the cart shows indicative prices. Ganzenbiefstuk has no known pack weight (priceCents null, "Prijs op gewicht"). Gerookte ganzenborst is sold per piece (€ 7,50, ca. 250 g); its per-kilo price (€ 30) is derived.
 - Ingredient lines are only the composition stated by natuurlijkwild.com plus their allergen note (soja, mosterdzaad, selderij, tarwe for products marked #). The owner must verify these for BUYT's own products.
 - Photos for all five products: Media/buyt-productfotos-grote-plank ("stijl B", top-down on a large organic wooden board on grass).
-- The "ganzen met een goede bestemming" counter (currently 113) is fictive for now. Later it will count one per sold whole goose, so it grows with each order.
+- The "ganzen met een goede bestemming" counter (currently 0, set to 0 on 5 Oct 2026 until the counting system exists) was fictive before. Later it will count one per sold whole goose, so it grows with each order.
 
 Explicitly undecided (do not present as fact): final prices, shipping costs and delivery area, the FAQ questions and answers, the mini-documentary content, the final wording of all copy.
 
