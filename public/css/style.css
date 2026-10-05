@@ -1264,7 +1264,10 @@ h1, h2, h3 { overflow-wrap: anywhere; }
    Alles hieronder verdwijnt vanzelf zodra de winkel open is. */
 .shop-area { position: relative; }
 .shop-area__body { transition: filter .6s cubic-bezier(0, 0, .3, 1), opacity .6s cubic-bezier(0, 0, .3, 1); }
-html:not(.shop-open) .shop-area__body { filter: blur(9px) saturate(.85); opacity: .75; pointer-events: none; user-select: none; }
+html:not(.shop-open) .shop-area__body { filter: blur(9px) saturate(.85); opacity: .75; pointer-events: none; user-select: none;
+  /* Onder en boven zacht uitlopend, zodat het geblurde blok niet midden door een rij of schaduw wordt afgekapt */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28px, #000 calc(100% - clamp(120px, 20%, 200px)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 28px, #000 calc(100% - clamp(120px, 20%, 200px)), transparent 100%); }
 .shop-lock { display: none; }
 html:not(.shop-open) .shop-lock { position: absolute; inset: 0; z-index: 2; display: flex; justify-content: center; align-items: flex-start; padding: clamp(24px, 8vh, 80px) var(--gutter) 24px; background: linear-gradient(180deg, rgba(255, 248, 232, .15), rgba(255, 248, 232, .55)); }
 .shop-lock__card { position: sticky; top: clamp(96px, 26vh, 240px); max-width: 460px; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--cream); color: var(--ink); border-radius: var(--radius); box-shadow: 0 2px 6px rgba(18, 51, 38, .08), 0 24px 56px rgba(18, 51, 38, .2); }
