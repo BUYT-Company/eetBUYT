@@ -256,12 +256,13 @@ em {
 
 /* Ons doel */
 /* "Lees meer": de onderlijn vult op tot een limoenvlak */
-.hero .lead .lead__more { margin: 0 -.25em; padding: 0 .25em; border-radius: 6px; color: var(--lime); font-weight: 700; text-decoration: none; white-space: nowrap; background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 100% / 100% 2px; transition: background-size .4s var(--ease-out), color .25s ease; }
-.hero .lead .lead__more:hover, .hero .lead .lead__more:focus-visible { background-size: 100% 100%; color: var(--ink); }
+.hero .lead .lead__more { display: inline-block; margin: .75em .1em 0; padding: .05em .55em .1em; border: 2px solid var(--lime); border-radius: 999px; color: var(--lime); font: inherit; font-size: .94em; font-weight: 500; line-height: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 0 / 0% 100%; transition: translate .3s var(--ease-out), background-size .5s var(--ease-out), color .25s ease; }
+.hero .lead .lead__more:hover, .hero .lead .lead__more:focus-visible { translate: 2px 2px; background-size: 100% 100%; color: var(--ink); }
+.hero .lead .lead__more:active { translate: 3px 3px; }
 .why { background: var(--sand); }
 .why__title { max-width: 16em; margin: 0 0 clamp(32px, 5vw, 56px); font: 800 clamp(2rem, 5vw, 4rem)/1.02 var(--font-display); letter-spacing: -.045em; color: var(--ink); text-wrap: balance; }
 .why__title { margin-bottom: 1.2rem; }
-.why__title em { font-style: normal; color: var(--green); }
+.why__title em { font-style: normal; color: var(--green); background-image: none; padding-bottom: 0; }
 .why__lead { max-width: 34em; margin: 0 0 clamp(28px, 4vw, 44px); font-size: 1.15rem; color: var(--muted); }
 .why__list { list-style: none; margin: 0 0 clamp(28px, 4vw, 48px); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
 .why__item { display: grid; align-content: start; gap: 8px; padding: clamp(22px, 3vw, 32px); background: var(--cream); border-radius: var(--radius); }
@@ -832,4 +833,89 @@ em {
 @media (max-width: 640px) {
   .minicart { left: 12px; right: 12px; width: auto; top: calc(var(--header-h) + 4px); max-height: calc(100dvh - var(--header-h) - 16px); }
   .minicart__scrim { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(18, 51, 38, .4); }
+}
+
+/* Mobiel en tablet: één verticaal ritme voor alle blokken, rustigere vlakken, kleinere koppen en ruime aanraakdoelen.
+   --sp is de ruimte tussen secties; alles daarbinnen is een veelvoud van 8. */
+h1, h2, h3 { overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  :root { --sp: 64px; }
+  .section { padding-block: var(--sp); }
+  .section--tight { padding-block: 0 var(--sp); }
+  .section--impact { margin-bottom: var(--sp); }
+  .mission { padding-block: var(--sp) calc(var(--sp) + 24px); }
+  .section h2 { margin-bottom: 1rem; }
+  .why__lead, .mission__cols p, .about__intro p { font-size: 1.05rem; }
+  .why__item { padding: 24px; }
+  .why__item span:last-child { font-size: 1rem; }
+  .why__list { margin-bottom: 32px; }
+
+  .marquee { margin-top: 16px; padding: 14px 0; }
+  .marquee__track span { font-size: 1.2rem; }
+  .marquee__icon { width: 36px; height: 22px; }
+
+  .zakelijk-banner { margin-bottom: var(--sp); min-height: 440px; }
+  .zakelijk-banner__content { padding: 48px 24px; }
+
+  .steps__head { margin-bottom: 24px; }
+  .step { padding: 28px 24px; gap: 16px; margin-bottom: 16px; }
+  .step h3 { font-size: clamp(1.75rem, 6vw, 2.4rem); margin-bottom: .6rem; }
+  .step p { font-size: 1.05rem; }
+  .step__art { max-height: 180px; width: auto; max-width: 100%; justify-self: center; }
+
+  .about-band { padding-block: 48px; }
+  .about-band + .steps { margin-top: calc(var(--wave) + 56px); }
+  .about-band .about__intro { margin-bottom: 40px; }
+  .about-band .pillars { gap: 16px; margin-bottom: 48px; }
+  .about-band .pillar { padding: 24px; box-shadow: 0 6px 0 var(--coral); }
+  .about-band .about__photo { transform: none; }
+  .about-band .about__photo img { aspect-ratio: 3 / 2; }
+
+  .contact__top { padding: 56px 0 calc(clamp(40px, 6vw, 90px) + 40px); }
+  .contact__bottom { padding: 56px 0 calc(56px + 40px); }
+  .contact__mail { box-shadow: 4px 4px 0 var(--coral); }
+  .contact__formtitle { margin-bottom: 1.2rem; }
+
+  .newsletter { padding-block: var(--sp); }
+  .footer { padding-top: 48px; }
+  .footer__inner { gap: 32px 48px; }
+  .footer ul { gap: 0; }
+  .footer a { display: inline-block; padding: 10px 0; }
+  .footer a::after { bottom: 8px; }
+  .footer__mark { margin-top: 32px !important; }
+  .nav a:not(.btn) { padding: 12px 0; }
+}
+@media (max-width: 720px) {
+  .card { --tilt: 0deg !important; flex-basis: min(78vw, 320px); }
+}
+@media (max-width: 520px) {
+  :root { --sp: 56px; }
+  .section .why__title { font-size: clamp(1.4rem, 7.4vw, 2rem); letter-spacing: -.035em; }
+  .section h2 { font-size: clamp(1.9rem, 8.6vw, 2.3rem); letter-spacing: -.04em; }
+  .about-band h2, .zakelijk-banner h2 { font-size: clamp(2rem, 9.5vw, 2.6rem); }
+  .mission__statement { font-size: clamp(1.75rem, 7.6vw, 2.2rem); letter-spacing: -.04em; }
+  .contact .contact__title { font-size: clamp(3.4rem, 18vw, 5rem); }
+  .contact__mail { font-size: clamp(1.15rem, 5.6vw, 1.5rem); }
+  .routes { padding-block: 32px 0; }
+  .route { min-height: 0; padding: 24px; }
+  .route h3 { font-size: 1.6rem; padding-top: 1.2rem; }
+  .route__go { width: 48px; height: 48px; }
+  .faq__item summary { padding: 20px 0; font-size: 1.15rem; }
+  .stat { padding: 20px 0 4px; }
+  .footer__brand { font-size: 2rem; }
+}
+@media (max-width: 720px) {
+  /* Drie redenen als compacte rijen: cijfer links, tekst rechts */
+  .why__item { grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; padding: 20px; border-radius: 20px; }
+  .why__n { grid-row: 1 / span 2; margin: 0; }
+  .why__item strong { font-size: 1.3rem; align-self: end; }
+  .why__list { gap: 12px; }
+  .step { padding: 24px 20px; }
+  .step__art { max-height: 120px; }
+  .step__num { margin-bottom: .4rem; font-size: 1.15rem; }
+  .about-band .pillar { padding: 20px; }
+  .about-band .pillar h3 { font-size: 1.35rem; margin: .4rem 0; }
+  .about-band .pillars { margin-bottom: 40px; }
+  .contact .order__card { padding: 24px 20px; }
+  .contact .form { gap: 16px; }
 }
