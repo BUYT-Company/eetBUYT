@@ -1055,3 +1055,5 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 /* Afsluiter verhaalpagina: de impactsectie heeft al ruimte eronder, dus geen dubbele marge erbovenop */
 .story-cta { padding-block: 0 clamp(72px, 8vw, 112px); }
 .story-cta h2 { margin-bottom: 1.8rem; }
+/* "Lees meer" mag de regelhoogte van de alinea niet opdrijven: de negatieve marge vangt de hoogte van de pil op */
+.hero .lead .lead__more { margin: -.3em .1em; padding: .12em .6em .16em; line-height: 1.25; vertical-align: baseline; }
