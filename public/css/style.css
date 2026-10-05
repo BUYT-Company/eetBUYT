@@ -1221,3 +1221,8 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 .footer { background: #FFD5BD; }
 .footer__scene { background: #FFD5BD; }
 .footer__bottom { max-width: none; margin: 0; background: var(--green-800); padding-inline: max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter))); }
+
+/* Footer: kalm bosgroen (tussen poldergroen en diepgroen) met roomwitte lijnen; past bij het donkere linkenpaneel en de balk in inkt */
+.footer { background: #1F6A4D; }
+.footer__scene { background: #1F6A4D; }
+.footer__bottom { background: var(--ink); }
