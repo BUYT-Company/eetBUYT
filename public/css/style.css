@@ -1211,3 +1211,13 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 .footer { background: var(--green); }
 .footer__scene { background: var(--green); }
 .footer__bottom { background: var(--green-800); }
+
+/* Footer: mint met moerbeikleurige lijnen (kleurstudie 06); de balk eronder blijft inkt zodat de footer met het donkere paneel meegaat */
+.footer { background: #D4E8DA; }
+.footer__scene { background: #D4E8DA; }
+.footer__bottom { background: var(--ink); }
+
+/* Footer: perzik met dennengroene lijnen (kleurstudie 03). De copyrightbalk loopt over de volle breedte van het scherm in dennengroen. */
+.footer { background: #FFD5BD; }
+.footer__scene { background: #FFD5BD; }
+.footer__bottom { max-width: none; margin: 0; background: var(--green-800); padding-inline: max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter))); }
