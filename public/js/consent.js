@@ -62,7 +62,7 @@
     banner.setAttribute('aria-describedby', 'consent-text');
     banner.innerHTML = `
       <p class="consent__title" id="consent-title">Een koekje erbij?</p>
-      <p class="consent__text" id="consent-text">We gebruiken Google Analytics om te zien welke pagina's bezocht worden, zodat we de site kunnen verbeteren. Dat gebeurt alleen als jij dat goedvindt, en je gegevens worden niet gebruikt voor advertenties.</p>
+      <p class="consent__text" id="consent-text">We gebruiken Google Analytics om te zien welke pagina's bezocht worden, zodat we de site kunnen verbeteren. Dat gebeurt alleen als jij dat goedvindt, en je gegevens worden niet gebruikt voor advertenties. <a href="privacy.html">Lees onze privacyverklaring</a>.</p>
       <div class="consent__actions">
         <button type="button" class="consent__btn consent__btn--yes" data-consent="ja">Accepteren</button>
         <button type="button" class="consent__btn consent__btn--no" data-consent="nee">Weigeren</button>
@@ -101,7 +101,11 @@
       btn.className = 'consent__link';
       btn.textContent = 'Cookie-instellingen';
       btn.addEventListener('click', show);
-      bottom.appendChild(btn);
+      const priv = document.createElement('a');
+      priv.className = 'consent__link';
+      priv.href = 'privacy.html';
+      priv.textContent = 'Privacyverklaring';
+      bottom.append(priv, btn);
     }
     const saved = read();
     if (saved === 'ja' || saved === 'nee') apply(saved);

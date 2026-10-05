@@ -1256,3 +1256,6 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 .legal__table th, .legal__table td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--hair); }
 .legal__table th { background: var(--sand); font-weight: 700; }
 .legal__table tr:last-child td { border-bottom: 0; }
+.consent a { color: inherit; text-underline-offset: 2px; }
+.footer__bottom .consent__link { display: inline-block; margin: 8px 6px 0; }
+.footer__bottom { text-align: center; }
