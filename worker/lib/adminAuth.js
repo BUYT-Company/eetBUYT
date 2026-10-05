@@ -135,7 +135,7 @@ async function handleLoginPost(form, accounts, env) {
     status: 303,
     headers: {
       Location: safeNext,
-      'Set-Cookie': `${COOKIE}=${token}; Path=/admin; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_DAYS * 24 * 60 * 60}`
+      'Set-Cookie': `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_DAYS * 24 * 60 * 60}`
     }
   });
 }
@@ -143,7 +143,7 @@ async function handleLoginPost(form, accounts, env) {
 export function handleLogout() {
   return new Response(null, {
     status: 303,
-    headers: { Location: '/admin/login', 'Set-Cookie': `${COOKIE}=; Path=/admin; HttpOnly; Secure; SameSite=Lax; Max-Age=0` }
+    headers: { Location: '/admin/login', 'Set-Cookie': `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0` }
   });
 }
 

@@ -176,7 +176,7 @@
         <div class="minicart__foot">
           <p class="minicart__sum"><span data-subtotal-label>Subtotaal</span><strong data-cart-subtotal></strong></p>
           <p class="minicart__note" data-price-note hidden></p>
-          <a class="btn btn--primary btn--block" href="afrekenen.html"><span class="btn__label">Afrekenen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--primary btn--block" href="afrekenen.html"><span class="btn__label">Afrekenen</span><span class="btn__arrow" aria-hidden="true"><span class="gate-arrow">&rarr;</span><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></a>
           <p class="minicart__note" data-payment-note>We nemen contact met je op over betaling en bezorging.</p>
         </div>
       </div>

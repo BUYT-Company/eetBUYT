@@ -10,6 +10,16 @@ import { upcomingDates, formatDelivery } from './lib/delivery.js';
 import { listOrders, orderDetail } from './lib/admin.js';
 import { currentUserName, handleLogin, handleLogout, redirectToLogin, setup2fa } from './lib/adminAuth.js';
 
+// Verkoopschakelaar: SALES_OPEN staat in wrangler.jsonc. Staat die niet op "true", dan kunnen alleen
+// ingelogde beheerders (/admin/login) bestellen. Dit is de echte afsluiting; de blur op de site is alleen de weergave.
+const salesOpen = (env) => env.SALES_OPEN === 'true';
+const isDeveloper = async (request, env) => Boolean(await currentUserName(request, env));
+
+async function handleShopStatus(request, env) {
+  const open = salesOpen(env);
+  return json(200, { ok: true, open, dev: !open && (await isDeveloper(request, env)) });
+}
+
 const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004 (daar is het de echte grens)
 
 const MAX_BODY_BYTES = 20 * 1024;
@@ -73,6 +83,8 @@ function orderMessage(order, result, origin) {
 }
 
 async function handleOrder(request, env, ctx) {
+  if (!salesOpen(env) && !(await isDeveloper(request, env))) return error(403, 'sales_closed');
+
   const body = await readBody(request);
   if (body.tooLarge) return error(413, 'invalid_input');
   if (body.bad || body.form) return error(400, 'invalid_input');
@@ -208,7 +220,8 @@ const routes = {
   '/api/order': { POST: handleOrder },
   '/api/request': { POST: handleRequest },
   '/api/newsletter': { POST: handleNewsletter },
-  '/api/delivery-slots': { GET: handleDeliverySlots }
+  '/api/delivery-slots': { GET: handleDeliverySlots },
+  '/api/shop-status': { GET: handleShopStatus }
 };
 
 export default {

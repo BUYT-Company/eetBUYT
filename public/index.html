@@ -34,6 +34,7 @@
       setTimeout(function () { d.classList.remove('intro-on'); d.classList.add('is-ready', 'force'); }, 9000);
     })();
   </script>
+  <script src="js/shop-gate.js"></script>
   <script src="js/consent.js" defer></script>
   <script src="js/cart.js" defer></script>
   <script src="js/brand.js" defer></script>
@@ -113,7 +114,7 @@
           <h1 id="hero-title" data-split>Kook je met <em>ons mee?</em></h1>
           <p class="lead" data-in style="--d:1">In Nederland worden elk jaar 330.000 ganzen geschoten, om schade en overlast bij boeren te voorkomen. Van al die ganzen blijft 70%&nbsp;onbenut. BUYT brengt de gans op het bord. <a class="lead__more" href="#waarom">Lees meer</a></p>
           <div class="hero__actions" data-in style="--d:2">
-            <a class="btn btn--primary" href="#producten"><span class="btn__label">Bestel nu</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn--primary" href="#producten"><span class="btn__label">Bestel nu</span><span class="btn__arrow" aria-hidden="true"><span class="gate-arrow">&rarr;</span><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></a>
             <a class="btn btn--outline" href="#zakelijk"><span class="btn__label">Zakelijk bestellen</span></a>
           </div>
         </div>
@@ -151,6 +152,8 @@
           <button class="round" type="button" data-dir="1" aria-label="Volgende producten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </div>
+      <div class="shop-area">
+      <div class="shop-area__body" data-shop-body>
       <div class="carousel" tabindex="0" role="region" aria-label="Onze producten, scroll of sleep opzij">
         <!-- Producten: elke kaart komt uit data/products.json (prijs, verpakking, ingrediënten). De tekst hieronder is de vaste
              opmaak; cart.js zet de prijzen uit de json erin. Foto ontbreekt nog? Zet de foto in assets/products/<id>-640.webp
@@ -239,8 +242,22 @@
         </ul>
       </div>
       <div class="wrap products-foot">
-        <a class="btn btn--dark btn--cart" href="afrekenen.html"><span class="btn__label">Naar je mandje</span><span class="btn__arrow" aria-hidden="true">&rarr;</span><span class="btn__count" data-cart-count hidden>0</span></a>
+        <a class="btn btn--dark btn--cart" href="afrekenen.html"><span class="btn__label">Naar je mandje</span><span class="btn__arrow" aria-hidden="true"><span class="gate-arrow">&rarr;</span><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="btn__count" data-cart-count hidden>0</span></a>
         <p class="products-foot__note">We bezorgen voor nu alleen in Amsterdam.</p>
+      </div>
+      </div>
+      <!-- Verkoopschakelaar: dit blok verdwijnt zodra SALES_OPEN in wrangler.jsonc op "true" staat (zie docs/verkoop-openzetten.md). -->
+      <div class="shop-lock" role="group" aria-labelledby="shop-lock-title">
+        <div class="shop-lock__card">
+          <svg class="shop-lock__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <h3 id="shop-lock-title">Binnenkort bestellen mogelijk</h3>
+          <p>We regelen de laatste dingen, zodat je straks met een gerust hart kunt bestellen. Wil je het als eerste weten?</p>
+          <div class="shop-lock__actions">
+            <a class="btn btn--primary" href="#nieuwsbrief"><span class="btn__label">Houd me op de hoogte</span></a>
+            <a class="shop-lock__link" href="#zakelijk">Zakelijk? Neem contact op</a>
+          </div>
+        </div>
+      </div>
       </div>
     </section>
 
@@ -626,7 +643,7 @@
       </div>
     </section>
 
-    <section class="section newsletter" aria-labelledby="newsletter-title">
+    <section class="section newsletter" id="nieuwsbrief" aria-labelledby="newsletter-title">
       <div class="newsletter__panel reveal">
         <h2 id="newsletter-title" class="newsletter__title">Land in onze<br><span class="newsletter__line">mailbox.</span></h2>
         <form name="nieuwsbrief" method="POST" action="/api/newsletter" class="newsletter__form">

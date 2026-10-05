@@ -96,7 +96,8 @@
         invalid_input: 'Controleer je gegevens (naam, e-mailadres, adres, postcode en bezorgmoment) en probeer het opnieuw.',
         turnstile_failed: 'We konden niet controleren dat je geen robot bent. Probeer het opnieuw.',
         rate_limited: 'Je hebt kort achter elkaar meerdere bestellingen geplaatst. Probeer het over een uur opnieuw of neem contact met ons op.',
-        slot_full: 'Dit bezorgmoment is intussen vol. Kies hierboven een ander moment en probeer het opnieuw.'
+        slot_full: 'Dit bezorgmoment is intussen vol. Kies hierboven een ander moment en probeer het opnieuw.',
+        sales_closed: 'Bestellen is nog niet mogelijk. Je mandje staat klaar zodra we open zijn.'
       }[code] || 'Je bestelling is niet verstuurd. Je mandje staat nog klaar. Probeer het later opnieuw.');
       return;
     }

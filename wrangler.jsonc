@@ -20,7 +20,11 @@
   // verklaart waarom SUPABASE_URL/OWNER_EMAIL steeds uit het dashboard leken te verdwijnen.
   "vars": {
     "SUPABASE_URL": "https://hfaaufsdonsitjfwzvrk.supabase.co",
-    "OWNER_EMAIL": "eetbuyt@gmail.com"
+    "OWNER_EMAIL": "eetbuyt@gmail.com",
+    // VERKOOPSCHAKELAAR. "false": de productenpagina is geblurd ("Binnenkort bestellen mogelijk") en /api/order weigert
+    // iedereen behalve ingelogde beheerders (/admin/login). "true": de winkel is open zoals voorheen.
+    // Openzetten bij livegang: zie docs/verkoop-openzetten.md.
+    "SALES_OPEN": "false"
   },
   "observability": { "enabled": true }
 }
