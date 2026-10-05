@@ -67,8 +67,7 @@ Een **CMC** vraagt geen merkregistratie en is goedkoper dan een **VMC**. Dit is 
 - DMARC staat streng (`p=quarantine; pct=100`) op `eetbuyt.nl` en `mail.eetbuyt.nl`. Alle vijf afzenders slagen voor SPF, DKIM en DMARC.
 - **DNS staat in Cloudflare** (nameservers `robin` en `remy`), niet in TransIP. TransIP is alleen de registrar en mailhost. Alle DNS-wijzigingen doe je in Cloudflare.
 - `eetbuyt.nl` en `www.eetbuyt.nl` draaien op de Worker `buyt-website`. Het logo is bereikbaar op `https://eetbuyt.nl/assets/bimi-logo.svg` (200, `image/svg+xml`).
-- De BIMI-records staan er nog met de tijdelijke logo-url `https://buyt-website.eetbuyt.workers.dev/assets/bimi-logo.svg`.
-- **Nog te doen:** pas in `default._bimi` en `default._bimi.mail` de waarde `l=` aan naar `https://eetbuyt.nl/assets/bimi-logo.svg`, zodat de logo-url niet van het workers.dev-adres afhangt.
+- De BIMI-records (`default._bimi` en `default._bimi.mail`) wijzen sinds 5 okt 2026 naar `https://eetbuyt.nl/assets/bimi-logo.svg`.
 - Zonder certificaat toont alleen Yahoo/AOL het logo. Gmail en Apple Mail wachten op een certificaat.
 
 ## Later: een certificaat voor Gmail en Apple Mail (CMC)
