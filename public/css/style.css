@@ -1171,3 +1171,33 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 /* Tekst verschijnt zoals op upfront.nl: kort en zacht omhoog, uitlopend. Zonder JavaScript of na 9 s blijft alles gewoon zichtbaar. */
 .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity .5s cubic-bezier(0, 0, .3, 1) var(--rd, 0ms), transform .5s cubic-bezier(0, 0, .3, 1) var(--rd, 0ms); }
 .js .reveal.in, .js.force .reveal { opacity: 1; transform: none; }
+
+/* Mandjepaneel: zakt zacht onder het icoon vandaan met een lichte schaal; sluiten gaat sneller dan openen. */
+.minicart { animation: none; opacity: 0; transform: translateY(-10px) scale(.96); transform-origin: calc(100% - 28px) 0; transition: opacity .2s ease, transform .3s cubic-bezier(.4, 0, 1, 1); }
+.minicart.is-open { opacity: 1; transform: none; transition: opacity .3s ease, transform .5s cubic-bezier(.2, .9, .3, 1.08); }
+.minicart__scrim { opacity: 0; transition: opacity .3s ease; }
+.minicart__scrim.is-open { opacity: 1; }
+.minicart.is-opening .minicart__head, .minicart.is-opening .cart-line, .minicart.is-opening .minicart__foot, .minicart.is-opening .minicart__empty { animation: panel-item .45s cubic-bezier(0, 0, .3, 1) both; }
+.minicart.is-opening .cart-line:nth-child(2) { animation-delay: .05s; }
+.minicart.is-opening .cart-line:nth-child(3) { animation-delay: .1s; }
+.minicart.is-opening .cart-line:nth-child(n+4) { animation-delay: .15s; }
+.minicart.is-opening .minicart__foot, .minicart.is-opening .minicart__empty { animation-delay: .12s; }
+@keyframes panel-item { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* Menu op telefoon en tablet: het paneel klapt van boven uit de balk open, de links schuiven één voor één aan.
+   Het icoon draait al mee (streepjes worden een kruis). Sluiten is korter dan openen. */
+@media (max-width: 900px) {
+  .nav { display: flex; visibility: hidden; pointer-events: none; opacity: 0; transform: translateY(-8px); clip-path: inset(0 0 100% 0 round 0 0 24px 24px); transition: clip-path .32s cubic-bezier(.4, 0, 1, 1), opacity .2s ease, transform .32s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .32s; }
+  .nav.open { display: flex; visibility: visible; pointer-events: auto; opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 0 0 24px 24px); transition: clip-path .55s cubic-bezier(.2, .8, .3, 1), opacity .3s ease, transform .55s cubic-bezier(.2, .8, .3, 1), visibility 0s; }
+  .nav > a { opacity: 0; transform: translateY(-8px); transition: opacity .15s ease, transform .15s ease; }
+  .nav.open > a { opacity: 1; transform: none; transition: opacity .4s ease, transform .5s cubic-bezier(.2, .8, .3, 1); }
+  .nav.open > a:nth-child(1) { transition-delay: .08s; }
+  .nav.open > a:nth-child(2) { transition-delay: .13s; }
+  .nav.open > a:nth-child(3) { transition-delay: .18s; }
+  .nav.open > a:nth-child(4) { transition-delay: .23s; }
+  .nav.open > a:nth-child(5) { transition-delay: .28s; }
+  .nav.open > a:nth-child(6) { transition-delay: .33s; }
+  .burger { transition: background-color .25s ease, transform .5s var(--spring); }
+  .burger[aria-expanded="true"] { background: var(--ink); }
+  .burger[aria-expanded="true"] span { background: var(--cream); }
+}

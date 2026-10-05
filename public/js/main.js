@@ -89,12 +89,16 @@
 
   const burger = $('.burger');
   const nav = document.getElementById('nav');
+  let menuY = 0;
   const setMenu = (open) => {
+    if (open) menuY = window.scrollY;
     nav.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', String(open));
     burger.setAttribute('aria-label', open ? 'Menu sluiten' : 'Menu openen');
   };
   burger.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+  /* Doorscrollen klapt het open menu weer in, met dezelfde animatie als bij het sluiten met de knop */
+  scrollTasks.push(() => { if (nav.classList.contains('open') && window.scrollY - menuY > 40) setMenu(false); });
   nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
 

@@ -153,7 +153,9 @@
   let panel = null;
   let scrim = null;
   let iconBtn = null;
-  const isOpen = () => Boolean(panel && !panel.hidden);
+  let closeTimer = null;
+  let openY = 0;
+  const isOpen = () => Boolean(panel && panel.classList.contains('is-open'));
   const buildPanel = () => {
     const header = $('.site-header');
     const shopHref = document.getElementById('producten') ? '#producten' : 'index.html#producten';
@@ -194,15 +196,24 @@
     if (!panel) buildPanel();
     iconBtn = btn;
     render();
+    clearTimeout(closeTimer);
+    openY = window.scrollY;
     panel.hidden = false;
     scrim.hidden = false;
+    void panel.offsetWidth; /* eerst de beginstand laten tekenen, dan pas de overgang starten */
+    panel.classList.add('is-open', 'is-opening');
+    setTimeout(() => panel.classList.remove('is-opening'), 700);
+    scrim.classList.add('is-open');
     btn.setAttribute('aria-expanded', 'true');
     panel.focus({ preventScroll: true });
   };
   const closePanel = (returnFocus = true) => {
     if (!isOpen()) return;
-    panel.hidden = true;
-    scrim.hidden = true;
+    panel.classList.remove('is-open');
+    scrim.classList.remove('is-open');
+    /* na de uitgaande overgang pas echt verbergen (uit de tabvolgorde en voor schermlezers) */
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => { if (!isOpen()) { panel.hidden = true; scrim.hidden = true; } }, 320);
     if (iconBtn) {
       iconBtn.setAttribute('aria-expanded', 'false');
       if (returnFocus) iconBtn.focus({ preventScroll: true });
@@ -265,6 +276,8 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isOpen()) closePanel();
   });
+  /* Doorscrollen klapt het mandjepaneel weer in */
+  window.addEventListener('scroll', () => { if (isOpen() && window.scrollY - openY > 40) closePanel(false); }, { passive: true });
   document.addEventListener('focusin', (e) => {
     if (!isOpen()) return;
     if (panel.contains(e.target) || e.target.closest('.cart-btn')) return;
