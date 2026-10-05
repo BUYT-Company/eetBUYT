@@ -1167,3 +1167,7 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 .footer { background: #EAF3C4; }
 .footer__scene { background: linear-gradient(180deg, #EAF3C4 0%, #F8EFC9 38%, #FFD9B8 72%, #FFD3B0 100%); }
 .footer__bottom { background: var(--green-800); color: rgba(255, 248, 232, .86); opacity: 1; padding-block: 18px 26px; }
+
+/* Tekst verschijnt zoals op upfront.nl: kort en zacht omhoog, uitlopend. Zonder JavaScript of na 9 s blijft alles gewoon zichtbaar. */
+.js .reveal { opacity: 0; transform: translateY(20px); transition: opacity .5s cubic-bezier(0, 0, .3, 1) var(--rd, 0ms), transform .5s cubic-bezier(0, 0, .3, 1) var(--rd, 0ms); }
+.js .reveal.in, .js.force .reveal { opacity: 1; transform: none; }

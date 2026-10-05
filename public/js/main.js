@@ -216,7 +216,7 @@
         });
       }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
     : null;
-  $$('.reveal, [data-split]').filter((el) => !el.closest('.hero')).forEach((el) => {
+  $$('[data-split]').filter((el) => !el.closest('.hero')).forEach((el) => {
     if (io) io.observe(el);
     else el.classList.add('in');
   });
