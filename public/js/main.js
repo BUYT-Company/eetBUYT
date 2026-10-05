@@ -141,8 +141,14 @@
     const target = document.getElementById(decodeURIComponent(hash.slice(1)));
     if (!target) return;
     e.preventDefault();
+    /* Op mobiel staat het verhaal op een eigen pagina: een anker naar een verborgen blok opent die pagina. */
+    if (!target.getClientRects().length && $('.story-teaser')) { location.href = `verhaal.html${hash}`; return; }
     glideTo(target, hash);
   });
+  if (location.hash.length > 1 && $('.story-teaser')) {
+    const t = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (t && !t.getClientRects().length) location.replace(`verhaal.html${location.hash}`);
+  }
 
   /* Intro: logo, dan een groene golf. Eén keer per sessie, overslaan met een klik of toets. */
   const ready = () => {

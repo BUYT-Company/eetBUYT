@@ -919,3 +919,66 @@ h1, h2, h3 { overflow-wrap: anywhere; }
   .contact .order__card { padding: 24px 20px; }
   .contact .form { gap: 16px; }
 }
+
+/* Verhaalpagina en ingang ernaartoe */
+.story-teaser { display: none; }
+.story-cta { text-align: center; }
+.story-cta h2 { margin-bottom: 1.6rem; }
+.story-cta__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+
+/* Mobiel: producten eerst, het verhaal staat op verhaal.html */
+@media (max-width: 720px) {
+  .hide-mobile { display: none !important; }
+
+  /* Hero: kort, met de bestelknop direct in beeld */
+  .hero__inner { padding-block: 28px 20px; }
+  .hero h1 { font-size: clamp(2.5rem, 12vw, 3rem); margin-bottom: .9rem; }
+  .hero .lead { font-size: .98rem; line-height: 1.5; margin-bottom: 1.25rem; }
+  .hero__actions { flex-wrap: nowrap; gap: 10px; }
+  .hero__actions .btn__label { padding: .85rem 1.15rem; font-size: .92rem; }
+  .hero__actions .btn__arrow { min-width: 2rem; }
+  .hero__art { height: 120px; }
+
+  /* Producten: twee kolommen, zoals een webwinkel */
+  .products-section { padding-top: 40px; padding-bottom: 40px; overflow: visible; }
+  .products-head { margin-bottom: 16px; }
+  .carousel { container-type: normal; overflow: visible; padding: 0; margin: 0; }
+  .track { width: auto; padding: 0 var(--gutter); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+  .card { flex: none; min-width: 0; transform: none !important; transition: none; }
+  .card__img { border-radius: 16px; margin-bottom: .7rem; }
+  .card h3 { font-size: 1.05rem; line-height: 1.15; margin-bottom: .45rem; }
+  .pricing { gap: .3rem; margin-bottom: .7rem; }
+  .pricing__pack { flex-direction: column-reverse; align-items: flex-start; gap: .15rem; padding: 0; border: 0; border-radius: 0; font-size: .8rem; font-weight: 500; color: var(--muted); }
+  .pricing__est { font-size: .8rem; font-weight: 600; }
+  .pricing__est b { font-size: 1.5rem; }
+  .pricing__kg, .pricing__kg strong, .pricing__kg span, .pricing__kg .approx { font-size: .75rem; }
+  .card .btn__label { padding: .8rem .5rem; font-size: .88rem; }
+  .card .btn__arrow { min-width: 2rem; }
+  .stepper button { width: 40px; height: 40px; }
+  .stepper__count { font-size: 0; }
+  .stepper__count [data-step-count] { font-size: 1rem; }
+  /* De vijfde kaart staat alleen: breed met foto links */
+  .card:last-child:nth-child(odd) { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 12px; align-content: start; }
+  .card:last-child:nth-child(odd) .card__img { grid-row: 1 / span 3; margin: 0; }
+  .products-foot { flex-direction: column; align-items: stretch; margin-top: 28px; gap: 12px; text-align: center; }
+  .products-foot .btn { justify-content: center; }
+  .products-foot .btn__label { flex: 1; }
+
+  /* Ingang naar het verhaal */
+  .story-teaser { display: block; padding-block: 0 var(--sp); }
+  .story-teaser h2 { margin-bottom: .8rem; }
+  .story-teaser__lead { margin: 0 0 20px; color: var(--muted); font-size: 1.05rem; }
+  .story-links { list-style: none; margin: 0 0 28px; padding: 0; border-top: 1px solid var(--hair); }
+  .story-links a { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; padding: 12px 0; border-bottom: 1px solid var(--hair); text-decoration: none; font: 700 1.05rem/1.25 var(--font-display); letter-spacing: -.02em; color: var(--ink); }
+  .story-links svg { flex: none; width: 20px; height: 20px; color: var(--green); transition: transform .25s var(--ease-out); }
+  .story-links a:active svg { transform: translateX(4px); }
+  .zakelijk-banner { margin-bottom: 56px; }
+  .newsletter { padding-block: 0 var(--sp); }
+  .footer { margin-top: 0; }
+}
+@media (max-width: 720px) {
+  .hero__art { align-self: stretch; width: 100%; }
+  .hero__actions .btn__label { white-space: nowrap; padding: .85rem 1rem; }
+  .hero__actions .btn { flex: 0 1 auto; }
+  .hero__actions .btn--primary .btn__label { padding-right: .8rem; }
+}
