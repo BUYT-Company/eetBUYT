@@ -33,7 +33,7 @@ Domein-eigenschap `eetbuyt.nl` is geverifieerd (DNS-record in Cloudflare, niet v
 - [ ] **Netlify** minimaal twee weken laten staan als terugval. Daarna Netlify Forms en Functions opruimen, en `netlify.toml` en `netlify/` uit de repo halen (zie het ontwerpdocument §12).
 - [ ] **BIMI-certificaat** (CMC of VMC) voor Gmail en Apple Mail: bewust uitgesteld, zie [bimi-instellen.md](bimi-instellen.md).
 - [ ] **Privacyverklaring** bijwerken zodra er iets verandert aan partijen of gegevens (bezorgdienst, Mollie, nieuwsbriefprogramma).
-- [ ] **Zakelijk bestellen**: de link `zakelijk-bestellen.html` op de homepage verwijst naar een pagina die (nog) niet in `public/` staat. Controleer of die pagina bestaat of dat de link moet verwijzen naar `#vragen`.
+- [ ] **Pagina `zakelijk-bestellen.html` maken** (besluit 5 okt 2026). De knop "Naar zakelijk bestellen" in het zakelijke blok op de homepage (`public/index.html`, regel ~271) verwijst er al naar; tot de pagina er is geeft die link bewust een 404. Eerst inspiratie verzamelen. Als de site druk bezocht wordt voordat de pagina klaar is, overweeg dan de link tijdelijk naar `#vragen` te laten wijzen.
 
 ## Klaar
 - [x] Domein `eetbuyt.nl` en `www.eetbuyt.nl` op Cloudflare; `www` stuurt door naar `eetbuyt.nl`, `http` naar `https`.
