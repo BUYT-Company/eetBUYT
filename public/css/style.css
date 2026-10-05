@@ -1057,3 +1057,99 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 .story-cta h2 { margin-bottom: 1.8rem; }
 /* "Lees meer" mag de regelhoogte van de alinea niet opdrijven: de negatieve marge vangt de hoogte van de pil op */
 .hero .lead .lead__more { margin: -.3em .1em; padding: .12em .6em .16em; line-height: 1.25; vertical-align: baseline; }
+
+/* Bedankpagina: gecentreerd, rustige kaarten op een zandkleurige achtergrond. Eén primaire knop, de rest stil. */
+.thanks-page { background: var(--sand); min-height: calc(100vh - var(--header-h)); }
+.thanks { max-width: 40rem; padding-block: clamp(40px, 7vw, 88px) clamp(56px, 8vw, 104px); gap: 24px; justify-items: stretch; text-align: center; }
+.thanks__status > div { display: grid; justify-items: center; gap: 14px; }
+.thanks h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+.thanks__status p { max-width: 32rem; }
+.thanks__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--green); color: var(--cream); }
+.thanks__icon svg { width: 28px; height: 28px; }
+.thanks__card { background: var(--cream); border: 1.5px solid var(--hair); border-radius: var(--radius); padding: clamp(20px, 3.5vw, 32px); text-align: left; display: grid; gap: 16px; }
+.thanks__card h2 { font-size: 1.35rem; letter-spacing: -.03em; margin: 0; }
+.thanks__card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.thanks__badge { padding: .35rem .8rem; border-radius: 999px; background: var(--green); color: var(--cream); font: 700 .78rem/1 var(--font-body); letter-spacing: .04em; text-transform: uppercase; }
+.thanks__lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.thanks__lines li { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+.thanks__lines strong { display: block; font-weight: 700; color: var(--ink); }
+.thanks__lines span { color: var(--muted); font-size: .92rem; }
+.thanks__lines .thanks__price { color: var(--ink); font-size: 1rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.thanks__rows { margin: 0; padding-top: 16px; border-top: 1px solid var(--hair); display: grid; gap: 10px; }
+.thanks__rows div { display: flex; justify-content: space-between; gap: 16px; }
+.thanks__rows dt { color: var(--muted); }
+.thanks__rows dd { margin: 0; text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.thanks__rows .thanks__total { padding-top: 12px; border-top: 1px solid var(--hair); font-weight: 800; }
+.thanks__rows .thanks__total dt, .thanks__rows .thanks__total dd { color: var(--ink); font-size: 1.15rem; }
+.thanks__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.thanks__steps li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 14px; align-items: start; }
+.thanks__steps strong { display: block; color: var(--ink); }
+.thanks__steps span:not(.thanks__n) { color: var(--muted); font-size: .95rem; }
+.thanks__n { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--lime); color: var(--ink); font: 800 .95rem var(--font-display); }
+.thanks__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; padding-top: 8px; }
+.btn--outline-dark .btn__label { border-radius: 999px; border-color: var(--ink); color: var(--ink); }
+.btn--outline-dark:hover .btn__label { background: var(--ink); color: var(--cream); }
+.thanks .thanks__help { margin: 0; font-size: .95rem; color: var(--muted); }
+.thanks__help a { color: var(--ink); font-weight: 600; }
+@media (max-width: 520px) { .thanks__actions .btn { width: 100%; justify-content: center; } .thanks__actions .btn__label { flex: 1; } }
+.thanks { max-width: 44rem; }
+.thanks__lines li, .thanks__steps li, .thanks__rows { line-height: 1.45; }
+.thanks__steps [data-email-to] { overflow-wrap: anywhere; }
+
+/* Bedankpagina: statusblok, knop in de kaart en footer met nieuwsbrief */
+.thanks__statusbox { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 16px; background: rgba(216, 237, 54, .28); }
+.thanks__statusbox strong { display: block; color: var(--ink); font-size: 1.05rem; }
+.thanks__statusbox span:not(.thanks__tick) { color: var(--ink); font-size: .95rem; opacity: .85; }
+.thanks__tick { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: var(--cream); }
+.thanks__tick svg { width: 16px; height: 16px; }
+.thanks__card .btn--block { margin-top: 4px; }
+.thanks__card .btn--block .btn__label { flex: 1; }
+.footer__col { min-width: 0; }
+.footer__col--brand { flex: 1 1 320px; max-width: 420px; }
+.footer__news { margin-top: 20px; display: grid; gap: 12px; }
+.footer .footer__news-text { margin: 0; color: var(--cream); font-weight: 600; }
+.footer__news-row { display: flex; gap: 8px; align-items: center; }
+.footer__news-row input { flex: 1; min-width: 0; padding: .85rem 1.1rem; border: 0; border-radius: 999px; background: rgba(255, 248, 232, .12); color: var(--cream); font: 500 1rem var(--font-body); }
+.footer__news-row input::placeholder { color: rgba(255, 248, 232, .6); }
+.footer__news-row input:focus-visible { outline: 3px solid var(--cream); outline-offset: 2px; }
+.footer__news-row .btn { flex: none; }
+.footer__news-row .btn__label { padding: .85rem 1.3rem; font-size: .95rem; }
+.footer .form__msg--ok { background: var(--lime); color: var(--ink); }
+.footer .form__msg--err { background: var(--coral); color: var(--ink); }
+
+/* Bedankpagina: slanke lichtgroene balk met alleen het merk, zoals een afrekenomgeving */
+.thanks-bar { display: grid; place-items: center; height: 72px; background: var(--lime); border-bottom: 1px solid rgba(18, 51, 38, .14); }
+.thanks-bar__brand { display: inline-flex; align-items: center; gap: 2px; text-decoration: none; color: var(--ink); }
+.thanks-bar__brand img { width: auto; height: 52px; }
+.thanks-bar__brand span { font: 800 1.6rem/1 var(--font-display); letter-spacing: -.05em; }
+.thanks-page { min-height: calc(100vh - 72px); }
+
+/* Bestelblok: een rij die openklapt. De hoogte animeert via grid-rows (geen vaste hoogte nodig), de inhoud schuift mee naar binnen. */
+.thanks__card--fold { gap: 0; padding: 0; overflow: hidden; }
+.thanks__fold-title { margin: 0; font-size: inherit; letter-spacing: normal; }
+.thanks__toggle { display: flex; align-items: center; gap: 12px; width: 100%; padding: clamp(20px, 3.5vw, 28px) clamp(20px, 3.5vw, 32px); border: 0; background: none; cursor: pointer; text-align: left; color: var(--ink); font: 800 1.35rem/1.2 var(--font-display); letter-spacing: -.03em; transition: background-color .25s ease; }
+.thanks__toggle:hover { background: rgba(18, 51, 38, .04); }
+.thanks__toggle:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; border-radius: var(--radius); }
+.thanks__toggle-label { min-width: 0; }
+.thanks__pm { position: relative; flex: none; margin-left: auto; width: 32px; height: 32px; border-radius: 50%; background: var(--sand); transition: background-color .3s ease, transform .5s var(--spring); }
+.thanks__pm i { position: absolute; left: 50%; top: 50%; width: 14px; height: 2.5px; margin: -1.25px 0 0 -7px; border-radius: 2px; background: var(--ink); transition: transform .45s var(--ease-out), opacity .3s ease; }
+.thanks__pm i:last-child { transform: rotate(90deg); }
+.thanks__toggle:hover .thanks__pm { background: var(--lime); }
+.thanks__card.is-open .thanks__pm { transform: rotate(180deg); background: var(--lime); }
+.thanks__card.is-open .thanks__pm i:last-child { transform: rotate(0deg) scaleX(.2); opacity: 0; }
+.thanks__fold { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .55s var(--ease-out), visibility 0s linear .55s; }
+.thanks__card.is-open .thanks__fold { grid-template-rows: 1fr; visibility: visible; transition-delay: 0s; }
+.thanks__fold-inner { min-height: 0; overflow: hidden; display: grid; gap: 16px; padding: 0 clamp(20px, 3.5vw, 32px); opacity: 0; transform: translateY(-8px); transition: opacity .35s ease, transform .55s var(--ease-out), padding .55s var(--ease-out); }
+.thanks__card.is-open .thanks__fold-inner { opacity: 1; transform: none; padding-bottom: clamp(20px, 3.5vw, 32px); transition-delay: .05s, .05s, 0s; }
+.thanks-bar__brand span { font-size: 1.9rem; }
+.thanks-bar { background: var(--green); border-bottom: 0; }
+.thanks-bar__brand { color: var(--cream); }
+.thanks-bar__brand:focus-visible { outline-color: var(--cream); }
+/* Het logo is één kleur (donkergroen); als masker kleuren we het crème zodat het op het groen leesbaar blijft */
+.thanks-bar__logo { display: block; width: 55px; height: 52px; background: var(--cream); -webkit-mask: url("../assets/logo-still.svg") center / contain no-repeat; mask: url("../assets/logo-still.svg") center / contain no-repeat; }
+.thanks-bar__brand { gap: 4px; }
+/* Logo en letters in dezelfde verhouding als de hoofdkop van de site (logo ruim twee keer zo hoog als de letters) */
+.thanks-bar { height: 88px; }
+.thanks-bar__logo { width: 76px; height: 72px; }
+.thanks-bar__brand { gap: 2px; }
+.thanks-page { min-height: calc(100vh - 88px); }

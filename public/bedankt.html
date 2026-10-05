@@ -15,46 +15,31 @@
   <script src="js/brand.js" defer></script>
   <script src="js/subpage.js" defer></script>
   <script src="js/bedankt.js" defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Naar de inhoud</a>
 
-  <header class="site-header">
-    <div class="wrap header__inner">
-      <a class="brand" href="index.html" aria-label="BUYT, naar de homepage">
-        <img src="assets/logo-still.svg" alt="" width="86" height="81">
-        <span class="brand__name">BUYT</span>
-      </a>
-      <nav id="nav" class="nav" aria-label="Hoofdmenu">
-        <a href="index.html#producten">Producten</a>
-        <a href="index.html#zakelijk">Zakelijk</a>
-        <a href="verhaal.html">Ons verhaal</a>
-        <a href="index.html#vragen">Contact</a>
-        <a class="btn btn--primary btn--sm nav__cta" href="index.html#producten"><span class="btn__label">Bestel nu</span></a>
-      </nav>
-      <div class="header__tools">
-        <a class="cart-btn" href="afrekenen.html" aria-label="Winkelmandje, leeg">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
-          <span class="cart-btn__count" data-cart-count hidden>0</span>
-        </a>
-        <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu openen">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
+  <header class="thanks-bar">
+    <a class="thanks-bar__brand" href="index.html" aria-label="BUYT, naar de homepage">
+      <span class="thanks-bar__logo" aria-hidden="true"></span>
+      <span>BUYT</span>
+    </a>
   </header>
 
-  <main id="main">
-    <div class="wrap">
-      <div class="thanks" role="status" aria-live="polite">
+  <main id="main" class="thanks-page">
+    <div class="wrap thanks">
+      <div class="thanks__status" role="status" aria-live="polite">
         <div data-state="laden">
           <p>Even kijken hoe het met je bestelling staat&hellip;</p>
         </div>
         <div data-state="betaald" hidden>
+          <span class="thanks__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
           <h1>Bedankt voor je <em>bestelling</em></h1>
           <p>Je betaling is ontvangen. Je krijgt een bevestiging per e-mail.</p>
         </div>
         <div data-state="aanvraag" hidden>
+          <span class="thanks__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
           <h1>Bedankt voor je <em>bestelling</em></h1>
           <p>We hebben je bestelling ontvangen. We nemen contact met je op over betaling en bezorging in Amsterdam.</p>
         </div>
@@ -71,12 +56,83 @@
           <h1>Bedankt <em>voor je bezoek</em></h1>
           <p>We konden de status van je bestelling niet ophalen. Heb je betaald, dan ontvang je een bevestiging per e-mail. Krijg je die niet, plaats dan je bestelling opnieuw.</p>
         </div>
-        <a class="btn btn--dark" href="index.html"><span class="btn__label">Terug naar de homepage</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
       </div>
+
+      <section class="thanks__card thanks__card--fold" data-summary hidden>
+        <h2 class="thanks__fold-title">
+          <button type="button" class="thanks__toggle" id="summary-toggle" aria-expanded="false" aria-controls="summary-body">
+            <span class="thanks__toggle-label">Bestelling <span data-order-number></span></span>
+            <span class="thanks__badge" data-order-badge></span>
+            <span class="thanks__pm" aria-hidden="true"><i></i><i></i></span>
+          </button>
+        </h2>
+        <div class="thanks__fold" id="summary-body" role="region" aria-labelledby="summary-toggle" inert>
+          <div class="thanks__fold-inner">
+            <ul class="thanks__lines" data-summary-lines></ul>
+            <dl class="thanks__rows">
+              <div data-row="delivery"><dt>Bezorgmoment</dt><dd data-delivery></dd></div>
+              <div data-row="subtotal"><dt>Subtotaal</dt><dd data-subtotal></dd></div>
+              <div data-row="shipping"><dt>Bezorgkosten</dt><dd data-shipping></dd></div>
+              <div class="thanks__total"><dt>Totaal</dt><dd data-total></dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="thanks__card" data-next hidden aria-labelledby="next-title">
+        <h2 id="next-title">Wat gebeurt er nu?</h2>
+        <div class="thanks__statusbox">
+          <span class="thanks__tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <div><strong data-status-title></strong><span data-status-text></span></div>
+        </div>
+        <ol class="thanks__steps">
+          <li><span class="thanks__n" aria-hidden="true">1</span><div><strong>Bevestiging per e-mail</strong><span>Je ontvangt een bevestiging van je bestelling en het gekozen bezorgmoment<span data-email-to></span>.</span></div></li>
+          <li><span class="thanks__n" aria-hidden="true">2</span><div><strong>Bezorging in Amsterdam</strong><span>Op het bezorgmoment dat je koos.</span></div></li>
+        </ol>
+        <a class="btn btn--outline-dark btn--block" href="index.html"><span class="btn__label">Terug naar de homepage</span></a>
+      </section>
+      <p class="thanks__help">Vragen over je bestelling? Mail ons op <a href="mailto:info@eetbuyt.nl">info@eetbuyt.nl</a>.</p>
     </div>
   </main>
 
   <footer class="footer">
+    <div class="wrap footer__inner">
+      <div class="footer__col footer__col--brand">
+        <p class="footer__brand">BUYT</p>
+        <p>Amsterdam</p>
+        <p>Nederland</p>
+        <form class="footer__news" name="nieuwsbrief" method="POST" action="/api/newsletter">
+          <p class="footer__news-text">Word als eerste wild van ons laatste nieuws.</p>
+          <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="footer__news-row">
+            <label class="sr-only" for="f-footer-email">E-mailadres</label>
+            <input id="f-footer-email" name="email" type="email" placeholder="Jouw e-mailadres" autocomplete="email" required>
+            <button class="btn btn--primary" type="submit"><span class="btn__label">Abonneren</span></button>
+          </div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl"></div>
+          <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven. Wild!</p>
+          <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
+        </form>
+      </div>
+      <div class="footer__col">
+        <p class="footer__head">Overzicht</p>
+        <ul>
+          <li><a href="index.html#producten">Producten</a></li>
+          <li><a href="afrekenen.html">Winkelmandje</a></li>
+          <li><a href="index.html#zakelijk">Zakelijk</a></li>
+          <li><a href="verhaal.html">Ons verhaal</a></li>
+          <li><a href="verhaal.html#over-ons">Over ons</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <p class="footer__head">Contact &amp; hulp</p>
+        <ul>
+          <li><a href="index.html#vragen">Contact opnemen</a></li>
+          <li><a href="mailto:info@eetbuyt.nl">info@eetbuyt.nl</a></li>
+          <li><a href="index.html#faq">Veelgestelde vragen</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="wrap footer__bottom">
       <p>&copy; 2026 BUYT. Daar word je wild van. All rights reserved.</p>
     </div>

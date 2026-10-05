@@ -288,7 +288,7 @@
     paymentsLive: () => Boolean(catalog && catalog.paymentsLive === true),
     subtotal,
     shipping,
-    items: () => lines.filter((l) => product(l.id)).map((l) => ({ id: l.id, name: product(l.id).name, pack: product(l.id).pack || '', qty: l.qty, priceCents: product(l.id).priceCents, priceLabel: priceLabel(product(l.id)) }))
+    items: () => lines.filter((l) => product(l.id)).map((l) => ({ id: l.id, name: product(l.id).name, pack: product(l.id).pack || '', qty: l.qty, priceCents: product(l.id).priceCents, priceLabel: priceLabel(product(l.id)), lineTotal: lineTotalLabel(product(l.id), l.qty) }))
   };
 
   render();

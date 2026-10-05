@@ -102,6 +102,20 @@
     }
 
     try { sessionStorage.removeItem('buyt-request-id'); } catch (_) {}
+    /* De bedankpagina laat dit zien; de server bepaalt de definitieve prijzen, dit zijn de bedragen zoals de klant ze zag. */
+    try {
+      const ship = cart.shipping();
+      sessionStorage.setItem('buyt-last-order', JSON.stringify({
+        number: result.order_number,
+        items: items.map((l) => ({ name: l.name, pack: l.pack, qty: l.qty, total: l.lineTotal })),
+        subtotal: (document.querySelector('[data-cart-subtotal]') || {}).textContent || '',
+        shipping: ship === null ? 'Kosten volgen' : ship === 0 ? 'Gratis' : new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(ship / 100),
+        total: cart.totalLabel(),
+        deliveryDate,
+        deliveryWindow,
+        email: String(data.get('email') || '')
+      }));
+    } catch (_) {}
     /* Online betalen (fase 2): heeft de server een betaallink gemaakt, dan gaat de klant daarheen */
     if (result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
