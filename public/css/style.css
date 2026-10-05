@@ -1039,3 +1039,19 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 }
 .story-teaser h2 { font-size: clamp(2.3rem, 5vw, 4rem); margin-bottom: 1.2rem; }
 @media (max-width: 520px) { .story-teaser h2 { font-size: clamp(1.9rem, 8.6vw, 2.3rem); letter-spacing: -.04em; } }
+
+/* Teamfoto: recht, groot en rustig. Zachte schaduw met offset, bijschrift links uitgelijnd onder de foto. */
+.about-band .about__photo { max-width: 1040px; margin: 0 auto; transform: none; }
+.about-band .about__photo img { aspect-ratio: 16 / 10; object-position: 50% 52%; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(18, 51, 38, .12), 0 28px 56px -24px rgba(18, 51, 38, .55); }
+.about-band .about__photo figcaption { margin-top: 1.1rem; text-align: left; font-size: 1rem; font-weight: 600; line-height: 1.4; }
+@media (max-width: 720px) {
+  .about-band .about__photo img { aspect-ratio: 4 / 3; border-radius: 18px; }
+  .about-band .about__photo figcaption { margin-top: .9rem; font-size: .95rem; }
+}
+
+/* Impact: alleen de foto, zonder koraal-verloop eroverheen. Een donkergroene sluier boven (kop) en onder (cijfers) houdt de tekst leesbaar. */
+.section--impact { background-color: var(--forest); background-image: linear-gradient(180deg, rgba(18, 51, 38, .7) 0%, rgba(18, 51, 38, .56) 22%, rgba(18, 51, 38, .2) 44%, rgba(18, 51, 38, 0) 54%, rgba(18, 51, 38, .85) 78%), url("../assets/impact-ganzen-zonsondergang.jpg"); background-blend-mode: normal; background-position: center, center 40%; background-size: cover, cover; background-repeat: no-repeat; }
+.section--impact h2, .section--impact .kicker { text-shadow: 0 1px 2px rgba(18, 51, 38, .35), 0 4px 28px rgba(18, 51, 38, .4); }
+/* Afsluiter verhaalpagina: de impactsectie heeft al ruimte eronder, dus geen dubbele marge erbovenop */
+.story-cta { padding-block: 0 clamp(72px, 8vw, 112px); }
+.story-cta h2 { margin-bottom: 1.8rem; }
