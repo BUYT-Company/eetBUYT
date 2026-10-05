@@ -35,7 +35,7 @@ Ik wil de verkoop van eetBUYT openzetten. Volg docs/verkoop-openzetten.md.
 
 ## Voor de livegang (checklist)
 
-- [ ] KvK-nummer ingeschreven (18 oktober 2026) en ingevuld in `public/privacy.html` en in de footer.
+- [ ] KvK-nummer ingeschreven (19 oktober 2026) en ingevuld in `public/privacy.html` en in de footer.
 - [ ] Algemene voorwaarden, herroepingsrecht en allergeneninformatie staan online.
 - [ ] Privacyverklaring bijgewerkt voor alles wat er sinds 5 oktober bij kwam (bezorgdienst, betaalprovider, ...).
 - [ ] Verwerkersovereenkomsten gecontroleerd: Supabase, Cloudflare, Resend, Google.
