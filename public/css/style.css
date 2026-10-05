@@ -1328,7 +1328,6 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .zb-form__intro em { color: var(--lime); font-style: normal; background-image: none; padding-bottom: 0; }
 .zb-form__intro p:not(.kicker) { color: rgba(255, 248, 232, .9); font-size: 1.15rem; max-width: 24rem; }
 .zb-form__note { margin: 16px 0 0; font-size: .85rem; color: var(--muted); }
-.nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
 @media (max-width: 1000px) { .zb-team__list { grid-template-columns: minmax(0, 1fr); max-width: 32rem; } .zb-types__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .zb-products__list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 720px) { .zb-steps__list, .zb-form__grid { grid-template-columns: minmax(0, 1fr); } .zb-products__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .zb-team__list { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
 @media (max-width: 480px) { .zb-types__list { grid-template-columns: 1fr; } }
