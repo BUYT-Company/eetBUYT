@@ -1201,3 +1201,13 @@ h1, h2, h3 { overflow-wrap: anywhere; }
   .burger[aria-expanded="true"] { background: var(--ink); }
   .burger[aria-expanded="true"] span { background: var(--cream); }
 }
+
+/* Footer met de pen-en-inkt polder (diepgroen en roomwit): roomwitte lucht, donkere afsluiting */
+.footer { background: var(--cream); }
+.footer__scene { background: var(--cream); }
+.footer__bottom { background: var(--ink); }
+
+/* Footer: poldergroen vlak met roomwitte lijntekening (twee kleuren, zoals de hero); copyrightbalk in het diepere groen */
+.footer { background: var(--green); }
+.footer__scene { background: var(--green); }
+.footer__bottom { background: var(--green-800); }
