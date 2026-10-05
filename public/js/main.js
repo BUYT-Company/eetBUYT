@@ -442,6 +442,7 @@
         if (!res.ok) throw new Error(String(res.status));
         form.reset();
         ok.hidden = false;
+        if (window.buytTrack) window.buytTrack('generate_lead', { form: 'contact' });
       } catch (_) {
         err.hidden = false;
       }
@@ -471,6 +472,7 @@
       form.reset();
       ok.hidden = false;
       rememberNews('ingeschreven');
+      if (window.buytTrack) window.buytTrack('sign_up', { method: 'nieuwsbrief' });
       done = true;
     } catch (_) {
       err.hidden = false;

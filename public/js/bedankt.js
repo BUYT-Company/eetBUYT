@@ -22,6 +22,13 @@
     if (!order) return;
 
     $('[data-order-number]').textContent = `BUYT-${order.number}`;
+    /* Eén keer per bestelling meten, ook bij verversen van de pagina */
+    try {
+      if (sessionStorage.getItem('buyt-tracked') !== String(order.number)) {
+        sessionStorage.setItem('buyt-tracked', String(order.number));
+        if (window.buytTrack) window.buytTrack('purchase', { transaction_id: `BUYT-${order.number}`, currency: 'EUR' });
+      }
+    } catch (_) {}
     $('[data-order-badge]').textContent = state === 'betaald' ? 'Betaald' : 'Ontvangen';
     if (order.email) $('[data-email-to]').textContent = ` naar ${order.email}`;
 
@@ -80,6 +87,7 @@
         news.reset();
         ok.hidden = false;
         try { localStorage.setItem('buyt-nieuwsbrief', 'ingeschreven'); } catch (_) {}
+        if (window.buytTrack) window.buytTrack('sign_up', { method: 'nieuwsbrief' });
       } catch (_) {
         err.hidden = false;
       }
