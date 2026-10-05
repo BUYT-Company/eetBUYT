@@ -35,6 +35,10 @@ Domein-eigenschap `eetbuyt.nl` is geverifieerd (DNS-record in Cloudflare, niet v
 - [ ] **Privacyverklaring** bijwerken zodra er iets verandert aan partijen of gegevens (bezorgdienst, Mollie, nieuwsbriefprogramma).
 - [ ] **Pagina `zakelijk-bestellen.html` maken** (besluit 5 okt 2026). De knop "Naar zakelijk bestellen" in het zakelijke blok op de homepage (`public/index.html`, regel ~271) verwijst er al naar; tot de pagina er is geeft die link bewust een 404. Eerst inspiratie verzamelen. Als de site druk bezocht wordt voordat de pagina klaar is, overweeg dan de link tijdelijk naar `#vragen` te laten wijzen.
 
+## Ontwerp en bouw (later)
+- [ ] **BUYT Beheer-portaal en dashboard** (in de stijl van Shopify) ontwerpen en bouwen. Nu is er alleen een eenvoudige bestellijst en detailpagina: `worker/lib/admin.js` (`listOrders`, `orderDetail`) achter de login in `worker/lib/adminAuth.js` (wachtwoord + 2FA, `/admin/...`). Een dashboard zou onder andere kunnen tonen: bestellingen van vandaag en deze week, omzet, openstaande aanvragen en bezorgmomenten per dag. Dit hoort bij het ontwerpdocument ("Fase 3: producten, voorraad, teller").
+- [ ] **E-mail "Bedankt voor je bestelling"** opnieuw ontwerpen. De huidige template staat in `worker/lib/emailTemplates.js` (`orderConfirmationEmail` voor de klant, `orderInternalEmail` voor jullie zelf), verstuurd via Resend (`worker/lib/resend.js`). Denk aan huisstijl, een duidelijke samenvatting, bezorgmoment en contactgegevens, en test in Gmail, Outlook en Apple Mail, zowel licht als donker.
+
 ## Klaar
 - [x] Domein `eetbuyt.nl` en `www.eetbuyt.nl` op Cloudflare; `www` stuurt door naar `eetbuyt.nl`, `http` naar `https`.
 - [x] Verkoopschakelaar (`SALES_OPEN`): productenblok geblurd, bestellen dicht voor bezoekers, beheerders kunnen doorwerken.
