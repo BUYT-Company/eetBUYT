@@ -1162,7 +1162,7 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 .footer { background: #BDDFCF; color: var(--ink); padding-top: clamp(40px, 5vw, 64px); }
 .footer__inner { width: calc(100% - 2 * var(--inset)); max-width: var(--maxw); margin-inline: auto; padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 56px); background: var(--ink); color: rgba(255, 248, 232, .86); border-radius: var(--panel-radius); }
 .footer__scene { margin-top: clamp(32px, 5vw, 64px); }
-.footer__scene img { display: block; width: 100%; height: clamp(190px, 27.5vw, 440px); object-fit: cover; object-position: 50% 100%; }
+.footer__scene img { display: block; width: 100%; height: clamp(190px, 27.5vw, 880px); object-fit: cover; object-position: 50% 100%; }
 .footer__bottom { border-top: 0; color: var(--ink); text-align: center; opacity: .85; padding-block: 8px 28px; }
 .footer__mark { display: none; }
 
