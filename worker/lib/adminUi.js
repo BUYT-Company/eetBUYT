@@ -52,7 +52,7 @@ function headers(extraScript = '') {
     'Cache-Control': 'no-store',
     'X-Robots-Tag': 'noindex',
     'X-Content-Type-Options': 'nosniff',
-    'Referrer-Policy': 'no-referrer',
+    'Referrer-Policy': 'same-origin',
     'X-Frame-Options': 'DENY',
     'Content-Security-Policy': `default-src 'none'; style-src 'self'; script-src 'self'${extraScript}; font-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`
   };
