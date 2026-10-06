@@ -28,7 +28,7 @@ De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen ge
 - [x] **Instellingen voor gegevens delen:** alle vier de vinkjes uit (gecontroleerd 6 okt 2026).
 - [x] **Google-signalen uit** (knop "Aanzetten" niet gebruikt), **advertentiepersonalisatie uit** voor alle regio's (0 van 307), en de "Erkenning van verzameling van gebruikersgegevens" is bewust niet bevestigd (gecontroleerd 6 okt 2026). Laat dat zo, tenzij we later Google-signalen of advertenties gaan gebruiken; dan eerst de privacyverklaring en de banner aanpassen.
 - [ ] **Verzameling van gedetailleerde locatie- en apparaatgegevens** staat aan; dat klopt met de verklaring ("globale locatie (stad)"). Zet je het uit, pas dan de verklaring aan.
-- [ ] **Bewaring 14 maanden:** staat al goed (Beheer → Gegevensbewaring), en zet "Gebruikersgegevens opnieuw instellen bij nieuwe activiteit" aan.
+- [x] **Bewaring 14 maanden** voor gebeurtenis- en gebruikersgegevens, met "Resetten bij nieuwe gebruikersactiviteit" **uit**, zodat 14 maanden een harde grens is (ingesteld 6 okt 2026; gaat na 24 uur in).
 - [ ] **Verwerkingsregister** bijhouden (art. 30 AVG): per verwerking wat, waarom, wie, hoelang, welke partijen. De tabel in de privacyverklaring is een goede basis; ik kan er een intern document van maken.
 - [ ] **Cookiekeuze en bewaartermijn horen bij elkaar:** de banner onthoudt de keuze 12 maanden en vraagt daarna opnieuw; de verklaring zegt hetzelfde. Wijzig je het één, pas dan het ander aan (`public/js/consent.js`, `MAX_AGE`, en de alinea Cookies in `public/privacy.html`).
 
