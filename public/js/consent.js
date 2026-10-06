@@ -7,8 +7,20 @@
   const KEY = 'buyt-cookies';
   const hasId = /^G-[A-Z0-9]{6,}$/.test(GA_ID) && GA_ID !== 'G-XXXXXXXXXX';
 
-  const read = () => { try { return localStorage.getItem(KEY); } catch (_) { return null; } };
-  const write = (v) => { try { localStorage.setItem(KEY, v); } catch (_) {} };
+  /* De keuze bewaren we 12 maanden; daarna vragen we opnieuw (zoals de privacyverklaring zegt). */
+  const MAX_AGE = 365 * 24 * 60 * 60 * 1000;
+  const read = () => {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      let item;
+      try { item = JSON.parse(raw); } catch (_) { item = null; }
+      if (!item || typeof item !== 'object') item = { v: raw, t: Date.now() };
+      if ((item.v !== 'ja' && item.v !== 'nee') || !(Date.now() - item.t < MAX_AGE)) { localStorage.removeItem(KEY); return null; }
+      return item.v;
+    } catch (_) { return null; }
+  };
+  const write = (v) => { try { localStorage.setItem(KEY, JSON.stringify({ v, t: Date.now() })); } catch (_) {} };
 
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
@@ -24,7 +36,7 @@
     s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
     document.head.appendChild(s);
     gtag('js', new Date());
-    gtag('config', GA_ID, { anonymize_ip: true, allow_google_signals: false, allow_ad_personalization_signals: false });
+    gtag('config', GA_ID, { allow_google_signals: false, allow_ad_personalization_signals: false });
   };
 
   const apply = (choice) => {
@@ -62,7 +74,7 @@
     banner.setAttribute('aria-describedby', 'consent-text');
     banner.innerHTML = `
       <p class="consent__title" id="consent-title">Een koekje erbij?</p>
-      <p class="consent__text" id="consent-text">We gebruiken Google Analytics om te zien welke pagina's bezocht worden, zodat we de site kunnen verbeteren. Dat gebeurt alleen als jij dat goedvindt, en je gegevens worden niet gebruikt voor advertenties. <a href="privacy.html">Lees onze privacyverklaring</a>.</p>
+      <p class="consent__text" id="consent-text">We gebruiken Google Analytics om te zien welke pagina's bezocht worden, zodat we de site kunnen verbeteren. Dat gebeurt alleen als jij dat goedvindt. Je gegevens worden niet voor advertenties gebruikt. <a href="privacy.html">Lees onze privacyverklaring</a>.</p>
       <div class="consent__actions">
         <button type="button" class="consent__btn consent__btn--yes" data-consent="ja">Accepteren</button>
         <button type="button" class="consent__btn consent__btn--no" data-consent="nee">Weigeren</button>

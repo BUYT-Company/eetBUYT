@@ -22,6 +22,15 @@ Property `eetbuyt.nl`, Meetwaarde-ID `G-6250HQTQH2`. De bewaartermijn staat op 1
 - [ ] **Search Console-rapporten zichtbaar maken**: Rapporten → Bibliotheek → collectie "Search Console" toevoegen. Verschijnt pas na ongeveer een dag met zoekverkeer.
 - [ ] **Realtime-test** op `https://eetbuyt.nl`: privévenster, Accepteren, kijken of je verschijnt. En Weigeren: dan mag er niets verschijnen.
 
+### Analytics en privacy: wat je zelf in Google moet controleren
+De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen gegevens voor eigen doeleinden gebruikt. Dat moet in je account ook zo staan:
+- [ ] **Gegevensverwerkingsvoorwaarden geaccepteerd:** Beheer → Accountinstellingen → *Gegevensverwerkingsvoorwaarden*: de voorwaarden zijn geaccepteerd (staat vaak al op "Geaccepteerd").
+- [ ] **Instellingen voor gegevens delen:** Beheer → Accountinstellingen → *Instellingen voor gegevens delen*: alle vinkjes uit (Producten en services van Google, Modellering, Technische support, Aanbevelingen).
+- [ ] **Google-signalen uit:** Beheer → Gegevensverzameling en -aanpassing → *Gegevensverzameling*: Google-signalen niet geactiveerd, en "Gegevensverzameling voor gepersonaliseerde advertenties" uit.
+- [ ] **Bewaring 14 maanden:** staat al goed (Beheer → Gegevensbewaring), en zet "Gebruikersgegevens opnieuw instellen bij nieuwe activiteit" aan.
+- [ ] **Verwerkingsregister** bijhouden (art. 30 AVG): per verwerking wat, waarom, wie, hoelang, welke partijen. De tabel in de privacyverklaring is een goede basis; ik kan er een intern document van maken.
+- [ ] **Cookiekeuze en bewaartermijn horen bij elkaar:** de banner onthoudt de keuze 12 maanden en vraagt daarna opnieuw; de verklaring zegt hetzelfde. Wijzig je het één, pas dan het ander aan (`public/js/consent.js`, `MAX_AGE`, en de alinea Cookies in `public/privacy.html`).
+
 ## Search Console
 Domein-eigenschap `eetbuyt.nl` is geverifieerd (DNS-record in Cloudflare, niet verwijderen). Gekoppeld aan GA4.
 
