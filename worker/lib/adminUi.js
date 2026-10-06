@@ -71,12 +71,12 @@ function headers(extraScript = '') {
   };
 }
 
-const head = (title) => `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><meta name="color-scheme" content="light"><title>${esc(title)} · BUYT Beheer</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/admin/admin.css?v=${CSS_V}"></head>`;
+const head = (title, brand = 'BUYT Beheer') => `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><meta name="color-scheme" content="light"><title>${esc(title)} · ${esc(brand)}</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/admin/admin.css?v=${CSS_V}"></head>`;
 
 // Pagina zonder navigatie (inloggen).
-export function bare(title, body, { qr = false } = {}) {
+export function bare(title, body, { qr = false, brand = 'BUYT Beheer' } = {}) {
   const scripts = `${qr ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>' : ''}<script src="/admin/admin.js?v=${JS_V}" defer></script>`;
-  return new Response(`${head(title)}<body>${body}${scripts}</body></html>`, { headers: headers(qr ? ' https://cdnjs.cloudflare.com' : '') });
+  return new Response(`${head(title, brand)}<body>${body}${scripts}</body></html>`, { headers: headers(qr ? ' https://cdnjs.cloudflare.com' : '') });
 }
 
 // Pagina met navigatie. `user` is de naam van de ingelogde beheerder, `csrf` het token voor formulieren.

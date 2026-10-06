@@ -127,7 +127,7 @@ export async function postShare(env, request, user, form) {
 <p><strong>Kopieer deze link nu.</strong> Hij wordt maar één keer getoond. Wie de link heeft, ziet de bezorglijst van deze dag: namen, adressen, telefoonnummers, producten en opmerkingen. Geen e-mailadressen en geen bedragen.</p>
 <div class="field field--section"><label for="link">Link</label><input class="input" id="link" type="text" readonly value="${esc(link)}" data-select></div>
 <div class="actions"><button class="btn btn--primary" type="button" data-copy="link">Kopieer link</button><a class="btn" href="/admin/delivery">Klaar</a></div>
-<p class="note">De link werkt tot ${esc(fmtDateTime(result.expires_at))} (24 uur) en kan op de pagina Bezorging worden ingetrokken. Deel hem alleen met de bezorgdienst.</p>
+<p class="note">De link werkt tot ${esc(fmtDateTime(result.expires_at))} (24 uur) en kan op de pagina Bezorging worden ingetrokken. Deel hem alleen met de bezorgdienst.${result.revoked > 0 ? ' Een eerdere link voor deze dag is daarbij ingetrokken: er is per dag één actieve link.' : ''}</p>
 </section>`, { user, csrf, active: 'delivery', counts });
 }
 
@@ -169,7 +169,7 @@ export async function postRoute(env, ctx, request, user, form) {
 // De gedeelde bezorglijst voor de bezorgdienst: geen login, wel een code die niet te raden is.
 export async function sharedList(env, token) {
   const notFound = () => {
-    const r = bare('Bezorglijst', '<div class="auth"><div class="auth__box"><h1>Deze link werkt niet</h1><p class="auth__lead">De link is verlopen, ingetrokken of niet juist. Vraag een nieuwe link bij BUYT.</p></div></div>');
+    const r = bare('Bezorglijst', '<div class="auth"><div class="auth__box"><h1>Deze link werkt niet</h1><p class="auth__lead">De link is verlopen, ingetrokken of niet juist. Vraag een nieuwe link bij BUYT.</p></div></div>', { brand: 'BUYT' });
     return new Response(r.body, { status: 404, headers: r.headers });
   };
   if (!isTokenShape(token)) return notFound();
@@ -185,7 +185,7 @@ export async function sharedList(env, token) {
   try {
     orders = await select(env, 'orders', `select=order_number,customer_name,phone,street,postcode,city,note,status,delivery_window,order_lines(qty,name)&delivery_date=eq.${date}&status=neq.geannuleerd&order=delivery_window.asc,order_number.asc`);
   } catch (_) {
-    return bare('Bezorglijst', '<div class="auth"><div class="auth__box"><h1>Even geduld</h1><p class="auth__lead">De lijst kon niet worden geladen. Probeer het zo opnieuw.</p></div></div>');
+    return bare('Bezorglijst', '<div class="auth"><div class="auth__box"><h1>Even geduld</h1><p class="auth__lead">De lijst kon niet worden geladen. Probeer het zo opnieuw.</p></div></div>', { brand: 'BUYT' });
   }
   const slots = new Map();
   for (const o of orders) {
@@ -203,5 +203,5 @@ ${o.note ? `<div class="stop__note">${esc(o.note)}</div>` : ''}</div></li>`;
 <a class="auth__logo" href="/"><img src="/assets/logo-still.svg" alt="" width="44" height="41"><span>BUYT</span></a>
 <h1>Bezorglijst</h1><p class="auth__lead">${esc(fmtLongDay(date))}</p>
 ${orders.length ? `<div class="stack">${sections}</div>` : '<p class="muted">Er zijn voor deze dag geen bestellingen.</p>'}
-<p class="note">Deze link is 24 uur geldig en is alleen voor de bezorgdienst. Verwijder de gegevens na de bezorging.</p></main>`);
+<p class="note">Deze link is 24 uur geldig en is alleen voor de bezorgdienst. Verwijder de gegevens na de bezorging.</p></main>`, { brand: 'BUYT' });
 }
