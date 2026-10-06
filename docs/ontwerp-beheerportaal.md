@@ -90,7 +90,7 @@ Berichten: Nieuw, Beantwoord.
 **Nog in te vullen:** de namen van de drie vennootaccounts voor de tijdlijn en de inlog. Elk account krijgt een eigen wachtwoord en 2FA-sleutel.
 
 ## 9. Rondes
-**Stand 6 oktober 2026: ronde 1 is gebouwd** (code in `worker/lib/admin*.js`, `orderStatus.js`, migratie `supabase/migrations/0006_beheer_ronde1.sql`). Eerst de migratie uitvoeren, daarna de Worker uitrollen (zie de oplevernotitie in openstaande-taken.md). Tests: `node --test worker/test/orderStatus.test.mjs worker/test/adminFormat.test.mjs`.
+**Stand 6 oktober 2026: ronde 1 is gebouwd en live, ronde 2 (Bezorging, Klanten, Zakelijk) is gebouwd** (code in `worker/lib/adminDelivery.js`, `adminPeople.js`, migratie `0007_beheer_ronde2.sql`; eerst de migratie uitvoeren, dan uitrollen). Ronde 1 was: (code in `worker/lib/admin*.js`, `orderStatus.js`, migratie `supabase/migrations/0006_beheer_ronde1.sql`). Eerst de migratie uitvoeren, daarna de Worker uitrollen (zie de oplevernotitie in openstaande-taken.md). Tests: `node --test worker/test/orderStatus.test.mjs worker/test/adminFormat.test.mjs worker/test/people.test.mjs`.
 
 1. **Fundament en bestellingen:** indeling en stijl, inlogpagina en aanscherping, bestellingen met statusfunctie en tijdlijn, Home, de Onderweg- en Bezorgd-mail, migratie 0006.
 2. **Bezorging, klanten, zakelijk:** bezorglijst met afvinken en "Start route", gedeelde link, Klanten met Berichten, Zakelijk.

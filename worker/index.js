@@ -10,6 +10,8 @@ import { upcomingDates, formatDelivery } from './lib/delivery.js';
 import { currentUserName, handleLogin, logoutResponse, redirectToLogin, setup2fa, csrfToken, checkPost } from './lib/adminAuth.js';
 import { assetResponse } from './lib/adminUi.js';
 import { homePage, ordersPage, searchOrders, orderDetailPage, postStatus, postNote } from './lib/adminOrders.js';
+import { deliveryPage, postShare, postRevoke, postRoute, sharedList } from './lib/adminDelivery.js';
+import { customersPage, customerDetailPage, businessPage, postRequestStatus, morePage } from './lib/adminPeople.js';
 
 // Verkoopschakelaar: SALES_OPEN staat in wrangler.jsonc. Staat die niet op "true", dan kunnen alleen
 // ingelogde beheerders (/admin/login) bestellen. Dit is de echte afsluiting; de blur op de site is alleen de weergave.
@@ -259,6 +261,12 @@ async function handleAdmin(request, env, ctx, url) {
     if (pathname === '/admin' || pathname === '/admin/') return homePage(env, request, user, url);
     if (pathname === '/admin/orders') return ordersPage(env, request, user, url);
     if (pathname === '/admin/setup-2fa') return setup2fa(url, user, await csrfToken(request, env));
+    if (pathname === '/admin/delivery') return deliveryPage(env, request, user, url);
+    if (pathname === '/admin/customers') return customersPage(env, request, user, url);
+    if (pathname === '/admin/business') return businessPage(env, request, user, url);
+    if (pathname === '/admin/more') return morePage(env, request, user);
+    const c = /^\/admin\/customers\/(\d+)$/.exec(pathname);
+    if (c) return customerDetailPage(env, request, user, c[1]);
     const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
     if (m) return orderDetailPage(env, request, user, m[1], url);
     return error(404, 'not_found');
@@ -268,6 +276,11 @@ async function handleAdmin(request, env, ctx, url) {
     const form = await readForm(request);
     if (!form) return error(413, 'invalid_input');
     if (pathname === '/admin/orders') return searchOrders(env, request, user, form);
+    if (pathname === '/admin/delivery/share') return postShare(env, request, user, form);
+    if (pathname === '/admin/delivery/revoke') return postRevoke(env, request, form);
+    if (pathname === '/admin/delivery/route') return postRoute(env, ctx, request, user, form);
+    const q = /^\/admin\/requests\/([0-9a-f-]{36})\/status$/.exec(pathname);
+    if (q) return postRequestStatus(env, request, user, q[1], form);
     const s = /^\/admin\/orders\/(\d+)\/(status|note)$/.exec(pathname);
     if (s) return s[2] === 'status' ? postStatus(env, ctx, request, user, s[1], form) : postNote(env, request, user, s[1], form);
     return error(404, 'not_found');
@@ -279,6 +292,10 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const { pathname } = url;
+
+    // Gedeelde bezorglijst voor de bezorgdienst: geen login, wel een code die niet te raden is (adminDelivery.js).
+    const share = /^\/bezorging\/([A-Za-z0-9_-]{1,64})$/.exec(pathname);
+    if (share && request.method === 'GET') return sharedList(env, share[1]);
 
     if (pathname === '/admin' || pathname.startsWith('/admin/')) return handleAdmin(request, env, ctx, url);
 

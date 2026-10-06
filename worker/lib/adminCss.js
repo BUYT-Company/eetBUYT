@@ -103,6 +103,7 @@ textarea { min-height: 88px; resize: vertical; }
 .card { border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
 .card__pad { padding: 20px 22px; }
 .card + .card { margin-top: 16px; }
+.grid-2 > .card + .card, .stack > .card + .card { margin-top: 0; }
 .card h2 { margin-bottom: 14px; }
 .stack { display: grid; gap: 16px; }
 .dl { display: grid; grid-template-columns: minmax(96px, auto) 1fr; gap: 8px 18px; margin: 0; }
@@ -211,6 +212,52 @@ textarea { min-height: 88px; resize: vertical; }
 .dot--ret { background: var(--lime); box-shadow: 0 0 0 1px #A9BC10; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: .875rem; }
 .note { color: var(--muted); font-size: .8125rem; margin-top: 12px; }
+
+/* Bezorging */
+.day { margin-bottom: 18px; overflow: hidden; }
+.day__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.day__head h2 { margin: 0 0 2px; font-size: 1.125rem; }
+.day__head h2::first-letter { text-transform: uppercase; }
+.slot { padding: 0 0 6px; }
+.slot + .slot { border-top: 1px solid var(--line); }
+.slot__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 22px 8px; }
+.slot__head h3 { margin: 0; font-size: 1rem; font-weight: 600; }
+.stops { list-style: none; margin: 0; padding: 0 22px 8px; }
+.stop { display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); }
+.stop:first-child { border-top: 0; }
+.stop__main { min-width: 0; flex: 1; }
+.stop__top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.stop__line { overflow-wrap: anywhere; }
+.stop__line a { color: var(--ink); text-decoration-color: var(--line-strong); }
+.stop__line a:hover { color: var(--green); }
+.stop__note { margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--wash); }
+.stop--done .stop__main { opacity: .6; }
+.check-btn { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--line-strong); background: #fff; color: var(--line-strong); cursor: pointer; padding: 0; transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
+.check-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-50); }
+.check-btn svg { width: 22px; height: 22px; }
+.check-btn--done { background: var(--green); border-color: var(--green); color: #fff; cursor: default; }
+.share { display: grid; gap: 8px; justify-items: end; }
+.share__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: .8125rem; color: var(--muted); }
+.share__list li { display: flex; gap: 12px; justify-content: flex-end; align-items: baseline; flex-wrap: wrap; }
+.shared { max-width: 640px; margin: 0 auto; padding: 28px 18px 60px; }
+.shared h1 { margin-bottom: 6px; }
+@media (max-width: 899px) { .share { justify-items: start; } .share__list li { justify-content: flex-start; } }
+
+/* Klanten, Berichten en Zakelijk */
+.badge--c-new::before { background: var(--green); }
+.badge--c-ret::before { background: var(--lime); box-shadow: 0 0 0 1px #A9BC10; }
+.badge--r-nieuw::before { background: var(--coral); }
+.badge--r-in_gesprek::before { background: #8A9A90; }
+.badge--r-offerte_verstuurd::before { background: var(--lime); box-shadow: 0 0 0 1px #A9BC10; }
+.badge--r-gewonnen::before, .badge--r-beantwoord::before { background: var(--green); }
+.badge--r-verloren { color: var(--muted); }
+.badge--r-verloren::before { background: var(--line-strong); }
+.req__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.req__head h2 { margin: 0 0 2px; }
+.req__body { white-space: pre-line; margin-bottom: 14px; overflow-wrap: anywhere; }
+.btn--ghost { border-color: transparent; color: var(--muted); }
+.btn--ghost:hover { background: var(--wash); border-color: var(--line-strong); }
+.more-out { margin-top: 18px; }
 
 /* Bestelling: detail */
 .detail { display: grid; gap: 16px; align-items: start; }

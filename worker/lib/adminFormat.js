@@ -66,3 +66,21 @@ export function greeting(date = new Date()) {
   if (hour < 18) return 'Goedemiddag';
   return 'Goedenavond';
 }
+
+// Vandaag in Amsterdam als YYYY-MM-DD (de datumnotatie die de database voor delivery_date gebruikt).
+export const amsterdamToday = (date = new Date()) => new Intl.DateTimeFormat('sv-SE', { timeZone: TZ }).format(date);
+
+// Dag zonder tijd, bijvoorbeeld "donderdag 8 oktober".
+export const fmtLongDay = (ymd) =>
+  new Intl.DateTimeFormat('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(`${ymd}T12:00:00`));
+
+export const isYmd = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(new Date(`${s}T12:00:00`).getTime());
+export const isWindow = (s) => typeof s === 'string' && /^\d{2}:\d{2}-\d{2}:\d{2}$/.test(s);
+export const isUuid = (s) => typeof s === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+
+// Samengestelde adresregel en een Maps-link daarvoor (opent in de Maps-app op telefoon).
+export const addressLine = (o) => `${o.street}, ${o.postcode} ${o.city}`;
+export const mapsUrl = (o) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine(o))}`;
+
+// "2× Ganzenshoarma, 1× Ganzenpoten"
+export const linesSummary = (lines) => (lines || []).map((l) => `${l.qty}× ${l.name}`).join(', ');

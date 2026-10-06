@@ -21,6 +21,15 @@ export default `
     });
   });
 
+  // Kopieer-knop (bijvoorbeeld voor de gedeelde link) en veld dat zichzelf selecteert
+  document.querySelectorAll('input[data-select]').forEach((input) => input.addEventListener('focus', () => input.select()));
+  document.querySelectorAll('button[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
+    const field = document.getElementById(btn.dataset.copy);
+    if (!field) return;
+    field.select();
+    try { await navigator.clipboard.writeText(field.value); btn.textContent = 'Gekopieerd'; } catch (_) { document.execCommand('copy'); btn.textContent = 'Gekopieerd'; }
+  }));
+
   // QR-code voor de 2FA-instelpagina
   const qr = document.getElementById('qr');
   if (qr && window.QRCode && qr.dataset.text) new window.QRCode(qr, { text: qr.dataset.text, width: 200, height: 200 });

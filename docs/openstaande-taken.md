@@ -54,7 +54,12 @@ Domein-eigenschap `eetbuyt.nl` is geverifieerd (DNS-record in Cloudflare, niet v
   2. Push de branch; wacht tot Cloudflare klaar is.
   3. Controleer: inloggen met wachtwoord en code, Home, een testbestelling plaatsen (als beheerder) en doorzetten naar Onderweg en Bezorgd, controleer de twee mails en de tijdlijn.
   4. Controleer of de oude statussen in Supabase netjes zijn omgezet (`select status, count(*) from orders group by 1`).
-- [ ] **BUYT Beheer, ronde 2 en 3**: Bezorging (met gedeelde link), Klanten (met Berichten), Zakelijk, en Analytics. Zie het ontwerp.
+- [ ] **BUYT Beheer, ronde 2 uitrollen** (gebouwd op 6 okt 2026: Bezorging met gedeelde link, Klanten met Berichten, Zakelijk). Volgorde:
+  1. Voer `supabase/migrations/0007_beheer_ronde2.sql` uit in Supabase (SQL Editor). Opnieuw uitvoeren kan zonder schade.
+  2. Push de branch; wacht tot Cloudflare klaar is.
+  3. Controleer: Bezorging toont de dagen en tijdvakken; afvinken zet een bestelling op Bezorgd; "Start route" zet klaargemaakte bestellingen op Onderweg; **Delen met bezorgdienst** geeft een link die je in een privévenster opent (zonder login) en die na intrekken niet meer werkt; Klanten en Berichten; Zakelijk met een testaanvraag via het formulier.
+  4. Voordat je de link echt met een bezorgdienst deelt: verwerkersovereenkomst en bijgewerkte privacyverklaring (zie hierboven).
+- [ ] **BUYT Beheer, ronde 3**: Analytics (Google Analytics en Search Console, met delta's). Vooraf door de vennoten in te stellen: Google Cloud-project, Analytics Data API aan, servicegebruik met leesrechten, toevoegen als lezer in Analytics en Search Console.
 - [ ] **E-mail "Bedankt voor je bestelling"** opnieuw ontwerpen. De huidige template staat in `worker/lib/emailTemplates.js` (`orderConfirmationEmail` voor de klant, `orderInternalEmail` voor jullie zelf), verstuurd via Resend (`worker/lib/resend.js`). Denk aan huisstijl, een duidelijke samenvatting, bezorgmoment en contactgegevens, en test in Gmail, Outlook en Apple Mail, zowel licht als donker.
 - [ ] **Later (na het beheer):** definitieve prijzen zonder "circa" en definitieve productfoto's (ook op de publieke site); voorraad gekoppeld aan inkoop en verkoop; Mollie; echte socials-cijfers via Meta; koppeling met de bezorgdienst (waarschijnlijk Tring Tring). Zie sectie 10 van het beheerontwerp.
 

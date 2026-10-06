@@ -16,8 +16,13 @@ import { orderOnTheWayEmail, orderDeliveredEmail, orderCancelledEmail } from './
 
 const LIST_COLUMNS = 'order_number,customer_name,city,status,total_estimate_cents,total_final_cents,is_indicative,has_unpriced,delivery_date,delivery_window,created_at';
 
-const MESSAGES = {
+export const MESSAGES = {
   status: ['ok', 'Status bijgewerkt.'],
+  route: ['ok', 'Route gestart. De klanten krijgen een korte mail dat de bestelling onderweg is.'],
+  geen_route: ['err', 'Er zijn geen klaargemaakte bestellingen in dit tijdvak.'],
+  ingetrokken: ['ok', 'De link is ingetrokken.'],
+  aanvraag: ['ok', 'Aanvraag bijgewerkt.'],
+  geen_tabel: ['err', 'Dit onderdeel werkt pas nadat de database is bijgewerkt (migratie 0007).'],
   note: ['ok', 'Notitie opgeslagen.'],
   geen_wijziging: ['err', 'Die wijziging is niet mogelijk voor deze bestelling.'],
   reden: ['err', 'Vul een korte reden in om te annuleren.'],
@@ -25,21 +30,27 @@ const MESSAGES = {
   mislukt: ['err', 'Het opslaan is niet gelukt. Probeer het opnieuw.']
 };
 
-const redirect = (path) => new Response(null, { status: 303, headers: { Location: path } });
+export const redirect = (path) => new Response(null, { status: 303, headers: { Location: path } });
 const valid = (n) => /^\d{1,12}$/.test(String(n));
 
 // Wat elke pagina nodig heeft: CSRF-token en het aantal nieuwe bestellingen voor het getal in de navigatie.
-async function chrome(env, request) {
+export async function chrome(env, request) {
   const csrf = await csrfToken(request, env);
-  let newOrders = 0;
-  try {
-    const rows = await select(env, 'orders', 'select=order_number&status=eq.nieuw&limit=100');
-    newOrders = rows.length;
-  } catch (_) { /* navigatie werkt ook zonder getal */ }
-  return { csrf, counts: { newOrders } };
+  const counts = { newOrders: 0, newBusiness: 0, newMessages: 0 };
+  // Elke teller staat op zichzelf: faalt de ene, dan blijft de andere werken.
+  const [orders, requests] = await Promise.allSettled([
+    select(env, 'orders', 'select=order_number&status=eq.nieuw&limit=100'),
+    select(env, 'business_requests', 'select=type&status=eq.nieuw&limit=200')
+  ]);
+  if (orders.status === 'fulfilled') counts.newOrders = orders.value.length;
+  if (requests.status === 'fulfilled') {
+    counts.newBusiness = requests.value.filter((q) => q.type === 'zakelijk').length;
+    counts.newMessages = requests.value.filter((q) => q.type === 'particulier').length;
+  }
+  return { csrf, counts };
 }
 
-const csrfField = (csrf) => `<input type="hidden" name="_csrf" value="${esc(csrf)}">`;
+export const csrfField = (csrf) => `<input type="hidden" name="_csrf" value="${esc(csrf)}">`;
 
 // ---------------------------------------------------------------------------------------------
 // Home
@@ -74,6 +85,12 @@ export async function homePage(env, request, user, url) {
     const items = [];
     if (todo.new_orders > 0) {
       items.push(`<li><a href="/admin/orders?tab=nieuw"><span><strong>${todo.new_orders} ${todo.new_orders === 1 ? 'nieuwe bestelling' : 'nieuwe bestellingen'}</strong> om te verwerken</span>${ICON.chevron}</a></li>`);
+    }
+    if (todo.new_business > 0) {
+      items.push(`<li><a href="/admin/business?tab=nieuw"><span><strong>${todo.new_business} ${todo.new_business === 1 ? 'zakelijke aanvraag' : 'zakelijke aanvragen'}</strong> onbeantwoord</span>${ICON.chevron}</a></li>`);
+    }
+    if (todo.new_messages > 0) {
+      items.push(`<li><a href="/admin/customers?tab=berichten"><span><strong>${todo.new_messages} ${todo.new_messages === 1 ? 'bericht' : 'berichten'}</strong> van klanten onbeantwoord</span>${ICON.chevron}</a></li>`);
     }
     const nd = todo.next_delivery;
     if (nd && nd.date) {
@@ -145,7 +162,8 @@ const EMPTY = {
 
 const searchForm = (csrf, q = '') => `<form class="toolbar" method="post" action="/admin/orders" role="search">${csrfField(csrf)}<label class="sr" for="q">Zoek een bestelling</label><input class="input" id="q" name="q" type="search" value="${esc(q)}" placeholder="Zoek een bestelling" autocomplete="off" maxlength="60"><button class="btn" type="submit">Zoeken</button></form>`;
 
-export async function ordersPage(env, request, user, url, msg) {
+export async function ordersPage(env, request, user, url) {
+  const msg = MESSAGES[url.searchParams.get('m')] || null;
   const tab = tabOr(url.searchParams.get('tab'));
   const page = pageOr(url.searchParams.get('pagina'));
   const date = /^\d{4}-\d{2}-\d{2}$/.test(url.searchParams.get('bezorging') || '') ? url.searchParams.get('bezorging') : null;
@@ -314,16 +332,17 @@ ${nextMail ? `<p class="note note--tight">${esc(nextMail)}</p>` : ''}
 // ---------------------------------------------------------------------------------------------
 const backPath = (back, number) => {
   if (back === 'detail') return `/admin/orders/${number}`;
+  if (back === 'bezorging') return '/admin/delivery';
   return `/admin/orders?tab=${tabOr(back)}`;
 };
-const withMsg = (path, key) => `${path}${path.includes('?') ? '&' : '?'}m=${key}`;
+export const withMsg = (path, key) => `${path}${path.includes('?') ? '&' : '?'}m=${key}`;
 
 const MAIL_BUILDERS = { onderweg: orderOnTheWayEmail, bezorgd: orderDeliveredEmail, geannuleerd: orderCancelledEmail };
 const MAIL_NAME = { onderweg: 'Onderweg-mail', bezorgd: 'Bezorgd-mail', geannuleerd: 'Annuleringsmail' };
 
 // Verstuurt de statusmail en zet het resultaat in de tijdlijn. Een mislukte mail laat de statuswijziging
 // nooit mislukken.
-async function sendStatusMail(env, order, kind, actor, origin) {
+export async function sendStatusMail(env, order, kind, actor, origin) {
   let sent = false;
   try {
     const mail = MAIL_BUILDERS[kind](order, origin);
@@ -359,7 +378,9 @@ export async function postStatus(env, ctx, request, user, number, form) {
 
   let result;
   try {
-    result = await rpc(env, 'set_order_status', { p_order_number: Number(number), p_to: to, p_actor: user, p_source: 'handmatig', p_note: note });
+    // Afvinken op de bezorglijst is hetzelfde als bezorgd zetten, maar staat zo in de tijdlijn.
+    const source = form.get('src') === 'afvinklijst' ? 'afvinklijst' : 'handmatig';
+    result = await rpc(env, 'set_order_status', { p_order_number: Number(number), p_to: to, p_actor: user, p_source: source, p_note: note });
   } catch (_) {
     return redirect(withMsg(back, 'mislukt'));
   }
