@@ -41,14 +41,20 @@ async function codeAtStep(secretBytes, step) {
 }
 
 // Staat één stap (±30s) klokverschil toe, zoals gebruikelijk bij TOTP-implementaties.
-export async function verifyTotp(secretBase32, code) {
+// Geeft het nummer van de stap terug waar de code bij hoort (nodig om een code maar één keer te
+// laten werken), of null als de code niet klopt.
+export async function verifyTotpStep(secretBase32, code) {
   const clean = String(code || '').replace(/\D/g, '');
-  if (clean.length !== 6) return false;
+  if (clean.length !== 6) return null;
   const secretBytes = base32Decode(secretBase32);
-  if (!secretBytes.length) return false;
+  if (!secretBytes.length) return null;
   const step = Math.floor(Date.now() / 1000 / 30);
   for (const delta of [0, -1, 1]) {
-    if ((await codeAtStep(secretBytes, step + delta)) === clean) return true;
+    if ((await codeAtStep(secretBytes, step + delta)) === clean) return step + delta;
   }
-  return false;
+  return null;
+}
+
+export async function verifyTotp(secretBase32, code) {
+  return (await verifyTotpStep(secretBase32, code)) !== null;
 }

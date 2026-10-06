@@ -90,6 +90,8 @@ Berichten: Nieuw, Beantwoord.
 **Nog in te vullen:** de namen van de drie vennootaccounts voor de tijdlijn en de inlog. Elk account krijgt een eigen wachtwoord en 2FA-sleutel.
 
 ## 9. Rondes
+**Stand 6 oktober 2026: ronde 1 is gebouwd** (code in `worker/lib/admin*.js`, `orderStatus.js`, migratie `supabase/migrations/0006_beheer_ronde1.sql`). Eerst de migratie uitvoeren, daarna de Worker uitrollen (zie de oplevernotitie in openstaande-taken.md). Tests: `node --test worker/test/orderStatus.test.mjs worker/test/adminFormat.test.mjs`.
+
 1. **Fundament en bestellingen:** indeling en stijl, inlogpagina en aanscherping, bestellingen met statusfunctie en tijdlijn, Home, de Onderweg- en Bezorgd-mail, migratie 0006.
 2. **Bezorging, klanten, zakelijk:** bezorglijst met afvinken en "Start route", gedeelde link, Klanten met Berichten, Zakelijk.
 3. **Analytics:** website en zoekverkeer met delta's. Vooraf door de vennoten in te stellen: Google Cloud-project, Data API aan, servicegebruik met leesrechten, toevoegen als lezer in Analytics en Search Console.

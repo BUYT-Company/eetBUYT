@@ -49,7 +49,12 @@ Domein-eigenschap `eetbuyt.nl` is geverifieerd (DNS-record in Cloudflare, niet v
 - [ ] **Pagina `zakelijk-bestellen.html`**: eerste versie staat er (offerteaanvraag, 5 producten, 3 stappen, Timme/Skip/Hidde met e-mail, formulier). Nog te doen: echte portretfoto's in plaats van de uitsneden uit de teamfoto (`public/assets/team/`), controleren of de namen bij de juiste gezichten staan, zakelijke prijzen/afname/levering invullen zodra ze vaststaan, een FAQ zodra de antwoorden er zijn. De worker moet opnieuw uitgerold worden (`validate.js` voegt nu de bedrijfsnaam toe aan het bericht).
 
 ## Ontwerp en bouw (later)
-- [ ] **BUYT Beheer-portaal en dashboard**: het ontwerp is bevestigd, zie [ontwerp-beheerportaal.md](ontwerp-beheerportaal.md) (4 rondes: fundament en bestellingen, bezorging/klanten/zakelijk, Analytics). Nog aan te leveren: de namen van de drie vennootaccounts. Daarna bouwen.
+- [ ] **BUYT Beheer, ronde 1 uitrollen** (gebouwd op 6 okt 2026, zie [ontwerp-beheerportaal.md](ontwerp-beheerportaal.md)). Volgorde is belangrijk:
+  1. Voer `supabase/migrations/0006_beheer_ronde1.sql` uit in Supabase (SQL Editor). Pas daarna uitrollen, anders kan niemand inloggen (de login gebruikt de nieuwe tabellen).
+  2. Push de branch; wacht tot Cloudflare klaar is.
+  3. Controleer: inloggen met wachtwoord en code, Home, een testbestelling plaatsen (als beheerder) en doorzetten naar Onderweg en Bezorgd, controleer de twee mails en de tijdlijn.
+  4. Controleer of de oude statussen in Supabase netjes zijn omgezet (`select status, count(*) from orders group by 1`).
+- [ ] **BUYT Beheer, ronde 2 en 3**: Bezorging (met gedeelde link), Klanten (met Berichten), Zakelijk, en Analytics. Zie het ontwerp.
 - [ ] **E-mail "Bedankt voor je bestelling"** opnieuw ontwerpen. De huidige template staat in `worker/lib/emailTemplates.js` (`orderConfirmationEmail` voor de klant, `orderInternalEmail` voor jullie zelf), verstuurd via Resend (`worker/lib/resend.js`). Denk aan huisstijl, een duidelijke samenvatting, bezorgmoment en contactgegevens, en test in Gmail, Outlook en Apple Mail, zowel licht als donker.
 - [ ] **Later (na het beheer):** definitieve prijzen zonder "circa" en definitieve productfoto's (ook op de publieke site); voorraad gekoppeld aan inkoop en verkoop; Mollie; echte socials-cijfers via Meta; koppeling met de bezorgdienst (waarschijnlijk Tring Tring). Zie sectie 10 van het beheerontwerp.
 

@@ -1,15 +1,21 @@
-// Inloggen voor /admin/*: eigen paginaatje (in plaats van de kale browser-popup van Basic Auth),
-// met een los account per persoon (wachtwoord + TOTP-2FA elk). De sessiecookie is stateless te
-// controleren, ondertekend met een aparte ADMIN_SESSION_SECRET (niet iemands wachtwoord) — geen
-// sessietabel nodig. Tijdelijke oplossing tot eetbuyt.nl aan Cloudflare hangt en Cloudflare Access
-// met een pad-policy op /admin/* kan (zie ontwerp §16); faalt gesloten zonder configuratie.
-import { page, esc } from './admin.js';
-import { generateSecret, verifyTotp } from './totp.js';
+// Inloggen voor /admin/*: eigen loginpagina met een los account per persoon (wachtwoord + 2FA-code
+// uit een authenticator-app). De sessiecookie is stateless te controleren, ondertekend met een aparte
+// ADMIN_SESSION_SECRET (niet iemands wachtwoord): geen sessietabel nodig.
+//
+// Aanscherping (zie docs/ontwerp-beheerportaal.md §6):
+//  - 2FA is verplicht: een account zonder 2FA-sleutel kan niet inloggen;
+//  - een 2FA-code werkt maar één keer;
+//  - na 5 mislukte pogingen in 15 minuten vanaf hetzelfde adres moet je wachten;
+//  - formulieren die iets wijzigen dragen een CSRF-token en worden op Origin gecontroleerd.
+// Faalt gesloten zonder configuratie.
+import { esc, bare, layout } from './adminUi.js';
+import { generateSecret, verifyTotpStep } from './totp.js';
+import { rpc } from './supabase.js';
 
 const COOKIE = 'buyt_admin';
 const SESSION_DAYS = 7;
 
-async function sign(secret, value) {
+async function hmacHex(secret, value) {
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value));
   return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -23,10 +29,8 @@ function timingSafeEqual(a, b) {
 }
 
 // ADMIN_ACCOUNTS is één secret: een JSON-lijst [{ "name": "...", "password": "...", "totp": "..." }, ...].
-// "totp" mag leeg zijn zolang iemand nog geen 2FA heeft ingesteld (dan volstaat het wachtwoord,
-// zie handleLoginPost) — anders zou niemand ooit voor het eerst bij /admin/setup-2fa kunnen komen.
 // Ongeldige of onvolledige items (geen naam/wachtwoord) worden genegeerd, niet de hele lijst.
-function parseAccounts(env) {
+export function parseAccounts(env) {
   try {
     const list = JSON.parse(env.ADMIN_ACCOUNTS || '[]');
     return Array.isArray(list) ? list.filter((a) => a && typeof a.name === 'string' && a.password) : [];
@@ -39,7 +43,7 @@ async function makeSession(sessionSecret, name) {
   const expires = Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000;
   const payload = `${expires}|${name}`;
   const b64 = btoa(unescape(encodeURIComponent(payload)));
-  return `${b64}.${await sign(sessionSecret, payload)}`;
+  return `${b64}.${await hmacHex(sessionSecret, payload)}`;
 }
 
 function readCookie(request) {
@@ -66,7 +70,7 @@ async function readSession(request, env) {
   const expires = Number(payload.slice(0, sep));
   const name = payload.slice(sep + 1);
   if (!Number.isFinite(expires) || Date.now() > expires) return null;
-  if (!timingSafeEqual(sig, await sign(env.ADMIN_SESSION_SECRET, payload))) return null;
+  if (!timingSafeEqual(sig, await hmacHex(env.ADMIN_SESSION_SECRET, payload))) return null;
   return { name };
 }
 
@@ -74,63 +78,111 @@ export async function isLoggedIn(request, env) {
   return Boolean(await readSession(request, env));
 }
 
-// Voor de topbalk ("Uitloggen (Naam)"); geeft null terug als er geen (geldige) sessie is.
+// Naam van de ingelogde beheerder; null als er geen (geldige) sessie is.
 export async function currentUserName(request, env) {
   const session = await readSession(request, env);
   return session ? session.name : null;
 }
 
-function loginPage(next, errorMsg) {
-  return page('Inloggen', `
-    <div style="max-width:340px;margin:14vh auto 0">
-      <p style="text-align:center;font-weight:800;letter-spacing:-.02em;margin:0 0 28px">BUYT beheer</p>
-      <form method="POST" action="/admin/login" style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 0 0 1.5px rgba(18,51,38,.16);display:grid;gap:14px">
-        <input type="hidden" name="next" value="${esc(next)}">
-        <div style="display:grid;gap:6px">
-          <label for="pw" style="font-size:.88rem;font-weight:700">Wachtwoord</label>
-          <input id="pw" name="password" type="password" autofocus required style="font:inherit;padding:.7rem .85rem;border:1.5px solid rgba(18,51,38,.3);border-radius:10px">
-        </div>
-        <div style="display:grid;gap:6px">
-          <label for="code" style="font-size:.88rem;font-weight:700">Authenticatiecode <small>(leeg laten als je nog geen 2FA hebt ingesteld)</small></label>
-          <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456" style="font:inherit;padding:.7rem .85rem;border:1.5px solid rgba(18,51,38,.3);border-radius:10px;letter-spacing:.2em">
-        </div>
-        ${errorMsg ? `<p style="margin:0;color:#b3261e;font-size:.88rem">${esc(errorMsg)}</p>` : ''}
-        <button type="submit" style="font:inherit;font-weight:700;background:#123326;color:#FFF8E8;border:0;border-radius:10px;padding:.75rem;cursor:pointer">Inloggen</button>
-      </form>
+// CSRF: een token dat vastzit aan de sessiecookie en alleen met de geheime sleutel te maken is.
+export async function csrfToken(request, env) {
+  const cookie = readCookie(request);
+  if (!cookie || !env.ADMIN_SESSION_SECRET) return '';
+  return (await hmacHex(env.ADMIN_SESSION_SECRET, `csrf|${cookie}`)).slice(0, 40);
+}
+
+// Formulierverzoeken die iets wijzigen: Origin moet de eigen site zijn en het token moet kloppen.
+export async function checkPost(request, env, form) {
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== new URL(request.url).origin) return false;
+  const expected = await csrfToken(request, env);
+  const given = form.get('_csrf') || '';
+  return Boolean(expected) && timingSafeEqual(expected, given);
+}
+
+const ipHash = (request, env) => hmacHex(env.ADMIN_SESSION_SECRET || 'x', `ip|${request.headers.get('CF-Connecting-IP') || 'onbekend'}`);
+
+function loginPage(next, errorMsg, status = 200) {
+  const res = bare('Inloggen', `
+<div class="auth"><div class="auth__box">
+  <a class="auth__logo" href="/"><img src="/assets/logo-still.svg" alt="" width="44" height="41"><span>BUYT</span></a>
+  <h1>Inloggen</h1>
+  <p class="auth__lead">Beheer voor het BUYT-team.</p>
+  <form method="post" action="/admin/login">
+    <input type="hidden" name="next" value="${esc(next)}">
+    <div class="field">
+      <label for="pw">Wachtwoord</label>
+      <input class="input" id="pw" name="password" type="password" autocomplete="current-password" required autofocus>
     </div>
-  `, { bare: true });
+    <div class="field">
+      <label for="code">Code uit je authenticator-app</label>
+      <input class="input otp" id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="000000" required data-otp aria-describedby="code-hint">
+      <p class="hint" id="code-hint">6 cijfers. De code verandert elke 30 seconden.</p>
+    </div>
+    ${errorMsg ? `<p class="error" role="alert">${esc(errorMsg)}</p>` : ''}
+    <button class="btn btn--primary btn--block" type="submit">Inloggen</button>
+  </form>
+  <p class="auth__foot">Lukt het niet? Vraag een andere beheerder om hulp.</p>
+</div></div>`);
+  return status === 200 ? res : new Response(res.body, { status, headers: res.headers });
 }
 
 export async function handleLogin(request, env) {
   const url = new URL(request.url);
-  if (request.method === 'GET') return loginPage(url.searchParams.get('next') || '/admin/orders');
+  if (request.method === 'GET') return loginPage(url.searchParams.get('next') || '/admin');
 
-  const accounts = parseAccounts(env);
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== url.origin) return loginPage('/admin', 'Dit verzoek is niet toegestaan.', 403);
+
   const form = new URLSearchParams(await request.text());
-  return handleLoginPost(form, accounts, env);
-}
-
-async function handleLoginPost(form, accounts, env) {
   const password = form.get('password') || '';
-  const code = form.get('code') || '';
-  const next = form.get('next') || '/admin/orders';
+  const code = (form.get('code') || '').replace(/\D/g, '');
+  const next = form.get('next') || '/admin';
+  const accounts = parseAccounts(env);
 
-  if (!accounts.length || !env.ADMIN_SESSION_SECRET) return loginPage(next, 'Beheer is nog niet (volledig) ingesteld.');
+  if (!accounts.length || !env.ADMIN_SESSION_SECRET) return loginPage(next, 'Beheer is nog niet (volledig) ingesteld.', 503);
 
-  let matched = null;
-  for (const acc of accounts) {
-    // Beide checks altijd uitvoeren (niet vroegtijdig stoppen op het wachtwoord), zodat de
-    // resterende accounts qua timing niet verraden welk wachtwoord wél goed was.
-    const passOk = timingSafeEqual(password, acc.password);
-    // Nog geen 2FA voor déze persoon ingesteld (acc.totp leeg): wachtwoord alleen is dan genoeg,
-    // zodat iemand voor het eerst bij /admin/setup-2fa kan komen.
-    const codeOk = acc.totp ? await verifyTotp(acc.totp, code) : true;
-    if (passOk && codeOk) matched = acc;
+  const ip = await ipHash(request, env);
+  try {
+    if (await rpc(env, 'admin_login_blocked', { p_ip_hash: ip })) {
+      return loginPage(next, 'Te veel pogingen. Probeer het over 15 minuten opnieuw.', 429);
+    }
+  } catch (_) {
+    return loginPage(next, 'Inloggen is tijdelijk niet mogelijk. Probeer het later opnieuw.', 503);
   }
-  if (!matched) return loginPage(next, 'Onjuist wachtwoord of onjuiste code.');
+
+  // Alle accounts altijd volledig controleren (niet vroegtijdig stoppen), zodat de timing niet
+  // verraadt welk wachtwoord wél goed was.
+  let matched = null;
+  let step = null;
+  let missing2fa = false;
+  for (const acc of accounts) {
+    const passOk = timingSafeEqual(password, acc.password);
+    const s = acc.totp ? await verifyTotpStep(acc.totp, code) : null;
+    if (passOk && !acc.totp) missing2fa = true;
+    if (passOk && s !== null) { matched = acc; step = s; }
+  }
+
+  if (!matched && missing2fa) {
+    return loginPage(next, 'Voor dit account is nog geen 2FA ingesteld. Vraag een andere beheerder om een sleutel.', 403);
+  }
+
+  let ok = Boolean(matched);
+  if (ok) {
+    try {
+      // Dezelfde code mag niet nog een keer gebruikt worden.
+      ok = await rpc(env, 'admin_use_totp', { p_account: matched.name, p_step: step });
+    } catch (_) {
+      return loginPage(next, 'Inloggen is tijdelijk niet mogelijk. Probeer het later opnieuw.', 503);
+    }
+  }
+  if (!ok) {
+    try { await rpc(env, 'admin_record_failure', { p_ip_hash: ip }); } catch (_) { /* melden hoeft niet te blokkeren */ }
+    return loginPage(next, 'Onjuist wachtwoord of onjuiste code.', 401);
+  }
 
   const token = await makeSession(env.ADMIN_SESSION_SECRET, matched.name);
-  const safeNext = next.startsWith('/admin/') ? next : '/admin/orders';
+  const safeNext = next.startsWith('/admin') && !next.startsWith('//') && !next.includes('\\') && !next.startsWith('/admin/login') ? next : '/admin';
   return new Response(null, {
     status: 303,
     headers: {
@@ -140,7 +192,7 @@ async function handleLoginPost(form, accounts, env) {
   });
 }
 
-export function handleLogout() {
+export function logoutResponse() {
   return new Response(null, {
     status: 303,
     headers: { Location: '/admin/login', 'Set-Cookie': `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0` }
@@ -151,42 +203,31 @@ export function redirectToLogin(pathname) {
   return new Response(null, { status: 303, headers: { Location: `/admin/login?next=${encodeURIComponent(pathname)}` } });
 }
 
-// Sleutel + QR-code genereren voor 2FA. Staat achter de gewone login (dus alleen te bereiken als
-// je al bent ingelogd) — bruikbaar om voor jezelf óf voor iemand anders (mede-oprichter) een
-// nieuwe sleutel te maken. Genereert bij elk bezoek een NIEUWE sleutel; ververs niet nadat je 'm
-// hebt overgenomen. De QR-tekening zelf gebeurt in de browser met een bekende, gratis bibliotheek
-// (qrcodejs via cdnjs) — dezelfde soort externe script-load als Turnstile al gebruikt.
-export function setup2fa(url, userName) {
-  const naam = (url.searchParams.get('naam') || '').slice(0, 60) || 'eigenaar';
+// Sleutel + QR-code genereren voor 2FA. Staat achter de gewone login: bruikbaar om voor jezelf óf voor
+// een andere vennoot een nieuwe sleutel te maken. Elk bezoek maakt een NIEUWE sleutel; ververs niet
+// nadat je hem hebt overgenomen. De QR-tekening gebeurt in de browser met de bekende bibliotheek
+// qrcodejs (cdnjs), de enige externe bron die de beheerpagina's toestaan.
+export function setup2fa(url, user, csrf) {
+  const naam = (url.searchParams.get('naam') || '').replace(/[\r\n"\\]/g, ' ').slice(0, 60).trim() || 'vennoot';
   const secret = generateSecret();
-  const label = `BUYT beheer:${naam}`;
+  const label = `BUYT Beheer:${naam}`;
   const otpauth = `otpauth://totp/${encodeURIComponent(label)}?secret=${secret}&issuer=BUYT&digits=6&period=30`;
-  return page('2FA instellen', `
-    <a class="back" href="/admin/orders">&larr; Terug</a>
-    <h1>2FA instellen</h1>
-    <div class="panel">
-      <form method="GET" style="display:flex;gap:10px;align-items:end;margin-bottom:18px">
-        <div style="display:grid;gap:6px;flex:1">
-          <label for="naam" style="font-size:.85rem;font-weight:700">Voor wie is deze sleutel?</label>
-          <input id="naam" name="naam" type="text" value="${esc(naam === 'eigenaar' ? '' : naam)}" placeholder="bijv. Marieke" style="font:inherit;padding:.6rem .8rem;border:1.5px solid rgba(18,51,38,.3);border-radius:10px">
+  return layout('2FA-sleutel maken', `
+    <div class="page-head"><div><h1>2FA-sleutel maken</h1><p>Voor een nieuwe vennoot, of als iemand zijn telefoon kwijt is.</p></div></div>
+    <div class="card card__pad card--narrow">
+      <form method="get" class="field field--section">
+        <label for="naam">Voor wie is deze sleutel?</label>
+        <div class="toolbar toolbar--flat">
+          <input class="input" id="naam" name="naam" type="text" value="${esc(naam === 'vennoot' ? '' : naam)}" placeholder="bijvoorbeeld Timme">
+          <button class="btn" type="submit">Nieuwe sleutel</button>
         </div>
-        <button type="submit" style="font:inherit;font-weight:700;background:#fff;color:#123326;border:1.5px solid rgba(18,51,38,.3);border-radius:10px;padding:.65rem 1rem;cursor:pointer">Nieuwe sleutel</button>
       </form>
-
-      <p>Scan deze QR-code met de authenticator-app (Google Authenticator, Authy, 1Password, ...), of voer de sleutel handmatig in:</p>
-      <div id="qr" style="margin:14px 0;width:200px;height:200px"></div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-      <script>new QRCode(document.getElementById('qr'), { text: ${JSON.stringify(otpauth)}, width: 200, height: 200 });</script>
-
-      <dl>
-        <dt>Account</dt><dd>${esc(label)}</dd>
-        <dt>Sleutel</dt><dd style="font-family:monospace;font-size:1.1rem;letter-spacing:.05em">${esc(secret)}</dd>
-        <dt>Type</dt><dd>Tijdgebaseerd (TOTP), 6 cijfers, 30 seconden</dd>
-      </dl>
-
-      <p style="margin-top:14px">Voeg deze persoon toe aan de lijst in <strong>ADMIN_ACCOUNTS</strong> (Secret, JSON) in de Worker-instellingen:</p>
-      <pre style="background:rgba(18,51,38,.05);border-radius:10px;padding:12px;font-size:.85rem;overflow-x:auto">{"name": ${JSON.stringify(naam)}, "password": "&lt;wachtwoord voor ${esc(naam)}&gt;", "totp": "${esc(secret)}"}</pre>
-      <p class="empty">Ververs deze pagina niet opnieuw voor je de sleutel hebt overgenomen — elk bezoek (en elke nieuwe naam) genereert een nieuwe.</p>
-    </div>
-  `, { userName });
+      <p><strong>1.</strong> Scan de QR-code met een authenticator-app (Google Authenticator, Authy, 1Password).</p>
+      <div id="qr" class="qr" data-text="${esc(otpauth)}"></div>
+      <p><strong>2.</strong> Lukt scannen niet? Voer deze sleutel handmatig in (type: tijdgebaseerd, 6 cijfers, 30 seconden):</p>
+      <code class="key key--gap">${esc(secret)}</code>
+      <p><strong>3.</strong> Zet de sleutel bij het juiste account in het geheim <code>ADMIN_ACCOUNTS</code> van de Worker:</p>
+      <pre class="code">{"name": ${esc(JSON.stringify(naam))}, "password": "&lt;wachtwoord&gt;", "totp": "${esc(secret)}"}</pre>
+      <p class="note">Ververs deze pagina niet voordat de sleutel is overgenomen: elk bezoek maakt een nieuwe.</p>
+    </div>`, { user, csrf, qr: true });
 }

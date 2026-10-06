@@ -275,3 +275,55 @@ Bekijk in het beheerscherm: ${adminUrl}`;
 
   return { to: OWNER_ORDER_EMAIL, subject, html, text };
 }
+
+// Statusmails aan de klant, vanuit het beheer (zie docs/ontwerp-beheerportaal.md §4). Bewust kort. Hergebruiken
+// het huidige omhulsel; het nieuwe ontwerp van alle klantmails staat als aparte taak op de lijst.
+// `order` is een rij uit de tabel orders: customer_name, email, order_number, delivery_date, delivery_window.
+function statusMail(order, origin, { subject, title, intro, closing, preheader, footer }) {
+  const first = String(order.customer_name || '').replace(/[\r\n]/g, ' ').trim().split(' ')[0] || 'daar';
+  const number = `BUYT-${order.order_number}`;
+  const delivery = order.delivery_date && order.delivery_window ? formatDelivery(order.delivery_date, order.delivery_window) : '';
+  const headerHtml = `<div style="font:800 1.7rem/1.15 ${FONT_DISPLAY};letter-spacing:-.03em;color:${COLOR.cream};">${title}</div>
+<p style="margin:12px 0 0;color:rgba(255,248,232,.88);font-size:.92rem;">Bestelling <strong>${number}</strong></p>`;
+  const bodyHtml = `<p style="margin:0;color:${COLOR.ink};font-size:.95rem;line-height:1.6;">Hoi ${escapeHtml(first)},</p>
+<p style="margin:12px 0 0;color:${COLOR.ink};font-size:.95rem;line-height:1.6;">${intro}</p>
+${delivery ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLOR.sand};border-radius:16px;margin:20px 0 0;"><tr><td style="padding:14px 18px;"><span style="font-weight:700;color:${COLOR.ink};font-size:.9rem;">Bezorgmoment</span><br><span style="color:${MUTED};font-size:.9rem;">${delivery}</span></td></tr></table>` : ''}
+<p style="margin:20px 0 0;color:${COLOR.ink};font-size:.92rem;line-height:1.6;">${closing}</p>
+<p style="margin:14px 0 0;color:${COLOR.ink};font-size:.92rem;">Groet,<br><strong>Team BUYT</strong></p>`;
+  const html = shell({ origin, preheader, headerHtml, bodyHtml, footerNote: footer || `Deze e-mail hoort bij bestelling ${number}.`, showGeese: false });
+  const text = `Hoi ${first},\n\n${intro.replace(/<[^>]+>/g, '')}\n${delivery ? `\nBezorgmoment: ${delivery}\n` : ''}\n${closing.replace(/<[^>]+>/g, '')}\n\nGroet,\nTeam BUYT`;
+  return { to: order.email, subject, html, text };
+}
+
+export function orderOnTheWayEmail(order, origin) {
+  const number = `BUYT-${order.order_number}`;
+  return statusMail(order, origin, {
+    subject: `Je BUYT-bestelling is onderweg — ${number}`,
+    title: 'Onderweg!',
+    intro: `Je bestelling ${number} is onderweg naar je toe.`,
+    closing: 'Zorg dat er iemand thuis is. Lukt dat niet? Antwoord op deze e-mail.',
+    preheader: `Bestelling ${number} is onderweg`
+  });
+}
+
+export function orderDeliveredEmail(order, origin) {
+  const number = `BUYT-${order.order_number}`;
+  return statusMail(order, origin, {
+    subject: `Je BUYT-bestelling is bezorgd — ${number}`,
+    title: 'Bezorgd!',
+    intro: `Je bestelling ${number} is bezorgd. Eet smakelijk!`,
+    closing: 'Is er iets niet in orde? Antwoord op deze e-mail, dan lossen we het op.',
+    preheader: `Bestelling ${number} is bezorgd`
+  });
+}
+
+export function orderCancelledEmail(order, origin) {
+  const number = `BUYT-${order.order_number}`;
+  return statusMail(order, origin, {
+    subject: `Je BUYT-bestelling is geannuleerd — ${number}`,
+    title: 'Geannuleerd',
+    intro: `Je bestelling ${number} is geannuleerd.`,
+    closing: 'Heb je hier vragen over? Antwoord op deze e-mail, dan helpen we je verder.',
+    preheader: `Bestelling ${number} is geannuleerd`
+  });
+}

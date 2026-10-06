@@ -7,8 +7,9 @@ import { notifyOwner } from './lib/notify.js';
 import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
 import { orderConfirmationEmail, orderInternalEmail } from './lib/emailTemplates.js';
 import { upcomingDates, formatDelivery } from './lib/delivery.js';
-import { listOrders, orderDetail } from './lib/admin.js';
-import { currentUserName, handleLogin, handleLogout, redirectToLogin, setup2fa } from './lib/adminAuth.js';
+import { currentUserName, handleLogin, logoutResponse, redirectToLogin, setup2fa, csrfToken, checkPost } from './lib/adminAuth.js';
+import { assetResponse } from './lib/adminUi.js';
+import { homePage, ordersPage, searchOrders, orderDetailPage, postStatus, postNote } from './lib/adminOrders.js';
 
 // Verkoopschakelaar: SALES_OPEN staat in wrangler.jsonc. Staat die niet op "true", dan kunnen alleen
 // ingelogde beheerders (/admin/login) bestellen. Dit is de echte afsluiting; de blur op de site is alleen de weergave.
@@ -225,26 +226,61 @@ const routes = {
   '/api/shop-status': { GET: handleShopStatus }
 };
 
+// Beheer: /admin/* (zie docs/ontwerp-beheerportaal.md). Alleen /admin/login en de stijl/script zijn open;
+// al het andere vraagt een geldige sessie. POST-verzoeken dragen een CSRF-token (adminAuth.checkPost).
+async function readForm(request) {
+  const text = await request.text();
+  if (text.length > MAX_BODY_BYTES) return null;
+  return new URLSearchParams(text);
+}
+
+async function handleAdmin(request, env, ctx, url) {
+  const { pathname } = url;
+  const method = request.method;
+
+  if (pathname === '/admin/admin.css' && method === 'GET') return assetResponse('css');
+  if (pathname === '/admin/admin.js' && method === 'GET') return assetResponse('js');
+  if (pathname === '/admin/login') {
+    if (method === 'GET' || method === 'POST') return handleLogin(request, env);
+    return error(405, 'method_not_allowed');
+  }
+
+  const user = await currentUserName(request, env);
+  if (!user) return redirectToLogin(pathname);
+
+  if (pathname === '/admin/logout') {
+    if (method !== 'POST') return redirect(request, '/admin');
+    const form = await readForm(request);
+    if (!form || !(await checkPost(request, env, form))) return error(403, 'forbidden');
+    return logoutResponse();
+  }
+
+  if (method === 'GET') {
+    if (pathname === '/admin' || pathname === '/admin/') return homePage(env, request, user, url);
+    if (pathname === '/admin/orders') return ordersPage(env, request, user, url);
+    if (pathname === '/admin/setup-2fa') return setup2fa(url, user, await csrfToken(request, env));
+    const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
+    if (m) return orderDetailPage(env, request, user, m[1], url);
+    return error(404, 'not_found');
+  }
+
+  if (method === 'POST') {
+    const form = await readForm(request);
+    if (!form) return error(413, 'invalid_input');
+    if (pathname === '/admin/orders') return searchOrders(env, request, user, form);
+    const s = /^\/admin\/orders\/(\d+)\/(status|note)$/.exec(pathname);
+    if (s) return s[2] === 'status' ? postStatus(env, ctx, request, user, s[1], form) : postNote(env, request, user, s[1], form);
+    return error(404, 'not_found');
+  }
+  return error(405, 'method_not_allowed');
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const { pathname } = url;
 
-    if (pathname.startsWith('/admin/')) {
-      if (pathname === '/admin/login') {
-        if (request.method === 'GET' || request.method === 'POST') return handleLogin(request, env);
-        return error(405, 'method_not_allowed');
-      }
-      if (pathname === '/admin/logout') return handleLogout();
-      if (request.method !== 'GET') return error(405, 'method_not_allowed');
-      const userName = await currentUserName(request, env);
-      if (!userName) return redirectToLogin(pathname);
-      if (pathname === '/admin/orders') return listOrders(env, userName);
-      if (pathname === '/admin/setup-2fa') return setup2fa(url, userName);
-      const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);
-      if (m) return orderDetail(env, m[1], userName);
-      return error(404, 'not_found');
-    }
+    if (pathname === '/admin' || pathname.startsWith('/admin/')) return handleAdmin(request, env, ctx, url);
 
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
 
