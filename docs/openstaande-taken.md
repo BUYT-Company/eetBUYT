@@ -30,7 +30,8 @@ De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen ge
 - [ ] **Verzameling van gedetailleerde locatie- en apparaatgegevens** staat aan; dat klopt met de verklaring ("globale locatie (stad)"). Zet je het uit, pas dan de verklaring aan.
 - [x] **Bewaring 14 maanden** voor gebeurtenis- en gebruikersgegevens, met "Resetten bij nieuwe gebruikersactiviteit" **uit**, zodat 14 maanden een harde grens is (ingesteld 6 okt 2026; gaat na 24 uur in).
 - [x] **Verwerkingsregister** (art. 30 AVG) opgesteld op 6 okt 2026: `intern/verwerkingsregister.md` (staat bewust **niet** in git, want de repository is openbaar). Zet een kopie op een gedeelde plek voor de drie vennoten en herzie het jaarlijks en bij elke wijziging.
-- [ ] **Privacyverklaring aanvullen met TransIP** (mailhost van `@eetbuyt.nl`; klantmail komt daar binnen) en controleren of Netlify nog opgeslagen formulierdata heeft die je bij het opruimen moet verwijderen.
+- [x] **TransIP** staat in de privacyverklaring (mailhost van `@eetbuyt.nl`).
+- [ ] **Netlify**: controleren of er nog opgeslagen formulierdata is die je bij het opruimen moet verwijderen.
 - [ ] **Verwerkersovereenkomsten vastleggen** voor Supabase, Cloudflare, Resend, Pushover en TransIP (Google is al geaccepteerd); noteer de datum in het register.
 - [ ] **Cookiekeuze en bewaartermijn horen bij elkaar:** de banner onthoudt de keuze 12 maanden en vraagt daarna opnieuw; de verklaring zegt hetzelfde. Wijzig je het één, pas dan het ander aan (`public/js/consent.js`, `MAX_AGE`, en de alinea Cookies in `public/privacy.html`).
 
