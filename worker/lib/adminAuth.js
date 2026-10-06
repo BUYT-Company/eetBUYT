@@ -10,7 +10,7 @@
 // Faalt gesloten zonder configuratie.
 import { esc, bare, layout } from './adminUi.js';
 import { generateSecret, verifyTotpStep } from './totp.js';
-import { rpc } from './supabase.js';
+import { rpc, SupabaseError } from './supabase.js';
 
 const COOKIE = 'buyt_admin';
 const SESSION_DAYS = 7;
@@ -100,6 +100,21 @@ export async function checkPost(request, env, form) {
   return Boolean(expected) && timingSafeEqual(expected, given);
 }
 
+// De extra beveiligingen (rem op raden, eenmalige code) draaien op databasefuncties uit migratie 0006.
+// Ontbreken die functies (404), dan valt de login niet dicht: wachtwoord en 2FA-code blijven verplicht,
+// alleen de extra's vervallen en dat komt in het logboek. Elke andere fout blijft gewoon een fout.
+async function guardRpc(env, fn, args, whenMissing) {
+  try {
+    return await rpc(env, fn, args);
+  } catch (e) {
+    if (e instanceof SupabaseError && e.status === 404) {
+      console.error('admin_rpc_missing', fn);
+      return whenMissing;
+    }
+    throw e;
+  }
+}
+
 const ipHash = (request, env) => hmacHex(env.ADMIN_SESSION_SECRET || 'x', `ip|${request.headers.get('CF-Connecting-IP') || 'onbekend'}`);
 
 function loginPage(next, errorMsg, status = 200) {
@@ -144,7 +159,7 @@ export async function handleLogin(request, env) {
 
   const ip = await ipHash(request, env);
   try {
-    if (await rpc(env, 'admin_login_blocked', { p_ip_hash: ip })) {
+    if (await guardRpc(env, 'admin_login_blocked', { p_ip_hash: ip }, false)) {
       return loginPage(next, 'Te veel pogingen. Probeer het over 15 minuten opnieuw.', 429);
     }
   } catch (_) {
@@ -171,13 +186,13 @@ export async function handleLogin(request, env) {
   if (ok) {
     try {
       // Dezelfde code mag niet nog een keer gebruikt worden.
-      ok = await rpc(env, 'admin_use_totp', { p_account: matched.name, p_step: step });
+      ok = await guardRpc(env, 'admin_use_totp', { p_account: matched.name, p_step: step }, true);
     } catch (_) {
       return loginPage(next, 'Inloggen is tijdelijk niet mogelijk. Probeer het later opnieuw.', 503);
     }
   }
   if (!ok) {
-    try { await rpc(env, 'admin_record_failure', { p_ip_hash: ip }); } catch (_) { /* melden hoeft niet te blokkeren */ }
+    try { await guardRpc(env, 'admin_record_failure', { p_ip_hash: ip }, null); } catch (_) { /* melden hoeft niet te blokkeren */ }
     return loginPage(next, 'Onjuist wachtwoord of onjuiste code.', 401);
   }
 
