@@ -7,3 +7,6 @@ node_modules/
 .dev.vars.*
 !.dev.vars.example
 .wrangler/
+
+# Interne documenten (verwerkingsregister e.d.): nooit in de openbare repository
+intern/
