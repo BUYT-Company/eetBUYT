@@ -24,9 +24,10 @@ Property `eetbuyt.nl`, Meetwaarde-ID `G-6250HQTQH2`. De bewaartermijn staat op 1
 
 ### Analytics en privacy: wat je zelf in Google moet controleren
 De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen gegevens voor eigen doeleinden gebruikt. Dat moet in je account ook zo staan:
-- [ ] **Gegevensverwerkingsvoorwaarden geaccepteerd:** Beheer → Accountinstellingen → *Gegevensverwerkingsvoorwaarden*: de voorwaarden zijn geaccepteerd (staat vaak al op "Geaccepteerd").
-- [ ] **Instellingen voor gegevens delen:** Beheer → Accountinstellingen → *Instellingen voor gegevens delen*: alle vinkjes uit (Producten en services van Google, Modellering, Technische support, Aanbevelingen).
-- [ ] **Google-signalen uit:** Beheer → Gegevensverzameling en -aanpassing → *Gegevensverzameling*: Google-signalen niet geactiveerd, en "Gegevensverzameling voor gepersonaliseerde advertenties" uit.
+- [x] **Gegevensverwerkingsvoorwaarden geaccepteerd** (6 okt 2026 gecontroleerd: geaccepteerd op 5 oktober 2026).
+- [x] **Instellingen voor gegevens delen:** alle vier de vinkjes uit (gecontroleerd 6 okt 2026).
+- [x] **Google-signalen uit** (knop "Aanzetten" niet gebruikt), **advertentiepersonalisatie uit** voor alle regio's (0 van 307), en de "Erkenning van verzameling van gebruikersgegevens" is bewust niet bevestigd (gecontroleerd 6 okt 2026). Laat dat zo, tenzij we later Google-signalen of advertenties gaan gebruiken; dan eerst de privacyverklaring en de banner aanpassen.
+- [ ] **Verzameling van gedetailleerde locatie- en apparaatgegevens** staat aan; dat klopt met de verklaring ("globale locatie (stad)"). Zet je het uit, pas dan de verklaring aan.
 - [ ] **Bewaring 14 maanden:** staat al goed (Beheer → Gegevensbewaring), en zet "Gebruikersgegevens opnieuw instellen bij nieuwe activiteit" aan.
 - [ ] **Verwerkingsregister** bijhouden (art. 30 AVG): per verwerking wat, waarom, wie, hoelang, welke partijen. De tabel in de privacyverklaring is een goede basis; ik kan er een intern document van maken.
 - [ ] **Cookiekeuze en bewaartermijn horen bij elkaar:** de banner onthoudt de keuze 12 maanden en vraagt daarna opnieuw; de verklaring zegt hetzelfde. Wijzig je het één, pas dan het ander aan (`public/js/consent.js`, `MAX_AGE`, en de alinea Cookies in `public/privacy.html`).
