@@ -27,7 +27,7 @@
     "SALES_OPEN": "false",
     // Analytics in het beheer (zie docs/analytics-koppelen.md). De sleutel zelf is een geheim (GOOGLE_SA_JSON),
     // dit zijn alleen de gewone instellingen: het GA4 Property-ID (alleen cijfers) en de Search Console-eigenschap.
-    "GA4_PROPERTY_ID": "",
+    "GA4_PROPERTY_ID": "557259531",
     "SEARCH_CONSOLE_SITE": "sc-domain:eetbuyt.nl"
   },
   "observability": { "enabled": true }
