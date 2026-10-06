@@ -33,9 +33,9 @@ export function orderTotal(o) {
 
 // Verandering ten opzichte van de vorige periode. Zonder genoeg gegevens (minder dan 3 bestellingen in
 // de vorige periode) geen percentage: dat zou schijnnauwkeurig zijn.
-export function delta(current, previous, previousOrders) {
+export function delta(current, previous, previousOrders, noun = 'bestellingen') {
   if (previousOrders < 3 || !(previous > 0)) {
-    return { dir: 'none', pct: null, text: 'Nog te weinig bestellingen om te vergelijken' };
+    return { dir: 'none', pct: null, text: `Nog te weinig ${noun} om te vergelijken` };
   }
   const pct = Math.round(((current - previous) / previous) * 100);
   if (pct === 0) return { dir: 'flat', pct: 0, text: 'Gelijk aan de vorige periode' };

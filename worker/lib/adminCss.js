@@ -259,6 +259,18 @@ textarea { min-height: 88px; resize: vertical; }
 .btn--ghost:hover { background: var(--wash); border-color: var(--line-strong); }
 .more-out { margin-top: 18px; }
 
+/* Analytics */
+.section-h { margin: 34px 0 14px; font-size: 1.0625rem; }
+.section-h:first-of-type { margin-top: 8px; }
+.chart { display: block; width: 100%; height: auto; max-height: 240px; }
+.chart__bars rect { fill: var(--green); }
+.chart__bars rect:hover { fill: var(--green-700); }
+.chart__grid { stroke: var(--line); stroke-width: 1; }
+.chart__axis { stroke: var(--line-strong); stroke-width: 1; }
+.chart__label { fill: var(--muted); font: 400 11px var(--font); font-variant-numeric: tabular-nums; }
+.steps { margin: 12px 0; padding-left: 1.2em; display: grid; gap: 8px; }
+code { background: var(--wash); padding: 1px 6px; border-radius: 6px; font-size: .875em; }
+
 /* Bestelling: detail */
 .detail { display: grid; gap: 16px; align-items: start; }
 @media (min-width: 1000px) { .detail { grid-template-columns: minmax(0, 1fr) 340px; } }

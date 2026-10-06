@@ -197,6 +197,7 @@ export async function morePage(env, request, user) {
   const body = `<div class="page-head"><div><h1>Meer</h1></div></div>
 <section class="card"><ul class="todo">
 <li><a href="/admin/business"><span>Zakelijk${counts.newBusiness ? ` <span class="count">${counts.newBusiness}</span>` : ''}</span>${ICON.chevron}</a></li>
+<li><a href="/admin/analytics"><span>Analytics</span>${ICON.chevron}</a></li>
 <li><a href="/admin/setup-2fa"><span>2FA-sleutel maken</span>${ICON.chevron}</a></li>
 </ul></section>
 <form method="post" action="/admin/logout" class="more-out">${csrfField(csrf)}<button class="btn btn--block" type="submit">Uitloggen (${esc(user)})</button></form>`;

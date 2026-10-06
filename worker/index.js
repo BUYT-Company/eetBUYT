@@ -11,6 +11,7 @@ import { currentUserName, handleLogin, logoutResponse, redirectToLogin, setup2fa
 import { assetResponse } from './lib/adminUi.js';
 import { homePage, ordersPage, searchOrders, orderDetailPage, postStatus, postNote } from './lib/adminOrders.js';
 import { deliveryPage, postShare, postRevoke, postRoute, sharedList } from './lib/adminDelivery.js';
+import { analyticsPage } from './lib/adminAnalytics.js';
 import { customersPage, customerDetailPage, businessPage, postRequestStatus, morePage } from './lib/adminPeople.js';
 
 // Verkoopschakelaar: SALES_OPEN staat in wrangler.jsonc. Staat die niet op "true", dan kunnen alleen
@@ -265,6 +266,7 @@ async function handleAdmin(request, env, ctx, url) {
     if (pathname === '/admin/customers') return customersPage(env, request, user, url);
     if (pathname === '/admin/business') return businessPage(env, request, user, url);
     if (pathname === '/admin/more') return morePage(env, request, user);
+    if (pathname === '/admin/analytics') return analyticsPage(env, request, user, url);
     const c = /^\/admin\/customers\/(\d+)$/.exec(pathname);
     if (c) return customerDetailPage(env, request, user, c[1]);
     const m = /^\/admin\/orders\/(\d+)$/.exec(pathname);

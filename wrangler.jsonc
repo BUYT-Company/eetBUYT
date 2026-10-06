@@ -24,7 +24,11 @@
     // VERKOOPSCHAKELAAR. "false": de productenpagina is geblurd ("Binnenkort bestellen mogelijk") en /api/order weigert
     // iedereen behalve ingelogde beheerders (/admin/login). "true": de winkel is open zoals voorheen.
     // Openzetten bij livegang: zie docs/verkoop-openzetten.md.
-    "SALES_OPEN": "false"
+    "SALES_OPEN": "false",
+    // Analytics in het beheer (zie docs/analytics-koppelen.md). De sleutel zelf is een geheim (GOOGLE_SA_JSON),
+    // dit zijn alleen de gewone instellingen: het GA4 Property-ID (alleen cijfers) en de Search Console-eigenschap.
+    "GA4_PROPERTY_ID": "",
+    "SEARCH_CONSOLE_SITE": "sc-domain:eetbuyt.nl"
   },
   "observability": { "enabled": true }
 }
