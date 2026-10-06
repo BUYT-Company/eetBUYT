@@ -29,7 +29,7 @@ De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen ge
 - [x] **Google-signalen uit** (knop "Aanzetten" niet gebruikt), **advertentiepersonalisatie uit** voor alle regio's (0 van 307), en de "Erkenning van verzameling van gebruikersgegevens" is bewust niet bevestigd (gecontroleerd 6 okt 2026). Laat dat zo, tenzij we later Google-signalen of advertenties gaan gebruiken; dan eerst de privacyverklaring en de banner aanpassen.
 - [ ] **Verzameling van gedetailleerde locatie- en apparaatgegevens** staat aan; dat klopt met de verklaring ("globale locatie (stad)"). Zet je het uit, pas dan de verklaring aan.
 - [x] **Bewaring 14 maanden** voor gebeurtenis- en gebruikersgegevens, met "Resetten bij nieuwe gebruikersactiviteit" **uit**, zodat 14 maanden een harde grens is (ingesteld 6 okt 2026; gaat na 24 uur in).
-- [x] **Verwerkingsregister** (art. 30 AVG) opgesteld op 6 okt 2026: `intern/verwerkingsregister.md` (staat bewust **niet** in git, want de repository is openbaar). Zet een kopie op een gedeelde plek voor de drie vennoten en herzie het jaarlijks en bij elke wijziging.
+- [x] **Verwerkingsregister** (art. 30 AVG) opgesteld op 6 okt 2026: `intern/verwerkingsregister.xlsx` is de hoofdversie (staat bewust **niet** in git, want de repository is openbaar); Word en PDF zijn kopieën. Zet een kopie op een gedeelde plek voor de drie vennoten en herzie het jaarlijks en bij elke wijziging.
 - [x] **TransIP** staat in de privacyverklaring (mailhost van `@eetbuyt.nl`).
 - [ ] **Netlify**: controleren of er nog opgeslagen formulierdata is die je bij het opruimen moet verwijderen.
 - [ ] **Verwerkersovereenkomsten vastleggen** voor Supabase, Cloudflare, Resend, Pushover en TransIP (Google is al geaccepteerd); noteer de datum in het register.
