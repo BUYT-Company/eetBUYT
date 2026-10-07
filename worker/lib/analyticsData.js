@@ -85,6 +85,59 @@ export function parseDaily(resp, range) {
   return out;
 }
 
+// Reeks per dag voor twee periodes tegelijk (met "dateRange" erbij). Beide reeksen hebben evenveel dagen; dag 1 van
+// de vorige periode ligt op dezelfde plek als dag 1 van deze periode, zodat ze naast elkaar te leggen zijn.
+const fillRange = (range, map) => {
+  const out = [];
+  for (let d = range.start; d <= range.end; d = addDays(d, 1)) out.push({ date: d, value: map.get(d) || 0 });
+  return out;
+};
+export function parseDailyRanges(resp, cur, prev) {
+  const maps = { current: new Map(), previous: new Map() };
+  const di = col(resp, 'date');
+  for (const r of resp?.rows || []) {
+    const d = r.dimensionValues?.[di === -1 ? 0 : di]?.value || '';
+    if (d.length === 8) maps[rangeOf(resp, r)].set(`${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`, num(r.metricValues?.[0]?.value));
+  }
+  return { current: fillRange(cur, maps.current), previous: fillRange(prev, maps.previous) };
+}
+
+// Search Console per dag: sleutel is de datum (YYYY-MM-DD), meting klikken.
+export function parseScDaily(resp, range) {
+  const map = new Map();
+  for (const r of resp?.rows || []) if (r.keys?.[0]) map.set(r.keys[0], num(r.clicks));
+  return fillRange(range, map);
+}
+
+// Bestellingen en omzet per dag uit de database. Een bestelling hoort bij de dag in Amsterdam (niet in UTC).
+// Geannuleerde bestellingen tellen niet mee. Omzet in centen.
+export function groupOrdersDaily(orders, cur, prev) {
+  const count = new Map();
+  const revenue = new Map();
+  for (const o of orders || []) {
+    if (o.status === 'geannuleerd') continue;
+    const day = amsterdamToday(new Date(o.created_at));
+    count.set(day, (count.get(day) || 0) + 1);
+    revenue.set(day, (revenue.get(day) || 0) + (o.total_final_cents ?? o.total_estimate_cents ?? 0));
+  }
+  const both = (map) => {
+    const out = { current: fillRange(cur, map), previous: [] };
+    out.previous = fillRange(prev, map);
+    return out;
+  };
+  return { orders: both(count), revenue: both(revenue) };
+}
+
+// Een "mooie" bovengrens voor de as, zodat de hulplijnen op ronde getallen staan.
+export function niceMax(max) {
+  if (!(max > 0)) return 1;
+  if (max <= 4) return Math.ceil(max);
+  const mag = 10 ** Math.floor(Math.log10(max));
+  const n = max / mag;
+  const step = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((x) => x >= n - 1e-9);
+  return Math.round(step * mag * 100) / 100;
+}
+
 // Search Console: één rij met totalen, of een lijst zoekopdrachten.
 export const parseScTotals = (resp) => {
   const r = resp?.rows?.[0];

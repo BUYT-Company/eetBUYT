@@ -57,3 +57,44 @@ test('herkenbare namen en datumtekst', () => {
   assert.equal(rangeLabel({ start: '2026-10-05', end: '2026-10-11' }), '5 t/m 11 oktober');
   assert.equal(rangeLabel({ start: '2026-09-28', end: '2026-10-04' }), '28 september t/m 4 oktober');
 });
+
+import { parseDailyRanges, parseScDaily, groupOrdersDaily, niceMax } from '../lib/analyticsData.js';
+
+test('bezoekers per dag voor twee periodes naast elkaar, ook als dateRange vooraan of achteraan staat', () => {
+  const cur = { start: '2026-10-05', end: '2026-10-07' };
+  const prev = { start: '2026-10-02', end: '2026-10-04' };
+  const resp = { dimensionHeaders: [{ name: 'date' }, { name: 'dateRange' }], rows: [
+    { dimensionValues: [{ value: '20261006' }, { value: 'date_range_0' }], metricValues: [{ value: '5' }] },
+    { dimensionValues: [{ value: '20261003' }, { value: 'date_range_1' }], metricValues: [{ value: '3' }] }] };
+  const d = parseDailyRanges(resp, cur, prev);
+  assert.deepEqual(d.current.map((x) => x.value), [0, 5, 0]);
+  assert.deepEqual(d.previous.map((x) => x.value), [0, 3, 0]);
+  assert.equal(d.current.length, d.previous.length);
+  assert.equal(parseDailyRanges({ dimensionHeaders: [{ name: 'dateRange' }, { name: 'date' }], rows: [{ dimensionValues: [{ value: 'date_range_1' }, { value: '20261003' }], metricValues: [{ value: '9' }] }] }, cur, prev).previous[1].value, 9);
+});
+
+test('Search Console klikken per dag, ontbrekende dagen zijn nul', () => {
+  const s = parseScDaily({ rows: [{ keys: ['2026-10-02'], clicks: 4 }] }, { start: '2026-10-01', end: '2026-10-03' });
+  assert.deepEqual(s, [{ date: '2026-10-01', value: 0 }, { date: '2026-10-02', value: 4 }, { date: '2026-10-03', value: 0 }]);
+});
+
+test('bestellingen en omzet per dag: dag in Amsterdam, geannuleerd telt niet, definitief gaat voor schatting', () => {
+  const cur = { start: '2026-10-05', end: '2026-10-07' };
+  const prev = { start: '2026-10-02', end: '2026-10-04' };
+  const orders = [
+    { created_at: '2026-10-05T22:30:00Z', status: 'nieuw', total_estimate_cents: 3000, total_final_cents: null },
+    { created_at: '2026-10-06T10:00:00Z', status: 'bezorgd', total_estimate_cents: 3000, total_final_cents: 2800 },
+    { created_at: '2026-10-06T11:00:00Z', status: 'geannuleerd', total_estimate_cents: 9999, total_final_cents: null },
+    { created_at: '2026-10-03T09:00:00Z', status: 'nieuw', total_estimate_cents: 1500, total_final_cents: null }
+  ];
+  const g = groupOrdersDaily(orders, cur, prev);
+  assert.deepEqual(g.orders.current.map((x) => x.value), [0, 2, 0]);
+  assert.deepEqual(g.revenue.current.map((x) => x.value), [0, 5800, 0]);
+  assert.deepEqual(g.orders.previous.map((x) => x.value), [0, 1, 0]);
+  assert.equal(g.orders.current[1].date, '2026-10-06');
+});
+
+test('mooie asgrens', () => {
+  assert.equal(niceMax(0), 1); assert.equal(niceMax(3), 3); assert.equal(niceMax(7), 8); assert.equal(niceMax(28), 30);
+  assert.equal(niceMax(120), 150); assert.equal(niceMax(1700), 2000); assert.ok(niceMax(12345) >= 12345);
+});

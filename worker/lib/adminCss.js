@@ -262,7 +262,13 @@ textarea { min-height: 88px; resize: vertical; }
 /* Analytics */
 .section-h { margin: 34px 0 14px; font-size: 1.0625rem; }
 .section-h:first-of-type { margin-top: 8px; }
+.chartbox { margin: 0; }
+.chartbox__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 18px; margin-bottom: 12px; }
+.chartbox__head h2 { margin: 0; }
 .chart { display: block; width: 100%; height: auto; max-height: 340px; }
+.chart--compact .chart__label { font-size: 15px; }
+.chart__prev { fill: none; stroke: #8FA297; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; opacity: .85; }
+.key-line { display: inline-block; width: 18px; height: 0; border-top: 2.5px solid #8FA297; margin-right: 8px; vertical-align: middle; }
 .chart__bars rect { fill: var(--green); }
 .chart__bars rect:hover { fill: var(--green-700); }
 .chart__grid { stroke: var(--line); stroke-width: 1; }
