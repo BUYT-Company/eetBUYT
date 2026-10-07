@@ -1,6 +1,6 @@
 # Kaart van bestellingen (Analytics)
 
-Op de pagina **Analytics** staat een Google Maps-kaart met een stip per bestelling en een grote cirkel om het (voorlopige) bezorggebied. Stippen **binnen** de cirkel zijn Lentelimoen (`#D8ED36`), stippen **erbuiten** zijn Paprikakoraal (`#FF6652`). Klik op een stip voor het bestelnummer en de plaats.
+Op de pagina **Analytics** staat een Google Maps-kaart met een stip per bestelling en een **eigen lichtgroene cirkel per bezorgstad** (Poldergroen met 30% dekking). Stippen **binnen een stadscirkel** zijn Lentelimoen (`#D8ED36`), stippen **erbuiten** zijn Paprikakoraal (`#FF6652`). Klik op een stip voor het bestelnummer en de plaats.
 
 ## Eenmalig instellen
 
@@ -21,13 +21,13 @@ In het Google Cloud-project `BUYT-beheer` (hetzelfde als voor Analytics):
 ## Hoe het werkt
 - **Van adres naar punt:** het beheer zoekt het adres op via **PDOK Locatieserver**, een gratis dienst van de Nederlandse overheid (Kadaster). Er is geen sleutel voor nodig en adressen gaan niet naar Google voor het opzoeken. Het punt wordt bij de bestelling bewaard (`lat`, `lng`, `geocoded_at`), dus het gebeurt per bestelling één keer. Bij elke keer openen van de pagina worden maximaal 40 nog niet opgezochte bestellingen verwerkt; staan er meer, dan zie je een melding en vernieuw je de pagina.
 - **Nauwkeurigheid:** het resultaat moet in dezelfde postcode liggen als het adres. Lukt dat niet, dan wordt het midden van de postcode gebruikt. Vindt PDOK niets, dan staat de bestelling niet op de kaart en zie je dat in een melding.
-- **De cirkel:** de kleinste cirkel om de middelpunten van Amsterdam, Amstelveen, Haarlem, Utrecht, Rotterdam en Den Haag, plus 6 km marge (`worker/lib/geo.js`). Het middelpunt ligt rond Leiden/Alphen en de straal is ongeveer 35 km. Plaatsen tussen de steden (zoals Zaandam, Leiden, Delft, Hoofddorp) vallen er dus ook binnen. Dit is bewust ruw: zodra TringTring definitief is, vervangen we de cirkel door postcodes.
+- **De cirkels:** elke stad heeft een eigen cirkel rond het stadsmidden, ongeveer zo groot als de stad zelf en **zonder extra marge** (Amsterdam 8 km, Rotterdam 10, Den Haag 6,5, Utrecht 6, Haarlem 4, Amstelveen 4; `worker/lib/geo.js`). Een bestelling is binnen als het punt in een van de cirkels ligt. Plaatsen tussen de steden (zoals Zaandam, Leiden, Delft, Hoofddorp) vallen er dus buiten. Dit is bewust ruw: zodra TringTring definitief is, vervangen we de cirkels door postcodes.
 - **Privacy:** op de pagina staan alleen bestelnummer, plaats en een punt (afgerond op ongeveer 10 meter). Geen naam, straat, postcode of e-mailadres.
 - **Beveiliging:** alleen de kaartpagina krijgt een iets ruimere `Content-Security-Policy` (Google Maps heeft extra bronnen nodig). Alle andere beheerpagina's blijven streng.
 
 ## Aanpassen
-- **Andere steden of een ander gebied:** pas `DELIVERY_CITIES` in `worker/lib/cities.js` en de middelpunten in `worker/lib/geo.js` (`CITY_CENTERS`) aan. De cirkel wordt vanzelf opnieuw berekend. De marge staat in `AREA_MARGIN_KM`.
-- **Later op de afrekenpagina:** `DELIVERY_AREA` en `insideArea()` uit `worker/lib/geo.js` en `geocodeOrder()` uit `worker/lib/geocode.js` zijn los van het beheer te hergebruiken om bij het bestellen te controleren of een adres binnen het bezorggebied valt. Houd er rekening mee dat Google Maps op de publieke site de privacyverklaring en de cookiekeuze raakt (zie hieronder).
+- **Andere steden of een ander gebied:** pas `DELIVERY_CITIES` in `worker/lib/cities.js` en in `worker/lib/geo.js` de middelpunten (`CITY_CENTERS`) en stralen (`CITY_RADIUS_KM`) aan. Wil je extra kilometers rond elke stad, zet dan `ZONE_MARGIN_KM` (nu 0) hoger.
+- **Later op de afrekenpagina:** `DELIVERY_ZONES` en `insideArea()` uit `worker/lib/geo.js` en `geocodeOrder()` uit `worker/lib/geocode.js` zijn los van het beheer te hergebruiken om bij het bestellen te controleren of een adres binnen het bezorggebied valt. Houd er rekening mee dat Google Maps op de publieke site de privacyverklaring en de cookiekeuze raakt (zie hieronder).
 
 ## Als het niet lukt
 | Je ziet | Oorzaak |

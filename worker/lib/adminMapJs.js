@@ -1,6 +1,6 @@
 // Script voor de kaart op de Analytics-pagina, uitgeleverd op /admin/map.js. Leest de gegevens uit het blok
 // <script type="application/json" id="buyt-map-data"> (alleen bestelnummer, plaats en punt, geen namen of adressen),
-// tekent het bezorggebied als grote cirkel en elke bestelling als stip: lime binnen het gebied, koraal erbuiten.
+// tekent elke bezorgstad als eigen lichtgroene cirkel en elke bestelling als stip: lime binnen het gebied, koraal erbuiten.
 // De stippen blijven op elk zoomniveau even groot op het scherm. Google roept initBuytMap aan zodra de kaart geladen is.
 export default `
 (function () {
@@ -27,16 +27,22 @@ export default `
     var data;
     try { data = JSON.parse(raw.textContent); } catch (e) { show(el, 'De kaartgegevens konden niet worden gelezen.'); return; }
 
-    var center = { lat: data.area.lat, lng: data.area.lng };
+    var zones = data.zones || [];
+    var center = { lat: 0, lng: 0 };
+    zones.forEach(function (z) { center.lat += z.lat / zones.length; center.lng += z.lng / zones.length; });
     var map = new google.maps.Map(el, {
       center: center, zoom: 9, mapTypeControl: false, streetViewControl: false,
       fullscreenControl: true, clickableIcons: false, gestureHandling: 'cooperative'
     });
-    var area = new google.maps.Circle({
-      map: map, center: center, radius: data.area.radiusKm * 1000, clickable: false,
-      strokeColor: '#007F4F', strokeOpacity: 0.9, strokeWeight: 2, fillColor: '#007F4F', fillOpacity: 0.06
+    var bounds = new google.maps.LatLngBounds();
+    zones.forEach(function (z) {
+      var circle = new google.maps.Circle({
+        map: map, center: { lat: z.lat, lng: z.lng }, radius: z.r * 1000, clickable: false,
+        strokeColor: '#007F4F', strokeOpacity: 0.9, strokeWeight: 1.5, fillColor: '#007F4F', fillOpacity: 0.3, zIndex: 1
+      });
+      bounds.union(circle.getBounds());
     });
-    map.fitBounds(area.getBounds());
+    if (zones.length) map.fitBounds(bounds);
 
     var info = new google.maps.InfoWindow();
     var dots = data.points.map(function (p) {

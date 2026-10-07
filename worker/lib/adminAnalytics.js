@@ -7,7 +7,7 @@ import { delta, eur, amsterdamToday } from './adminFormat.js';
 import { chrome } from './adminOrders.js';
 import { select } from './supabase.js';
 import { DELIVERY_CITIES, cityStats, canonicalCity } from './cities.js';
-import { DELIVERY_AREA, insideArea } from './geo.js';
+import { DELIVERY_ZONES, insideArea } from './geo.js';
 import { geocodeMissing } from './geocode.js';
 import { gaReport, scQuery, parseServiceAccount } from './google.js';
 import {
@@ -118,11 +118,11 @@ async function mapSection(env, r, allTime) {
   const outN = points.length - inN;
   const missing = rows.length - placed.length;
   // Het blok is gewone gegevens (geen script); "<" wordt onschadelijk gemaakt zodat er niets uit kan breken.
-  const json = JSON.stringify({ area: { lat: round4(DELIVERY_AREA.lat), lng: round4(DELIVERY_AREA.lng), radiusKm: Math.round(DELIVERY_AREA.radiusKm * 10) / 10 }, points }).replace(/</g, '\\u003c');
-  const notes = [`De cirkel is een ruwe omtrek om ${DELIVERY_CITIES.join(', ')}. Plaatsen daartussen, zoals Zaandam en Leiden, vallen er ook binnen. Postcodes volgen zodra het bezorggebied vastligt.`];
+  const json = JSON.stringify({ zones: DELIVERY_ZONES.map((z) => ({ c: z.city, lat: round4(z.lat), lng: round4(z.lng), r: z.radiusKm })), points }).replace(/</g, '\\u003c');
+  const notes = [`Elke bezorgstad (${DELIVERY_CITIES.join(', ')}) heeft een eigen cirkel, ongeveer zo groot als de stad zelf. Plaatsen ertussen, zoals Zaandam en Leiden, vallen erbuiten. Postcodes volgen zodra het bezorggebied vastligt.`];
   if (pending > 0) notes.push(`Nog ${pending} ${pending === 1 ? 'adres wordt' : 'adressen worden'} opgezocht. Vernieuw de pagina om ${pending === 1 ? 'die' : 'ze'} te zien.`);
   else if (missing > 0) notes.push(`${missing} ${missing === 1 ? 'bestelling staat' : 'bestellingen staan'} niet op de kaart omdat het adres niet gevonden is.`);
-  return `<section class="card card__pad grid-2--gap"><div class="chartbox__head"><h2>${title}</h2><div class="legend"><span><i class="key-circle"></i>Bezorggebied (voorlopig)</span><span><i class="dot dot--lime"></i>Binnen (${inN})</span><span><i class="dot dot--coral"></i>Buiten (${outN})</span></div></div>
+  return `<section class="card card__pad grid-2--gap"><div class="chartbox__head"><h2>${title}</h2><div class="legend"><span><i class="key-circle"></i>Bezorgstad (voorlopig)</span><span><i class="dot dot--lime"></i>Binnen (${inN})</span><span><i class="dot dot--coral"></i>Buiten (${outN})</span></div></div>
 <div id="buyt-map" class="map" role="img" aria-label="Kaart met ${points.length} bestellingen: ${inN} binnen en ${outN} buiten het bezorggebied"><p class="map__msg">De kaart wordt geladen…</p></div>
 <p class="note">${esc(notes.join(' '))}</p>
 <script type="application/json" id="buyt-map-data">${json}</script></section>`;
