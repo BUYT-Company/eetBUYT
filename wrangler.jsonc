@@ -28,7 +28,10 @@
     // Analytics in het beheer (zie docs/analytics-koppelen.md). De sleutel zelf is een geheim (GOOGLE_SA_JSON),
     // dit zijn alleen de gewone instellingen: het GA4 Property-ID (alleen cijfers) en de Search Console-eigenschap.
     "GA4_PROPERTY_ID": "557259531",
-    "SEARCH_CONSOLE_SITE": "sc-domain:eetbuyt.nl"
+    "SEARCH_CONSOLE_SITE": "sc-domain:eetbuyt.nl",
+    // Google Maps JavaScript API-sleutel voor de kaart op de Analytics-pagina. Deze sleutel is bedoeld om in de browser te staan
+    // (geen geheim), maar beperk hem in Google Cloud tot eetbuyt.nl en tot alleen de Maps JavaScript API. Zie docs/analytics-koppelen.md.
+    "GOOGLE_MAPS_KEY": ""
   },
   "observability": { "enabled": true }
 }

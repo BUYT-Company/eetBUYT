@@ -243,6 +243,7 @@ async function handleAdmin(request, env, ctx, url) {
 
   if (pathname === '/admin/admin.css' && method === 'GET') return assetResponse('css');
   if (pathname === '/admin/admin.js' && method === 'GET') return assetResponse('js');
+  if (pathname === '/admin/map.js' && method === 'GET') return assetResponse('map');
   if (pathname === '/admin/login') {
     if (method === 'GET' || method === 'POST') return handleLogin(request, env);
     return error(405, 'method_not_allowed');

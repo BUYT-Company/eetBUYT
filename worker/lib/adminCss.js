@@ -263,6 +263,12 @@ textarea { min-height: 88px; resize: vertical; }
 /* Analytics */
 .section-h { margin: 34px 0 14px; font-size: 1.0625rem; }
 .section-h:first-of-type { margin-top: 8px; }
+.map { height: 440px; border-radius: 12px; background: var(--wash); overflow: hidden; }
+.map__msg { margin: 0; padding: 24px; color: var(--muted); }
+.dot--lime { background: var(--lime); box-shadow: 0 0 0 1px #6F8200; }
+.dot--coral { background: var(--coral); box-shadow: 0 0 0 1px #B73A2A; }
+.key-circle { display: inline-block; width: 18px; height: 12px; border: 2px solid var(--green); border-radius: 50%; background: rgba(0, 127, 79, .07); margin-right: 8px; vertical-align: middle; }
+@media (max-width: 899px) { .map { height: 340px; } }
 .chartbox { margin: 0; }
 .subhead { margin: 0 0 4px; font-size: .9375rem; font-weight: 600; }
 .note--top { margin: 0 0 12px; }

@@ -6,7 +6,9 @@ import { esc, layout } from './adminUi.js';
 import { delta, eur, amsterdamToday } from './adminFormat.js';
 import { chrome } from './adminOrders.js';
 import { select } from './supabase.js';
-import { DELIVERY_CITIES, cityStats } from './cities.js';
+import { DELIVERY_CITIES, cityStats, canonicalCity } from './cities.js';
+import { DELIVERY_AREA, insideArea } from './geo.js';
+import { geocodeMissing } from './geocode.js';
 import { gaReport, scQuery, parseServiceAccount } from './google.js';
 import {
   ANALYTICS_PERIODS, analyticsPeriodOr, dateRanges, parseTotals, parseEvents, parseList, parseDailyRanges, parseScDaily,
@@ -92,6 +94,41 @@ function cityCard(stats, allTime, period) {
 <div><h3 class="subhead">Andere plaatsen</h3>${stats.other.length ? `<ol class="rank">${shownOther.map(row).join('')}${restRow}</ol>` : '<p class="muted">Nog geen bestellingen buiten het bezorggebied.</p>'}</div></div></section>`;
 }
 
+// Kaart van bestellingen: de stippen zijn lime binnen het (voorlopige) bezorggebied en koraal erbuiten. De adressen worden bij
+// de eerste keer opgezocht via PDOK en bewaard (zie geocode.js). In de pagina staan alleen bestelnummer, plaats en een punt.
+const round4 = (x) => Math.round(x * 10000) / 10000;
+async function mapSection(env, r, allTime) {
+  const title = 'Kaart van bestellingen';
+  const card = (inner) => `<section class="card card__pad grid-2--gap"><h2>${title}</h2>${inner}</section>`;
+  if (!env.GOOGLE_MAPS_KEY) {
+    return card('<p class="muted">De kaart is nog niet gekoppeld. Maak een Google Maps-sleutel en zet die als <code>GOOGLE_MAPS_KEY</code> in <code>wrangler.jsonc</code>. Zie <code>docs/analytics-koppelen.md</code>.</p>');
+  }
+  let rows;
+  try {
+    rows = await select(env, 'orders', 'select=order_number,city,street,postcode,created_at,lat,lng,geocoded_at&status=neq.geannuleerd&order=created_at.desc&limit=2000');
+  } catch (_) {
+    return card('<p class="muted">De kaart werkt pas nadat de database is bijgewerkt (migratie 0009).</p>');
+  }
+  if (!allTime) rows = rows.filter((o) => { const d = amsterdamToday(new Date(o.created_at)); return d >= r.current.start && d <= r.current.end; });
+  let pending = 0;
+  try { pending = (await geocodeMissing(env, rows, { max: 40 })).remaining; } catch (_) { /* de kaart werkt ook zonder verse coördinaten */ }
+  const placed = rows.filter((o) => typeof o.lat === 'number' && typeof o.lng === 'number');
+  const points = placed.map((o) => ({ n: o.order_number, c: canonicalCity(o.city), lat: round4(o.lat), lng: round4(o.lng), in: insideArea({ lat: o.lat, lng: o.lng }) }));
+  const inN = points.filter((p) => p.in).length;
+  const outN = points.length - inN;
+  const missing = rows.length - placed.length;
+  // Het blok is gewone gegevens (geen script); "<" wordt onschadelijk gemaakt zodat er niets uit kan breken.
+  const json = JSON.stringify({ area: { lat: round4(DELIVERY_AREA.lat), lng: round4(DELIVERY_AREA.lng), radiusKm: Math.round(DELIVERY_AREA.radiusKm * 10) / 10 }, points }).replace(/</g, '\\u003c');
+  const notes = [`De cirkel is een ruwe omtrek om ${DELIVERY_CITIES.join(', ')}. Plaatsen daartussen, zoals Zaandam en Leiden, vallen er ook binnen. Postcodes volgen zodra het bezorggebied vastligt.`];
+  if (pending > 0) notes.push(`Nog ${pending} ${pending === 1 ? 'adres wordt' : 'adressen worden'} opgezocht. Vernieuw de pagina om ${pending === 1 ? 'die' : 'ze'} te zien.`);
+  else if (missing > 0) notes.push(`${missing} ${missing === 1 ? 'bestelling staat' : 'bestellingen staan'} niet op de kaart omdat het adres niet gevonden is.`);
+  return `<section class="card card__pad grid-2--gap"><div class="chartbox__head"><h2>${title}</h2><div class="legend"><span><i class="key-circle"></i>Bezorggebied (voorlopig)</span><span><i class="dot dot--lime"></i>Binnen (${inN})</span><span><i class="dot dot--coral"></i>Buiten (${outN})</span></div></div>
+<div id="buyt-map" class="map" role="img" aria-label="Kaart met ${points.length} bestellingen: ${inN} binnen en ${outN} buiten het bezorggebied"><p class="map__msg">De kaart wordt geladen…</p></div>
+<p class="note">${esc(notes.join(' '))}</p>
+<script type="application/json" id="buyt-map-data">${json}</script></section>`;
+}
+const mapsOption = (html, env) => (env.GOOGLE_MAPS_KEY && html.includes('id="buyt-map"') ? { key: env.GOOGLE_MAPS_KEY } : null);
+
 function setupCard() {
   return `<section class="card card__pad card--narrow"><h2>Koppel Google Analytics</h2>
 <p>Het beheer leest de cijfers zelf uit Google, zodat je ze hier ziet zonder in Analytics te hoeven kijken. Daarvoor is een eenmalige koppeling nodig met alleen leesrechten.</p>
@@ -103,7 +140,7 @@ function setupCard() {
 }
 
 // Verkoop uit de database: bestellingen en omzet per dag. Los van Google, dus ook zonder koppeling bruikbaar.
-async function salesSection(env, r, period, allTime) {
+async function salesSection(env, r, period, allTime, mapPromise) {
   let orders;
   try {
     // Een dag extra terug in UTC, zodat de zomer- en wintertijd geen bestelling aan de rand missen; per dag wordt daarna op Amsterdamse tijd gegroepeerd.
@@ -128,6 +165,7 @@ async function salesSection(env, r, period, allTime) {
 <section class="card"><div class="kpis">${kpi('Bestellingen', nf(oc), delta(oc, op, op))}${kpi('Omzet', eur(rc), delta(rc, rp, op))}${kpi('Gemiddelde bestelwaarde', oc ? eur(Math.round(rc / oc)) : '–', delta(oc ? rc / oc : 0, op ? rp / op : 0, op))}</div></section>
 <div class="grid-2 grid-2--gap"><section class="card card__pad">${any ? chart({ series: g.orders.current, prev: g.orders.previous, label: `Bestellingen per dag, ${rangeLabel(r.current)}`, title: 'Bestellingen per dag', compact: true }) : emptyChart('Bestellingen per dag', 'Nog geen bestellingen in deze periode.')}</section>
 <section class="card card__pad">${any ? chart({ series: g.revenue.current, prev: g.revenue.previous, label: `Omzet per dag, ${rangeLabel(r.current)}`, title: 'Omzet per dag', fmt: axis, compact: true }) : emptyChart('Omzet per dag', 'Nog geen omzet in deze periode.')}</section></div>
+${mapPromise ? await mapPromise : ''}
 ${cityCard(cityStats(cityOrders), allTime, period)}
 <p class="note">Uit de database, dus volledig: alle bestellingen tellen mee, ook van bezoekers zonder cookies. Geannuleerde bestellingen niet. Bedragen zijn deels een schatting zolang producten op gewicht worden berekend.</p>`;
 }
@@ -137,11 +175,13 @@ export async function analyticsPage(env, request, user, url) {
   const { csrf, counts } = await chrome(env, request);
   const allTime = url.searchParams.get('steden') === 'alles';
   const r = dateRanges(period);
+  const mapPromise = mapSection(env, r, allTime);
   const tabs = Object.entries(ANALYTICS_PERIODS).map(([k, v]) => `<a href="/admin/analytics?periode=${k}"${k === period ? ' aria-current="page"' : ''}>${esc(v.label)}</a>`).join('');
   let body = `<div class="page-head"><div><h1>Analytics</h1><p>${esc(rangeLabel(r.current))}, vergeleken met ${esc(rangeLabel(r.previous))}.</p></div><nav class="period" aria-label="Periode">${tabs}</nav></div>`;
 
   if (!parseServiceAccount(env)) {
-    return layout('Analytics', body + setupCard() + await salesSection(env, r, period, allTime), { user, csrf, active: 'analytics', counts });
+    const html = body + setupCard() + await salesSection(env, r, period, allTime, mapPromise);
+    return layout('Analytics', html, { user, csrf, active: 'analytics', counts, maps: mapsOption(html, env) });
   }
 
   const prop = env.GA4_PROPERTY_ID;
@@ -164,7 +204,7 @@ export async function analyticsPage(env, request, user, url) {
     sc(r.sc.current, { dimensions: ['query'], rowLimit: 10 }),
     sc(r.sc.current, { dimensions: ['date'], rowLimit: 400 }),
     sc(r.sc.previous, { dimensions: ['date'], rowLimit: 400 }),
-    salesSection(env, r, period, allTime)
+    salesSection(env, r, period, allTime, mapPromise)
   ]);
 
   // Bezoek
@@ -230,5 +270,5 @@ ${kpi('Gemiddelde positie', pos(cur.position), positionDelta(cur.position, prev.
       : '<section class="card card__pad grid-2--gap"><p class="muted">Nog geen zoektermen. Search Console loopt een paar dagen achter en een nieuwe site heeft even tijd nodig voor Google hem toont.</p></section>';
     body += `<p class="note">Search Console loopt twee tot drie dagen achter (${esc(rangeLabel(r.sc.current))}).</p>`;
   }
-  return layout('Analytics', body, { user, csrf, active: 'analytics', counts });
+  return layout('Analytics', body, { user, csrf, active: 'analytics', counts, maps: mapsOption(body, env) });
 }

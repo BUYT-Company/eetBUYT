@@ -4,6 +4,7 @@ import { esc } from './adminFormat.js';
 import { STATUS_LABEL } from './orderStatus.js';
 import css from './adminCss.js';
 import js from './adminJs.js';
+import mapJs from './adminMapJs.js';
 
 export { esc };
 
@@ -15,9 +16,10 @@ const hash = (s) => {
 };
 const CSS_V = hash(css);
 const JS_V = hash(js);
+const MAP_V = hash(mapJs);
 
 export const assetResponse = (kind) =>
-  new Response(kind === 'css' ? css : js, {
+  new Response(kind === 'css' ? css : kind === 'map' ? mapJs : js, {
     headers: {
       'Content-Type': kind === 'css' ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -61,7 +63,7 @@ export const flash = (msg, kind = 'ok') => (msg ? `<p class="flash${kind === 'er
 
 // Beveiligingskoppen voor elke beheerpagina. Geen inline script of stijl; de QR-pagina mag daarnaast
 // de bekende qrcode-bibliotheek van cdnjs laden.
-function headers(extraScript = '') {
+function headers(extraScript = '', maps = false) {
   return {
     'Content-Type': 'text/html; charset=utf-8',
     'Cache-Control': 'no-store',
@@ -69,7 +71,10 @@ function headers(extraScript = '') {
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'same-origin',
     'X-Frame-Options': 'DENY',
-    'Content-Security-Policy': `default-src 'none'; style-src 'self'; script-src 'self'${extraScript}; font-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`
+    'Content-Security-Policy': maps
+      // Google Maps heeft een paar extra bronnen nodig (alleen op de pagina met de kaart): scripts, kaartbeelden, lettertypen en inline stijl.
+      ? "default-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://maps.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.googleusercontent.com; connect-src https://*.googleapis.com https://*.google.com https://*.gstatic.com data: blob:; worker-src blob:; child-src blob:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
+      : `default-src 'none'; style-src 'self'; script-src 'self'${extraScript}; font-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`
   };
 }
 
@@ -82,7 +87,7 @@ export function bare(title, body, { qr = false, brand = 'BUYT Beheer' } = {}) {
 }
 
 // Pagina met navigatie. `user` is de naam van de ingelogde beheerder, `csrf` het token voor formulieren.
-export function layout(title, body, { user, csrf, active = '', counts = {}, status = 200, qr = false } = {}) {
+export function layout(title, body, { user, csrf, active = '', counts = {}, status = 200, qr = false, maps = null } = {}) {
   const link = (n, cls = '', aliases = []) => {
     const c = n.count && counts[n.count] > 0 ? `<span class="count" aria-label="${counts[n.count]} nieuw">${counts[n.count]}</span>` : '';
     return `<a href="${n.href}"${active === n.key || aliases.includes(active) ? ' aria-current="page"' : ''}${cls}>${n.icon}<span>${esc(n.label)}</span>${c}</a>`;
@@ -96,6 +101,6 @@ export function layout(title, body, { user, csrf, active = '', counts = {}, stat
 <header class="top">${logo}${logout}</header>
 <main id="main" class="main">${body}</main>
 <nav class="tabbar" aria-label="Hoofdmenu">${TABS.map((n) => link(n, '', n.key === 'more' ? ['business', 'analytics'] : [])).join('')}</nav>
-</div>${qr ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>' : ''}<script src="/admin/admin.js?v=${JS_V}" defer></script></body></html>`;
-  return new Response(html, { status, headers: headers(qr ? ' https://cdnjs.cloudflare.com' : '') });
+</div>${qr ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>' : ''}<script src="/admin/admin.js?v=${JS_V}" defer></script>${maps ? `<script src="/admin/map.js?v=${MAP_V}"></script><script async defer src="https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(maps.key)}&amp;callback=initBuytMap&amp;loading=async&amp;v=weekly"></script>` : ''}</body></html>`;
+  return new Response(html, { status, headers: headers(qr ? ' https://cdnjs.cloudflare.com' : '', Boolean(maps)) });
 }
