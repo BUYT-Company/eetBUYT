@@ -27,6 +27,7 @@ Doe dit ingelogd met het Google-account dat eigenaar is van Analytics en Search 
 ## Wat de pagina toont
 - **Bezoek:** bezoekers, sessies, bekeken pagina's, en de gebeurtenissen `add_to_cart`, `purchase`, `generate_lead` en `sign_up`, elk met de verandering ten opzichte van de vorige periode (even lang). Een grafiek van bezoekers per dag, herkomst van bezoekers, bronnen (bijvoorbeeld `instagram / bio`) en de best bezochte pagina's.
 - **Verkoop (uit de database, geen Google nodig):** bestellingen, omzet en gemiddelde bestelwaarde, met grafieken van bestellingen en omzet per dag.
+- **Waar wordt besteld?** Een rangschikking per plaats. De zes steden van het bezorggebied (Amsterdam, Amstelveen, Haarlem, Utrecht, Rotterdam en Den Haag) staan altijd bovenaan, ook met nul bestellingen, en alle andere plaatsen staan ernaast. Verschillende schrijfwijzen worden samengevoegd ("amsterdam", "Amsterdam Zuidoost", "'s-Gravenhage" voor Den Haag). Kies tussen deze periode en sinds het begin. Het bezorggebied staat in `worker/lib/cities.js` (`DELIVERY_CITIES`) en is aan te passen.
 - **Zoekverkeer:** klikken, vertoningen, gemiddelde positie, een grafiek van klikken per dag en de zoektermen waarop jullie gevonden worden.
 - **Grafieken:** elke grafiek toont deze periode als staven en de vorige periode als lichte lijn erachter (dag 1 naast dag 1). Zo zie je in één blik of het beter of slechter gaat. Beweeg over een staaf voor het exacte getal.
 - De periode loopt t/m gisteren. Search Console loopt twee tot drie dagen achter.

@@ -3,9 +3,10 @@
 // en bij elke grafiek de vorige periode als lichte lijn erachter. Elk onderdeel staat op zichzelf: faalt het
 // ene, dan blijft het andere zichtbaar.
 import { esc, layout } from './adminUi.js';
-import { delta, eur } from './adminFormat.js';
+import { delta, eur, amsterdamToday } from './adminFormat.js';
 import { chrome } from './adminOrders.js';
 import { select } from './supabase.js';
+import { DELIVERY_CITIES, cityStats } from './cities.js';
 import { gaReport, scQuery, parseServiceAccount } from './google.js';
 import {
   ANALYTICS_PERIODS, analyticsPeriodOr, dateRanges, parseTotals, parseEvents, parseList, parseDailyRanges, parseScDaily,
@@ -73,6 +74,24 @@ function rankList(items, emptyText, fmt = (x) => x) {
   return `<ol class="rank">${items.map((i) => `<li><div class="rank__row"><span>${esc(fmt(i.label))}</span><span class="tnum"><strong>${nf(i.value)}</strong></span></div><progress class="bar" max="100" value="${Math.max(3, Math.round((i.value / max) * 100))}" aria-hidden="true"></progress></li>`).join('')}</ol>`;
 }
 
+// Waar wordt besteld: de zes bezorgsteden altijd bovenaan (ook met nul), daarnaast alle andere plaatsen.
+function cityCard(stats, allTime, period) {
+  const max = Math.max(1, ...stats.inArea.map((c) => c.count), ...stats.other.map((c) => c.count));
+  const share = (n) => (stats.total ? ` · ${Math.round((n / stats.total) * 100)}%` : '');
+  const row = (c) => `<li${c.count === 0 ? ' class="rank__zero"' : ''}><div class="rank__row"><span>${esc(c.city)}</span><span class="tnum"><strong>${nf(c.count)}</strong>${share(c.count)}</span></div><progress class="bar" max="100" value="${c.count ? Math.max(3, Math.round((c.count / max) * 100)) : 0}" aria-hidden="true"></progress></li>`;
+  const shownOther = stats.other.slice(0, 8);
+  const rest = stats.other.slice(8);
+  const restRow = rest.length ? `<li><div class="rank__row"><span>Overige plaatsen (${rest.length})</span><span class="tnum"><strong>${nf(rest.reduce((n, c) => n + c.count, 0))}</strong></span></div></li>` : '';
+  const scopeLinks = `<nav class="period period--small" aria-label="Bereik van de steden"><a href="/admin/analytics?periode=${period}"${allTime ? '' : ' aria-current="page"'}>Deze periode</a><a href="/admin/analytics?periode=${period}&amp;steden=alles"${allTime ? ' aria-current="page"' : ''}>Sinds het begin</a></nav>`;
+  const summary = stats.total
+    ? `${nf(stats.inAreaTotal)} van de ${nf(stats.total)} bestellingen (${Math.round((stats.inAreaTotal / stats.total) * 100)}%) komen uit het bezorggebied.`
+    : 'Nog geen bestellingen in dit bereik.';
+  return `<section class="card card__pad grid-2--gap"><div class="chartbox__head"><h2>Waar wordt besteld?</h2>${scopeLinks}</div>
+<p class="muted cities__sum">${esc(summary)}</p>
+<div class="grid-2"><div><h3 class="subhead">Bezorggebied</h3><p class="note note--top">${esc(DELIVERY_CITIES.join(', '))}</p><ol class="rank">${stats.inArea.map(row).join('')}</ol></div>
+<div><h3 class="subhead">Andere plaatsen</h3>${stats.other.length ? `<ol class="rank">${shownOther.map(row).join('')}${restRow}</ol>` : '<p class="muted">Nog geen bestellingen buiten het bezorggebied.</p>'}</div></div></section>`;
+}
+
 function setupCard() {
   return `<section class="card card__pad card--narrow"><h2>Koppel Google Analytics</h2>
 <p>Het beheer leest de cijfers zelf uit Google, zodat je ze hier ziet zonder in Analytics te hoeven kijken. Daarvoor is een eenmalige koppeling nodig met alleen leesrechten.</p>
@@ -84,14 +103,21 @@ function setupCard() {
 }
 
 // Verkoop uit de database: bestellingen en omzet per dag. Los van Google, dus ook zonder koppeling bruikbaar.
-async function salesSection(env, r) {
+async function salesSection(env, r, period, allTime) {
   let orders;
   try {
     // Een dag extra terug in UTC, zodat de zomer- en wintertijd geen bestelling aan de rand missen; per dag wordt daarna op Amsterdamse tijd gegroepeerd.
     const from = new Date(new Date(`${r.previous.start}T00:00:00Z`).getTime() - 86400000).toISOString();
-    orders = await select(env, 'orders', `select=created_at,status,total_estimate_cents,total_final_cents&created_at=gte.${from}&status=neq.geannuleerd&order=created_at.asc&limit=5000`);
+    orders = await select(env, 'orders', `select=created_at,status,city,total_estimate_cents,total_final_cents&created_at=gte.${from}&status=neq.geannuleerd&order=created_at.asc&limit=5000`);
   } catch (_) {
     return '<h2 class="section-h">Verkoop</h2><p class="card card__pad error" role="alert">Kon de bestellingen niet ophalen. Probeer het later opnieuw.</p>';
+  }
+  // Steden: deze periode, of alle bestellingen sinds het begin.
+  let cityOrders = orders.filter((o) => { const d = amsterdamToday(new Date(o.created_at)); return d >= r.current.start && d <= r.current.end; });
+  if (allTime) {
+    try {
+      cityOrders = await select(env, 'orders', 'select=city,status,total_estimate_cents,total_final_cents&status=neq.geannuleerd&limit=5000');
+    } catch (_) { /* dan blijft het bij deze periode */ }
   }
   const g = groupOrdersDaily(orders, r.current, r.previous);
   const oc = sum(g.orders.current); const op = sum(g.orders.previous);
@@ -102,18 +128,20 @@ async function salesSection(env, r) {
 <section class="card"><div class="kpis">${kpi('Bestellingen', nf(oc), delta(oc, op, op))}${kpi('Omzet', eur(rc), delta(rc, rp, op))}${kpi('Gemiddelde bestelwaarde', oc ? eur(Math.round(rc / oc)) : '–', delta(oc ? rc / oc : 0, op ? rp / op : 0, op))}</div></section>
 <div class="grid-2 grid-2--gap"><section class="card card__pad">${any ? chart({ series: g.orders.current, prev: g.orders.previous, label: `Bestellingen per dag, ${rangeLabel(r.current)}`, title: 'Bestellingen per dag', compact: true }) : emptyChart('Bestellingen per dag', 'Nog geen bestellingen in deze periode.')}</section>
 <section class="card card__pad">${any ? chart({ series: g.revenue.current, prev: g.revenue.previous, label: `Omzet per dag, ${rangeLabel(r.current)}`, title: 'Omzet per dag', fmt: axis, compact: true }) : emptyChart('Omzet per dag', 'Nog geen omzet in deze periode.')}</section></div>
+${cityCard(cityStats(cityOrders), allTime, period)}
 <p class="note">Uit de database, dus volledig: alle bestellingen tellen mee, ook van bezoekers zonder cookies. Geannuleerde bestellingen niet. Bedragen zijn deels een schatting zolang producten op gewicht worden berekend.</p>`;
 }
 
 export async function analyticsPage(env, request, user, url) {
   const period = analyticsPeriodOr(url.searchParams.get('periode'));
   const { csrf, counts } = await chrome(env, request);
+  const allTime = url.searchParams.get('steden') === 'alles';
   const r = dateRanges(period);
   const tabs = Object.entries(ANALYTICS_PERIODS).map(([k, v]) => `<a href="/admin/analytics?periode=${k}"${k === period ? ' aria-current="page"' : ''}>${esc(v.label)}</a>`).join('');
   let body = `<div class="page-head"><div><h1>Analytics</h1><p>${esc(rangeLabel(r.current))}, vergeleken met ${esc(rangeLabel(r.previous))}.</p></div><nav class="period" aria-label="Periode">${tabs}</nav></div>`;
 
   if (!parseServiceAccount(env)) {
-    return layout('Analytics', body + setupCard() + await salesSection(env, r), { user, csrf, active: 'analytics', counts });
+    return layout('Analytics', body + setupCard() + await salesSection(env, r, period, allTime), { user, csrf, active: 'analytics', counts });
   }
 
   const prop = env.GA4_PROPERTY_ID;
@@ -136,7 +164,7 @@ export async function analyticsPage(env, request, user, url) {
     sc(r.sc.current, { dimensions: ['query'], rowLimit: 10 }),
     sc(r.sc.current, { dimensions: ['date'], rowLimit: 400 }),
     sc(r.sc.previous, { dimensions: ['date'], rowLimit: 400 }),
-    salesSection(env, r)
+    salesSection(env, r, period, allTime)
   ]);
 
   // Bezoek

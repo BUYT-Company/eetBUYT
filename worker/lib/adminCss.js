@@ -264,6 +264,11 @@ textarea { min-height: 88px; resize: vertical; }
 .section-h { margin: 34px 0 14px; font-size: 1.0625rem; }
 .section-h:first-of-type { margin-top: 8px; }
 .chartbox { margin: 0; }
+.subhead { margin: 0 0 4px; font-size: .9375rem; font-weight: 600; }
+.note--top { margin: 0 0 12px; }
+.cities__sum { margin: 0 0 18px; }
+.period--small a { padding: 4px 12px; font-size: .8125rem; }
+.rank__zero .rank__row { color: var(--muted); }
 .chartbox__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 18px; margin-bottom: 12px; }
 .chartbox__head h2 { margin: 0; }
 .chart { display: block; width: 100%; height: auto; max-height: 340px; }
