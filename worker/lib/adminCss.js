@@ -63,7 +63,7 @@ small, .muted { color: var(--muted); }
 .tabbar svg { width: 22px; height: 22px; }
 .tabbar .count { position: absolute; top: 4px; left: calc(50% + 6px); margin: 0; }
 
-.main { padding: 22px 16px 96px; max-width: 1180px; }
+.main { padding: 22px 16px 96px; max-width: 1800px; }
 .page-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; margin-bottom: 22px; }
 .page-head p { color: var(--muted); margin-top: 4px; }
 .back { display: inline-flex; margin-bottom: 14px; color: var(--muted); font-size: .875rem; text-decoration: none; }
@@ -262,7 +262,7 @@ textarea { min-height: 88px; resize: vertical; }
 /* Analytics */
 .section-h { margin: 34px 0 14px; font-size: 1.0625rem; }
 .section-h:first-of-type { margin-top: 8px; }
-.chart { display: block; width: 100%; height: auto; max-height: 240px; }
+.chart { display: block; width: 100%; height: auto; max-height: 340px; }
 .chart__bars rect { fill: var(--green); }
 .chart__bars rect:hover { fill: var(--green-700); }
 .chart__grid { stroke: var(--line); stroke-width: 1; }

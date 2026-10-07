@@ -33,6 +33,7 @@ Doe dit ingelogd met het Google-account dat eigenaar is van Analytics en Search 
 - **Het is een deel van de bezoekers.** Analytics telt alleen bezoekers die cookies accepteren. Bestellingen komen uit de database en zijn leidend.
 - **Bezoek vanuit socials** zie je pas als links een herkomstcode hebben. Gebruik bijvoorbeeld in je Instagram-profiel `https://eetbuyt.nl/?utm_source=instagram&utm_medium=bio`.
 - De antwoorden van Google worden een half uur bewaard. De eerste cijfers van een nieuwe koppeling kunnen een dag op zich laten wachten.
+- **Alleen bezoek aan `eetbuyt.nl` telt mee.** Bezoek vanaf je eigen ontwikkelomgeving (`localhost`) of een voorbeeldadres wordt eruit gefilterd.
 - Zonder genoeg gegevens in de vorige periode (minder dan 3) staat er geen percentage.
 
 ## Als het niet lukt

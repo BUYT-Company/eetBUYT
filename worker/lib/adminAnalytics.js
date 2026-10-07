@@ -31,7 +31,7 @@ const countKpi = (label, cur, prev) => kpi(label, nf(cur), delta(cur, prev, prev
 
 // Staafgrafiek met echte reeks: as met waarden en data, geen versiering. Alles via attributen (geen inline stijl).
 function barChart(series, label) {
-  const W = 640; const H = 190; const L = 40; const B = 26; const T = 8;
+  const W = 960; const H = 230; const L = 44; const B = 28; const T = 8;
   const max = Math.max(1, ...series.map((p) => p.value));
   const top = max <= 4 ? max : Math.ceil(max / 4) * 4;
   const plotH = H - B - T;
@@ -80,13 +80,15 @@ export async function analyticsPage(env, request, user, url) {
   const two = [{ startDate: r.current.start, endDate: r.current.end }, { startDate: r.previous.start, endDate: r.previous.end }];
   const one = [two[0]];
   const m = (...names) => names.map((name) => ({ name }));
+  // Alleen bezoek aan de echte site tellen: testbezoek vanaf localhost of een voorbeeldadres telt niet mee.
+  const host = { filter: { fieldName: 'hostName', inListFilter: { values: ['eetbuyt.nl', 'www.eetbuyt.nl'] } } };
   const [totals, events, daily, channels, sources, pages, scNow, scPrev, scQueries] = await Promise.allSettled([
-    gaReport(env, prop, { dateRanges: two, metrics: m('activeUsers', 'sessions', 'screenPageViews') }),
-    gaReport(env, prop, { dateRanges: two, dimensions: m('eventName'), metrics: m('eventCount'), dimensionFilter: { filter: { fieldName: 'eventName', inListFilter: { values: ['add_to_cart', 'purchase', 'generate_lead', 'sign_up'] } } } }),
-    gaReport(env, prop, { dateRanges: one, dimensions: m('date'), metrics: m('activeUsers'), orderBys: [{ dimension: { dimensionName: 'date' } }], limit: 200 }),
-    gaReport(env, prop, { dateRanges: one, dimensions: m('sessionDefaultChannelGroup'), metrics: m('sessions'), orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 8 }),
-    gaReport(env, prop, { dateRanges: one, dimensions: m('sessionSourceMedium'), metrics: m('sessions'), orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 8 }),
-    gaReport(env, prop, { dateRanges: one, dimensions: m('pagePath'), metrics: m('screenPageViews'), orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }], limit: 8 }),
+    gaReport(env, prop, { dateRanges: two, metrics: m('activeUsers', 'sessions', 'screenPageViews'), dimensionFilter: host }),
+    gaReport(env, prop, { dateRanges: two, dimensions: m('eventName'), metrics: m('eventCount'), dimensionFilter: { andGroup: { expressions: [host, { filter: { fieldName: 'eventName', inListFilter: { values: ['add_to_cart', 'purchase', 'generate_lead', 'sign_up'] } } }] } } }),
+    gaReport(env, prop, { dateRanges: one, dimensions: m('date'), metrics: m('activeUsers'), dimensionFilter: host, orderBys: [{ dimension: { dimensionName: 'date' } }], limit: 200 }),
+    gaReport(env, prop, { dateRanges: one, dimensions: m('sessionDefaultChannelGroup'), metrics: m('sessions'), dimensionFilter: host, orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 8 }),
+    gaReport(env, prop, { dateRanges: one, dimensions: m('sessionSourceMedium'), metrics: m('sessions'), dimensionFilter: host, orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 8 }),
+    gaReport(env, prop, { dateRanges: one, dimensions: m('pagePath'), metrics: m('screenPageViews'), dimensionFilter: host, orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }], limit: 8 }),
     scQuery(env, site, { startDate: r.sc.current.start, endDate: r.sc.current.end }),
     scQuery(env, site, { startDate: r.sc.previous.start, endDate: r.sc.previous.end }),
     scQuery(env, site, { startDate: r.sc.current.start, endDate: r.sc.current.end, dimensions: ['query'], rowLimit: 10 })
