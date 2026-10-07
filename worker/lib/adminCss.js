@@ -63,7 +63,7 @@ small, .muted { color: var(--muted); }
 .tabbar svg { width: 22px; height: 22px; }
 .tabbar .count { position: absolute; top: 4px; left: calc(50% + 6px); margin: 0; }
 
-.main { padding: 22px 16px 96px; max-width: 1800px; }
+.main { padding: 22px 16px 96px; max-width: 1180px; }
 .page-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; margin-bottom: 22px; }
 .page-head p { color: var(--muted); margin-top: 4px; }
 .back { display: inline-flex; margin-bottom: 14px; color: var(--muted); font-size: .875rem; text-decoration: none; }
@@ -72,7 +72,8 @@ small, .muted { color: var(--muted); }
 @media (min-width: 900px) {
   .side { display: flex; }
   .top, .tabbar { display: none; }
-  .main { margin-left: var(--side-w); padding: 40px clamp(28px, 4vw, 56px) 80px; }
+  /* Maximaal 1180px breed en gecentreerd in de ruimte rechts van het menu (procenten in een marge verwijzen naar de breedte van de pagina). */
+  .main { margin-left: calc(var(--side-w) + max(0px, (100% - var(--side-w) - 1180px) / 2)); padding: 40px clamp(28px, 4vw, 56px) 80px; }
 }
 
 /* Knoppen: één limoenknop per scherm, de rest rustig */
