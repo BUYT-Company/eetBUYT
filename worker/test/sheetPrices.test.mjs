@@ -78,7 +78,12 @@ test('echte sheet: koppeling op naam met "(2st)" en losse spaties, en komma of p
     ['', 'Gerookte ganzenborst', 250, 10, 40],
     ['', 'Ganzenpoten', 1000, 25, '€ 25,00'],
     ['', 'Ganzenborstfilet (2st)', 700, 17.47, 24.95],
-    ['', 'Ganzen biefstuk (2st)', 350, 14, 40]
+    ['', 'Ganzen biefstuk (2st)', 350, 14, 40],
+    ['', 'Saucijzen', 500, 11, 22],
+    ['', 'Gehaktballen (4st)', 600, 15, 25],
+    ['', 'Grillworst', 250, 6.99, 27.95],
+    ['', 'Rookworst', 500, 13.84, 27.67],
+    ['', 'Burgers (4st)', 480, 12.96, 27]
   ]);
   const { catalog: out, missing } = applySheet(base, items);
   assert.deepEqual(missing, []);
@@ -89,4 +94,7 @@ test('echte sheet: koppeling op naam met "(2st)" en losse spaties, en komma of p
   assert.equal(by.ganzenbiefstuk.priceCents, 1400);
   assert.equal(by.ganzenbiefstuk.packGrams, 350);
   assert.equal(by.ganzenpoten.pricePerKgCents, 2500);
+  assert.equal(by.rookworst.priceCents, 1384);
+  assert.equal(by.burgers.priceCents, 1296);
+  assert.equal(by.gehaktballen.packGrams, 600);
 });
