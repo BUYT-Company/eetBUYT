@@ -41,9 +41,9 @@ small, .muted { color: var(--muted); }
 /* Indeling: vaste balk links op laptop, tabbalk onderaan op telefoon */
 .app { min-height: 100vh; }
 .side { position: fixed; inset: 0 auto 0 0; width: var(--side-w); display: none; flex-direction: column; padding: 22px 14px 18px; border-right: 1px solid var(--line); background: #fff; }
-.brand { display: flex; align-items: center; gap: 10px; padding: 0 10px 22px; text-decoration: none; color: var(--ink); font-weight: 600; letter-spacing: -.02em; font-size: 1.05rem; }
-.brand img { width: 34px; height: auto; display: block; }
-.brand small { font-weight: 400; letter-spacing: 0; }
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 10px 22px; text-decoration: none; color: var(--ink); font-weight: 700; letter-spacing: -.02em; font-size: 1.5rem; line-height: 1; }
+.brand img { width: 52px; height: auto; display: block; flex: none; }
+.brand small { font-size: .56em; font-weight: 500; letter-spacing: 0; color: var(--muted); }
 .nav { display: grid; gap: 2px; }
 .nav a { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px; color: var(--muted); text-decoration: none; font-weight: 500; }
 .nav a:hover { background: var(--wash); color: var(--ink); }
@@ -56,7 +56,8 @@ small, .muted { color: var(--muted); }
 .linklike:hover { color: var(--ink); }
 
 .top { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 20; }
-.top .brand { padding: 0; }
+.top .brand { padding: 0; font-size: 1.25rem; gap: 10px; }
+.top .brand img { width: 42px; }
 .tabbar { position: fixed; inset: auto 0 0 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: #fff; border-top: 1px solid var(--line); z-index: 20; padding-bottom: env(safe-area-inset-bottom); }
 .tabbar a { display: grid; justify-items: center; gap: 2px; padding: 8px 4px 9px; min-height: 56px; color: var(--muted); text-decoration: none; font-size: .75rem; font-weight: 500; position: relative; }
 .tabbar a[aria-current="page"] { color: var(--green); }

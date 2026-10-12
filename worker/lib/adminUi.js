@@ -93,7 +93,7 @@ export function layout(title, body, { user, csrf, active = '', counts = {}, stat
     return `<a href="${n.href}"${active === n.key || aliases.includes(active) ? ' aria-current="page"' : ''}${cls}>${n.icon}<span>${esc(n.label)}</span>${c}</a>`;
   };
   const logout = `<form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="${esc(csrf)}"><button class="linklike" type="submit">Uitloggen</button></form>`;
-  const logo = `<a class="brand" href="/admin"><img src="/assets/logo-still.svg" alt="" width="34" height="32"><span>BUYT <small>Beheer</small></span></a>`;
+  const logo = `<a class="brand" href="/admin"><img src="/assets/logo-still.svg" alt="" width="52" height="49"><span>BUYT <small>Beheer</small></span></a>`;
   const html = `${head(title)}<body><a class="skip" href="#main">Naar de inhoud</a>
 <div class="app">
 <aside class="side" aria-label="Hoofdmenu">${logo}<nav class="nav">${NAV.map((n) => link(n)).join('')}</nav>
