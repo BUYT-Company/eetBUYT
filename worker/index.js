@@ -1,5 +1,7 @@
 // Worker voor eetbuyt.nl: alleen /api/*. Alle andere paden komen uit de statische bestanden (env.ASSETS).
 // Fase 1: bestelaanvragen (POST /api/order) en zakelijke aanvragen (POST /api/request) vastleggen in Supabase.
+import baseCatalog from '../public/data/products.json';
+import { currentCatalog } from './lib/sheetPrices.js';
 import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/validate.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
@@ -98,7 +100,7 @@ async function handleOrder(request, env, ctx) {
   if (data['bot-field']) return error(400, 'invalid_input');
   if (!(await verifyTurnstile(env, turnstileToken(data), request.headers.get('CF-Connecting-IP')))) return error(400, 'turnstile_failed');
 
-  const checked = validateOrder(data);
+  const checked = validateOrder(data, await currentCatalog(env, baseCatalog));
   if (!checked.ok) return error(400, 'invalid_input');
   const order = checked.value;
 
@@ -221,7 +223,15 @@ async function handleDeliverySlots(request, env) {
   return json(200, { slots });
 }
 
+// De winkel (mandje en productkaarten) leest de prijzen hier. Zonder koppeling met het sheet is dit gewoon products.json.
+async function handleProducts(request, env) {
+  const res = json(200, await currentCatalog(env, baseCatalog));
+  res.headers.set('Cache-Control', 'public, max-age=60');
+  return res;
+}
+
 const routes = {
+  '/api/products': { GET: handleProducts },
   '/api/order': { POST: handleOrder },
   '/api/request': { POST: handleRequest },
   '/api/newsletter': { POST: handleNewsletter },

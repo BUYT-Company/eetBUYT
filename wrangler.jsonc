@@ -27,6 +27,9 @@
     "SALES_OPEN": "false",
     // Analytics in het beheer (zie docs/analytics-koppelen.md). De sleutel zelf is een geheim (GOOGLE_SA_JSON),
     // dit zijn alleen de gewone instellingen: het GA4 Property-ID (alleen cijfers) en de Search Console-eigenschap.
+    // Prijzen uit een privé Google Sheet (zie docs/prijzen-sheet-koppelen.md). Het sheet-ID is geen geheim: zonder de sleutel
+    // GOOGLE_SA_JSON en zonder dat het sheet met dat serviceaccount gedeeld is, kan niemand erbij. Leeg = alleen products.json.
+    "PRICES_SHEET_ID": "1XkVV__3AbLsG3UePOxkH5Vy6B14UJ9hHGqECJYpfi6Y",
     "GA4_PROPERTY_ID": "557259531",
     "SEARCH_CONSOLE_SITE": "sc-domain:eetbuyt.nl",
     // Google Maps JavaScript API-sleutel voor de kaart op de Analytics-pagina. Deze sleutel is bedoeld om in de browser te staan

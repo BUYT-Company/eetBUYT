@@ -130,8 +130,10 @@
     $$('[data-cart-total]').forEach((el) => { el.textContent = totalLabel(); });
   };
 
-  const ready = fetch('data/products.json')
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+  /* Prijzen komen via de Worker (met de actuele prijzen uit het prijzensheet); zonder Worker (bv. lokaal) uit het vaste bestand. */
+  const loadCatalog = (url) => fetch(url).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))));
+  const ready = loadCatalog('/api/products')
+    .catch(() => loadCatalog('data/products.json'))
     .then((data) => {
       catalog = data;
       const known = lines.filter((l) => product(l.id));

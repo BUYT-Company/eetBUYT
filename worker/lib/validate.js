@@ -1,5 +1,5 @@
 // Invoercontrole en prijsberekening. Prijzen komen altijd uit data/products.json, nooit uit de browser.
-import catalog from '../../public/data/products.json';
+import baseCatalog from '../../public/data/products.json';
 import { isValidSlot } from './delivery.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -15,7 +15,8 @@ export const isValidEmail = (value) => typeof value === 'string' && value.length
 export const formatEuro = (cents) => '€ ' + (cents / 100).toFixed(2).replace('.', ',');
 const priceLabel = (p) => (!Number.isInteger(p.priceCents) ? 'Prijs op gewicht' : (p.priceApprox ? 'ca. ' : '') + formatEuro(p.priceCents));
 
-export function validateOrder(data) {
+// catalog = de prijslijst van het moment (products.json met de prijzen uit het Google Sheet, zie sheetPrices.js).
+export function validateOrder(data, catalog = baseCatalog) {
   if (!data || typeof data !== 'object') return fail();
 
   const clientRequestId = clean(data.client_request_id, 36).toLowerCase();

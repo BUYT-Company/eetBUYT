@@ -4,7 +4,7 @@
 // Antwoorden worden een half uur bewaard, zodat de pagina snel blijft en Google's limieten niet in de weg zitten.
 
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
-const SCOPES = 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly';
+const SCOPES = 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly https://www.googleapis.com/auth/spreadsheets.readonly';
 const CACHE_SECONDS = 30 * 60;
 
 export class GoogleError extends Error {
@@ -110,6 +110,29 @@ async function postJson(env, url, body) {
 export function gaReport(env, propertyId, body) {
   if (!/^\d{3,15}$/.test(String(propertyId || ''))) return Promise.reject(new GoogleError('niet_gevonden'));
   return postJson(env, `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, body);
+}
+
+// Leest de cellen van een privé Google Sheet (alleen lezen). Zonder tabbladnaam leest Google het eerste tabblad.
+// Niet bewaard: sheetPrices.js houdt zelf de laatste goede prijslijst bij.
+export async function sheetValues(env, sheetId, tab) {
+  if (!/^[A-Za-z0-9_-]{20,80}$/.test(String(sheetId || ''))) throw new GoogleError('niet_gevonden');
+  const range = tab ? `'${String(tab).replace(/'/g, "''")}'!A1:Z200` : 'A1:Z200';
+  const token = await accessToken(env);
+  let res;
+  try {
+    res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?valueRenderOption=UNFORMATTED_VALUE`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  } catch (_) {
+    throw new GoogleError('fout');
+  }
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    if (res.status === 401) tokenCache = { token: null, exp: 0, who: '' };
+    throw new GoogleError(codeFor(res.status, text), res.status);
+  }
+  const data = await res.json();
+  return Array.isArray(data.values) ? data.values : [];
 }
 
 export function scQuery(env, site, body) {
