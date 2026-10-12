@@ -51,8 +51,12 @@ function chart({ series, prev, label, fmt = nf, title, compact = false }) {
   const cx = (i) => L + i * bw + bw / 2;
   const bars = series.map((p, i) => {
     const h = Math.round((p.value / top) * plotH);
-    const was = prev ? ` (vorige periode: ${fmt(prev[i].value)})` : '';
-    return `<rect x="${(L + i * bw + bw * 0.16).toFixed(1)}" y="${T + plotH - h}" width="${Math.max(1, bw * 0.68).toFixed(1)}" height="${h}" rx="${bw > 9 ? 3 : 0}"><title>${esc(shortDate(p.date))}: ${esc(fmt(p.value))}${esc(was)}</title></rect>`;
+    // Elke kolom is aan te wijzen, ook als de staaf laag of leeg is: de onzichtbare vlakte (chart__hit) beslaat de hele
+    // kolom. adminJs.js laat bij aanwijzen, klikken of tikken het aantal groot zien (data-d, data-v, data-p).
+    const was = prev ? ` data-p="${esc(fmt(prev[i].value))}"` : '';
+    return `<g class="chart__col" tabindex="0" role="img" aria-label="${esc(shortDate(p.date))}: ${esc(fmt(p.value))}" data-d="${esc(shortDate(p.date))}" data-v="${esc(fmt(p.value))}"${was}>`
+      + `<rect class="chart__hit" x="${(L + i * bw).toFixed(1)}" y="${T}" width="${bw.toFixed(1)}" height="${plotH + B}"/>`
+      + `<rect class="chart__bar" x="${(L + i * bw + bw * 0.16).toFixed(1)}" y="${T + plotH - h}" width="${Math.max(1, bw * 0.68).toFixed(1)}" height="${h}" rx="${bw > 9 ? 3 : 0}"/></g>`;
   }).join('');
   const line = prev && prev.some((p) => p.value > 0)
     ? `<polyline class="chart__prev" points="${prev.map((p, i) => `${cx(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ')}"/>`

@@ -281,8 +281,16 @@ textarea { min-height: 88px; resize: vertical; }
 .chart--compact .chart__label { font-size: 15px; }
 .chart__prev { fill: none; stroke: #8FA297; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; opacity: .85; }
 .key-line { display: inline-block; width: 18px; height: 0; border-top: 2.5px solid #8FA297; margin-right: 8px; vertical-align: middle; }
-.chart__bars rect { fill: var(--green); }
-.chart__bars rect:hover { fill: var(--green-700); }
+.chart__bar { fill: var(--green); }
+.chart__hit { fill: transparent; }
+.chart__col { cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
+.chart__col:hover .chart__bar, .chart__col.is-active .chart__bar { fill: var(--green-700); }
+.chart__col:focus-visible .chart__hit { stroke: var(--green); stroke-width: 2; }
+.charttip { position: fixed; z-index: 60; pointer-events: none; min-width: 96px; padding: 8px 14px 10px; border-radius: 12px; background: var(--ink); color: #fff; text-align: center; box-shadow: 0 6px 18px rgba(18, 51, 38, .28); font-variant-numeric: tabular-nums; }
+.charttip[hidden] { display: none; }
+.charttip__date { font-size: .8125rem; opacity: .8; }
+.charttip__value { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+.charttip__prev { margin-top: 2px; font-size: .75rem; opacity: .75; }
 .chart__grid { stroke: var(--line); stroke-width: 1; }
 .chart__axis { stroke: var(--line-strong); stroke-width: 1; }
 .chart__label { fill: var(--muted); font: 400 11px var(--font); font-variant-numeric: tabular-nums; }
