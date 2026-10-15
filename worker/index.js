@@ -301,6 +301,20 @@ async function handleAdmin(request, env, ctx, url) {
   return error(405, 'method_not_allowed');
 }
 
+// Tabbladen krijgen het crème cirkel-icoon; Google (zoekresultaten) krijgt op dezelfde adressen het donkergroene icoon uit /assets/google/.
+// Alleen de iconen worden zo geserveerd; zie wrangler.jsonc (run_worker_first) voor de paden.
+const GOOGLE_BOT = /Googlebot|Google Favicon|GoogleOther|Storebot-Google|Google-InspectionTool/i;
+const FAVICON_PATHS = new Set(['/favicon.ico', '/assets/favicon-32.png', '/assets/favicon-48.png', '/assets/favicon-96.png', '/assets/favicon-192.png']);
+
+async function serveFavicon(request, env, url) {
+  const forGoogle = GOOGLE_BOT.test(request.headers.get('User-Agent') || '');
+  const target = forGoogle ? new URL(`/assets/google/${url.pathname.split('/').pop()}`, url) : url;
+  const res = await env.ASSETS.fetch(forGoogle ? new Request(target, request) : request);
+  const out = new Response(res.body, res);
+  out.headers.set('Vary', 'User-Agent');
+  return out;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -311,6 +325,8 @@ export default {
     if (share && request.method === 'GET') return sharedList(env, share[1]);
 
     if (pathname === '/admin' || pathname.startsWith('/admin/')) return handleAdmin(request, env, ctx, url);
+
+    if (FAVICON_PATHS.has(pathname) && (request.method === 'GET' || request.method === 'HEAD')) return serveFavicon(request, env, url);
 
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
 
