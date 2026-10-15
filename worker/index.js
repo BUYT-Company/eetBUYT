@@ -301,15 +301,15 @@ async function handleAdmin(request, env, ctx, url) {
   return error(405, 'method_not_allowed');
 }
 
-// Tabbladen krijgen het crème cirkel-icoon; Google (zoekresultaten) krijgt op dezelfde adressen het donkergroene icoon uit /assets/google/.
+// Tabbladen krijgen het crème cirkel-icoon; zoekmachines (Google, Bing, DuckDuckGo, Yandex, Baidu, enz.; herkend aan de user-agent) krijgen op dezelfde adressen het donkergroene icoon uit /assets/google/.
 // Alleen de iconen worden zo geserveerd; zie wrangler.jsonc (run_worker_first) voor de paden.
-const GOOGLE_BOT = /Googlebot|Google Favicon|GoogleOther|Storebot-Google|Google-InspectionTool/i;
+const SEARCH_BOT = /bot|crawl|spider|slurp|google|bing|duckduck|yandex|baidu|seznam|qwant|ecosia|favicon/i;
 const FAVICON_PATHS = new Set(['/favicon.ico', '/assets/favicon-32.png', '/assets/favicon-48.png', '/assets/favicon-96.png', '/assets/favicon-192.png']);
 
 async function serveFavicon(request, env, url) {
-  const forGoogle = GOOGLE_BOT.test(request.headers.get('User-Agent') || '');
-  const target = forGoogle ? new URL(`/assets/google/${url.pathname.split('/').pop()}`, url) : url;
-  const res = await env.ASSETS.fetch(forGoogle ? new Request(target, request) : request);
+  const forSearch = SEARCH_BOT.test(request.headers.get('User-Agent') || '');
+  const target = forSearch ? new URL(`/assets/google/${url.pathname.split('/').pop()}`, url) : url;
+  const res = await env.ASSETS.fetch(forSearch ? new Request(target, request) : request);
   const out = new Response(res.body, res);
   out.headers.set('Vary', 'User-Agent');
   return out;
