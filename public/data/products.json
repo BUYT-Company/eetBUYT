@@ -14,8 +14,8 @@
       "priceApprox": false,
       "ingredients": "Ganzenborst, gekruid met shoarmakruiden",
       "allergens": true,
-      "image": "assets/products/ganzenshoarma-640.webp",
-      "photo": true,
+      "image": "assets/favicon.svg",
+      "photo": false,
       "tile": "#D8ED36"
     },
     {
@@ -28,8 +28,8 @@
       "priceApprox": false,
       "ingredients": "Gerookte ganzenborst",
       "allergens": false,
-      "image": "assets/products/gerookte-ganzenborst-640.webp",
-      "photo": true,
+      "image": "assets/favicon.svg",
+      "photo": false,
       "tile": "#F0EADB"
     },
     {
@@ -42,8 +42,8 @@
       "priceApprox": false,
       "ingredients": "Ganzenborstfilet van grauwe gans",
       "allergens": false,
-      "image": "assets/products/ganzenborstfilet-640.webp",
-      "photo": true,
+      "image": "assets/favicon.svg",
+      "photo": false,
       "tile": "#D8ED36"
     },
     {
@@ -56,8 +56,8 @@
       "priceApprox": false,
       "ingredients": "Speciaal uitgezochte stukjes borstfilet van kol- of brandgans",
       "allergens": false,
-      "image": "assets/products/ganzenbiefstuk-640.webp",
-      "photo": true,
+      "image": "assets/favicon.svg",
+      "photo": false,
       "tile": "#F0EADB"
     },
     {
@@ -70,8 +70,8 @@
       "priceApprox": false,
       "ingredients": "Ganzenpoten",
       "allergens": false,
-      "image": "assets/products/ganzenpoten-640.webp",
-      "photo": true,
+      "image": "assets/favicon.svg",
+      "photo": false,
       "tile": "#D8ED36"
     },
     {
