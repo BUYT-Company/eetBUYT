@@ -1046,7 +1046,7 @@ h1, h2, h3 { overflow-wrap: anywhere; }
 
 /* Teamfoto: recht, groot en rustig. Zachte schaduw met offset, bijschrift links uitgelijnd onder de foto. */
 .about-band .about__photo { max-width: 1040px; margin: 0 auto; transform: none; }
-.about-band .about__photo img { aspect-ratio: 16 / 10; object-position: 50% 25%; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(18, 51, 38, .12), 0 28px 56px -24px rgba(18, 51, 38, .55); }
+.about-band .about__photo img { aspect-ratio: 16 / 10; object-position: 50% 50%; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(18, 51, 38, .12), 0 28px 56px -24px rgba(18, 51, 38, .55); }
 .about-band .about__photo figcaption { margin-top: 1.1rem; text-align: left; font-size: 1rem; font-weight: 600; line-height: 1.4; }
 @media (max-width: 720px) {
   .about-band .about__photo img { aspect-ratio: 4 / 3; border-radius: 18px; }
