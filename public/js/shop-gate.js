@@ -38,6 +38,20 @@
     }
   };
 
+  /* Het bericht "Binnenkort bestellen mogelijk" is weg te klikken; de blur blijft zolang de winkel dicht is */
+  const DISMISS = 'buyt-shop-msg';
+  const setupDismiss = () => {
+    const lock = document.querySelector('.shop-lock');
+    if (!lock) return;
+    try { if (sessionStorage.getItem(DISMISS)) lock.hidden = true; } catch (_) {}
+    const btn = lock.querySelector('.shop-lock__close');
+    if (btn) btn.addEventListener('click', () => {
+      lock.hidden = true;
+      try { sessionStorage.setItem(DISMISS, '1'); } catch (_) {}
+    });
+  };
+  if (document.body) setupDismiss(); else document.addEventListener('DOMContentLoaded', setupDismiss);
+
   /* Laatst bekende stand alvast toepassen (alleen weergave, de server beslist) */
   const cached = recall();
   if (cached) apply(cached); else apply('closed');
