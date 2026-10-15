@@ -8,7 +8,7 @@ import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
 import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
 import { orderConfirmationEmail, orderInternalEmail } from './lib/emailTemplates.js';
-import { upcomingDates, formatDelivery } from './lib/delivery.js';
+import { upcomingDates } from './lib/delivery.js';
 import { currentUserName, handleLogin, logoutResponse, redirectToLogin, setup2fa, csrfToken, checkPost } from './lib/adminAuth.js';
 import { assetResponse } from './lib/adminUi.js';
 import { homePage, ordersPage, searchOrders, orderDetailPage, postStatus, postNote } from './lib/adminOrders.js';
@@ -74,15 +74,14 @@ const turnstileToken = (data) => data.turnstile ?? data['cf-turnstile-response']
 // het projectadres staat toch al in elke API-aanroep die deze Worker doet.
 const SUPABASE_DASHBOARD_URL = 'https://supabase.com/dashboard/project/hfaaufsdonsitjfwzvrk/editor';
 
-// Kort en scanbaar: alleen genoeg om te weten dát er iets is en of het druk wordt. De volledige
-// bestelling (adres, telefoon, opmerking) staat achter de link, niet in de pushmelding zelf.
+// Dataminimalisatie (art. 5 lid 1 sub c AVG): de pushmelding bevat alleen bestelnummer en bedrag,
+// geen naam, plaats, e-mailadres, producten of berichttekst. De details staan achter de link
+// (beheer), in Supabase en in de mail naar orders@eetbuyt.nl.
 function orderMessage(order, result, origin) {
-  const c = order.customer;
-  const items = order.lines.map((l) => `${l.qty}x ${l.name}`).join(', ');
   const total = order.has_unpriced && order.total_estimate_cents === 0 ? 'volgt' : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
   return {
-    title: `\u{1F7E2} Nieuwe BUYT-bestelling \u{1FABF} — ${total}`,
-    message: `${c.customer_name} · ${c.city}\n${items}\n${formatDelivery(order.delivery_date, order.delivery_window)}`,
+    title: 'Nieuwe bestelling',
+    message: `Nieuwe bestelling #${result.order_number} – ${total}`,
     url: `${origin}/admin/orders/${result.order_number}`,
     urlTitle: 'Bekijk bestelling'
   };
@@ -153,7 +152,8 @@ async function handleRequest(request, env, ctx) {
   if (v.type === 'zakelijk') ctx.waitUntil(sendBusinessRequestMail(env, v));
   ctx.waitUntil(notifyOwner(env, {
     title: `Nieuwe ${v.type === 'zakelijk' ? 'zakelijke aanvraag' : 'vraag'}`,
-    message: `${v.name} · ${v.email}\n${v.message.slice(0, 200)}`,
+    // Geen naam, e-mailadres of berichttekst in de melding (dataminimalisatie).
+    message: v.type === 'zakelijk' ? 'Nieuwe zakelijke aanvraag binnen' : 'Nieuwe vraag binnen',
     url: SUPABASE_DASHBOARD_URL,
     urlTitle: 'Bekijk in Supabase'
   }));

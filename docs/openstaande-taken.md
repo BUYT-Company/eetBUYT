@@ -5,7 +5,7 @@ Wat al klaar is staat onderaan. Vink af en verwijder wat klaar is.
 ## Vóór de verkoop opengaat
 Volg daarvoor [verkoop-openzetten.md](verkoop-openzetten.md), met de standaardprompt en de volledige checklist.
 
-- [ ] **KvK-nummer**: inschrijving op 19 oktober 2026. Daarna invullen in `public/privacy.html` (zin "KvK-nummer: volgt na inschrijving ...") en in de footer.
+- [ ] **KvK-nummer**: inschrijving op 19 oktober 2026. Daarna invullen in `public/privacy.html` (zin "KvK-nummer: volgt na inschrijving ...", en de datum "Laatst bijgewerkt" bijwerken) en in de footer.
 - [ ] **Verwerkersovereenkomsten (DPA's)** controleren en vastleggen: Supabase, Cloudflare, Resend, Google (Analytics). De privacyverklaring zegt dat die er zijn.
 - [ ] **Algemene voorwaarden, herroepingsrecht, allergeneninformatie** online zetten.
 - [ ] **Zakelijke rekening** openen, daarna Mollie instellen (`MOLLIE_API_KEY`).
@@ -32,7 +32,9 @@ De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen ge
 - [x] **Verwerkingsregister** (art. 30 AVG) opgesteld op 6 okt 2026: `intern/verwerkingsregister.xlsx` is de hoofdversie (staat bewust **niet** in git, want de repository is openbaar); Word en PDF zijn kopieën. Zet een kopie op een gedeelde plek voor de drie vennoten en herzie het jaarlijks en bij elke wijziging.
 - [x] **TransIP** staat in de privacyverklaring (mailhost van `@eetbuyt.nl`).
 - [ ] **Netlify**: controleren of er nog opgeslagen formulierdata is die je bij het opruimen moet verwijderen.
-- [ ] **Verwerkersovereenkomsten vastleggen** voor Supabase, Cloudflare, Resend, Pushover en TransIP (Google is al geaccepteerd); noteer de datum in het register.
+- [ ] **Verwerkersovereenkomsten vastleggen** voor Supabase, Cloudflare en Resend (DPA in het dashboard), en controleren of het al in de voorwaarden van TransIP en Mollie zit (Google is al geaccepteerd). Bewaar per partij een kopie of screenshot en noteer de datum in het register. Pushover hoeft niet meer: de melding bevat sinds 15 okt 2026 geen persoonsgegevens meer (alleen bestelnummer en bedrag).
+- [ ] **Bewaartermijnen automatiseren** (privacyverklaring 15 okt 2026): overige bestelgegevens (telefoon, opmerking, bezorgmoment) ongeveer 2 jaar na levering wissen of anonimiseren; factuurgegevens 7 jaar; zakelijke aanvragen 12 maanden. Er is nog geen automatische opruiming in Supabase; tot die er is, jaarlijks handmatig doen.
+- [ ] **Register van verwerkingen bijwerken** (`intern/verwerkingsregister.xlsx`): Pushover eruit, bewaartermijn bestellingen gesplitst (7 jaar factuur / 2 jaar rest), nieuw adres, doorgiftemechanisme per partij.
 - [ ] **Cookiekeuze en bewaartermijn horen bij elkaar:** de banner onthoudt de keuze 12 maanden en vraagt daarna opnieuw; de verklaring zegt hetzelfde. Wijzig je het één, pas dan het ander aan (`public/js/consent.js`, `MAX_AGE`, en de alinea Cookies in `public/privacy.html`).
 
 ## Search Console
