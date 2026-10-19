@@ -1566,3 +1566,8 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__title { margin-inline: auto; }
 .wg__tabs { justify-content: center; }
 @media (max-width: 760px) { .wg__tabs { justify-content: flex-start; } }
+
+/* "Lees het hele verhaal" als echte knop (zelfde pill als de andere donkere knoppen) */
+.wg__more.btn { display: inline-flex; padding: 0; border: 0; letter-spacing: 0; text-transform: none; font: 700 .98rem/1 var(--font-body); color: var(--cream); }
+.wg__more.btn:hover { border: 0; }
+.wg__card p { margin-bottom: 1.4rem; }
