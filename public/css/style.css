@@ -1653,3 +1653,11 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .wg__head .wg__title { margin-bottom: 16px; }
 }
 @media (max-width: 760px) { .wg__more .btn__label { padding: .85rem 1.1rem; font-size: .9rem; white-space: nowrap; } .wg__more .btn__arrow { min-width: 2.2rem; } }
+
+/* Pijlknop schaalt mee met de kop: cirkel ≈ 0,6 × kopgrootte (34–42 px), pijl in verhouding; klikvlak blijft ruim */
+.wg__head { --wg-fs: clamp(2.3rem, 5vw, 4rem); --wg-go: clamp(34px, calc(var(--wg-fs) * .6), 42px); --wg-mb: clamp(28px, 4vw, 48px); }
+.wg__head .wg__title { font-size: var(--wg-fs); }
+.wg__go { width: var(--wg-go); height: var(--wg-go); border-width: 1.8px; left: calc(100% + 16px); bottom: calc(var(--wg-mb) + (var(--wg-fs) - var(--wg-go)) / 2); }
+.wg__go svg { width: 46%; height: 46%; }
+.wg__go::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
+@media (max-width: 640px) { .wg__go { margin: 0 auto 24px; } }
