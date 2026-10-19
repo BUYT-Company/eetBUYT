@@ -1636,3 +1636,7 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__photo--wie { opacity: 0; object-position: 50% 35%; transition: opacity .6s ease; }
 .wg__stage[data-active="wie"] .wg__photo--wie { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .wg__photo--wie { transition: none; } }
+
+.wg__photo--faunabeheer { opacity: 0; object-position: 50% 62%; transition: opacity .6s ease; }
+.wg__stage[data-active="faunabeheer"] .wg__photo--faunabeheer { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .wg__photo--faunabeheer { transition: none; } }
