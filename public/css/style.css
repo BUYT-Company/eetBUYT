@@ -1439,3 +1439,7 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .zb-panel__cta { justify-self: start; }
 @media (prefers-reduced-motion: reduce) { .zb-panel, .zb-panel::backdrop { transition: none; } .zb-venue__plus, .zb-panel__close { transition: none; } }
 .zb-panel:not([open]) { display: none; }
+
+/* Minder lucht tussen de hero en de afnemer-blokken */
+.zb-hero { margin-bottom: clamp(48px, 6vw, 88px); }
+.zb-types { padding-top: 0; }
