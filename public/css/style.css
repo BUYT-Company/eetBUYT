@@ -1443,3 +1443,23 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 /* Minder lucht tussen de hero en de afnemer-blokken */
 .zb-hero { margin-bottom: clamp(48px, 6vw, 88px); }
 .zb-types { padding-top: 0; }
+
+/* Header: altijd poldergroen, schuift weg bij naar beneden scrollen */
+.site-header { background: var(--green); color: var(--cream); transition: box-shadow .3s ease, transform .55s var(--ease-out), opacity .4s ease; }
+.site-header.is-hidden { transform: translateY(-100%); box-shadow: none; }
+.site-header.is-scrolled { box-shadow: 0 10px 24px -16px rgba(18, 51, 38, .6); }
+.site-header .brand__name { color: var(--cream); }
+.site-header .nav a:not(.btn) { color: var(--cream); }
+.site-header .nav a:not(.btn)::after { background: var(--lime); }
+.site-header .cart-btn { border-color: var(--cream); color: var(--cream); }
+.site-header .cart-btn:hover, .site-header .cart-btn[aria-current="page"] { background: var(--cream); color: var(--green); }
+.site-header .cart-btn__count { background: var(--coral); color: var(--ink); }
+.site-header .burger { border-color: var(--cream); }
+.site-header .burger span { background: var(--cream); }
+.site-header .burger[aria-expanded="true"] { background: var(--cream); }
+.site-header .burger[aria-expanded="true"] span { background: var(--green); }
+.site-header .scroll-line { background: var(--lime); }
+@media (max-width: 900px) {
+  .site-header .nav { background: var(--green); border-bottom-color: var(--hair-light); box-shadow: 0 18px 30px -20px rgba(18, 51, 38, .6); }
+}
+@media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }

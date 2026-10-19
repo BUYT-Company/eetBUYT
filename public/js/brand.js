@@ -4,7 +4,7 @@
   const img = document.querySelector('.brand img');
   if (!img || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const ANIMATION = 'assets/logo-animatie.svg';
+  const ANIMATION = 'assets/logo-animatie-cream.svg';
   const DURATION_MS = 1350;
   let blob = null;
   let loading = null;
