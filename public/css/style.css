@@ -1546,3 +1546,11 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .wg__card { left: 12px; right: 12px; bottom: 12px; width: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .wg__card { animation: none; } .wg__tab { transition: none; } .wg__tab:hover { transform: none; } }
+
+/* Tabknoppen in dezelfde pill-stijl als de knoppen van de site: crème, bij keuze diepgroen, bij hover limoen */
+.wg__tab { padding: .95rem 1.6rem; border: 0; border-radius: 999px; background: var(--cream); color: var(--ink); font: 700 .98rem/1 var(--font-body); letter-spacing: 0; text-transform: none; box-shadow: 0 6px 18px -10px rgba(18, 51, 38, .6); transition: transform .6s var(--spring), background-color .2s ease, color .2s ease; }
+.wg__tab:hover { transform: scale(1.04); background: var(--lime); }
+.wg__tab[aria-selected="true"] { background: var(--ink); color: var(--cream); }
+.wg__tab[aria-selected="true"]:hover { background: var(--ink); }
+.wg__tab:focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
+.wg__tabs { gap: 10px; }
