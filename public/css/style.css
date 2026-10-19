@@ -1640,3 +1640,16 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__photo--faunabeheer { opacity: 0; object-position: 50% 62%; transition: opacity .6s ease; }
 .wg__stage[data-active="faunabeheer"] .wg__photo--faunabeheer { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .wg__photo--faunabeheer { transition: none; } }
+
+/* Pijlknop bij de kop: op tablet naast de kop, op telefoon compact eronder */
+@media (max-width: 1250px) and (min-width: 641px) {
+  .wg__go { position: absolute; margin: 0; left: calc(100% + 16px); bottom: calc(clamp(28px, 4vw, 48px) + .2rem); width: 48px; height: 48px; }
+  .wg__go svg { width: 22px; height: 22px; }
+  .wg__head .wg__title { margin-bottom: clamp(28px, 4vw, 48px); }
+}
+@media (max-width: 640px) {
+  .wg__go { width: 44px; height: 44px; margin: 0 auto 26px; }
+  .wg__go svg { width: 20px; height: 20px; }
+  .wg__head .wg__title { margin-bottom: 16px; }
+}
+@media (max-width: 760px) { .wg__more .btn__label { padding: .85rem 1.1rem; font-size: .9rem; white-space: nowrap; } .wg__more .btn__arrow { min-width: 2.2rem; } }
