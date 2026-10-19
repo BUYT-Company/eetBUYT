@@ -1471,3 +1471,6 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 
 /* Homepage-hero: bovenhoeken recht, de zijkanten lopen door tot achter de groene balk */
 .hero { border-top-left-radius: 0; border-top-right-radius: 0; }
+
+/* Verhaal-blok zonder linklijst: één kolom tot de opmaak definitief is */
+@media (min-width: 721px) { .story-teaser .wrap { grid-template-columns: minmax(0, 1fr); } .story-teaser__lead { max-width: 36em; } }
