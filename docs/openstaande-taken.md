@@ -34,7 +34,7 @@ De privacyverklaring (`/privacy`) zegt dat Google als verwerker werkt en geen ge
 - [ ] **Netlify**: controleren of er nog opgeslagen formulierdata is die je bij het opruimen moet verwijderen.
 - [ ] **Verwerkersovereenkomsten vastleggen** voor Supabase, Cloudflare en Resend (DPA in het dashboard), en controleren of het al in de voorwaarden van TransIP en Mollie zit (Google is al geaccepteerd). Bewaar per partij een kopie of screenshot en noteer de datum in het register. Pushover hoeft niet meer: de melding bevat sinds 15 okt 2026 geen persoonsgegevens meer (alleen bestelnummer en bedrag).
 - [x] **Bewaartermijnen** (migratie `0010_bewaartermijnen.sql`): uitgevoerd en getest op 15 okt 2026 (testorder geanonimiseerd, taak `bewaartermijnen` staat nachtelijk aan). Bestellingen worden 2 jaar na de bezorgdatum geanonimiseerd, afgehandelde aanvragen na 12 maanden verwijderd. Uitkomst per nacht: `select * from public.retention_log;`.
-- [ ] **Register van verwerkingen bijwerken** (`intern/verwerkingsregister.xlsx`): Pushover eruit, bewaartermijn bestellingen gesplitst (7 jaar factuur / 2 jaar rest), nieuw adres, doorgiftemechanisme per partij.
+- [ ] **Register van verwerkingen bijwerken** (`intern/verwerkingsregister.xlsx`, ook adres Vondelstraat 130, 1054 GS Amsterdam en KvK 42196561 in Algemeen B7): Pushover eruit, bewaartermijn bestellingen gesplitst (7 jaar factuur / 2 jaar rest), nieuw adres, doorgiftemechanisme per partij.
 - [ ] **Cookiekeuze en bewaartermijn horen bij elkaar:** de banner onthoudt de keuze 12 maanden en vraagt daarna opnieuw; de verklaring zegt hetzelfde. Wijzig je het één, pas dan het ander aan (`public/js/consent.js`, `MAX_AGE`, en de alinea Cookies in `public/privacy.html`).
 
 ## Search Console

@@ -1494,3 +1494,10 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 @media (max-width: 1000px) { .footer__inner { grid-template-columns: repeat(3, minmax(0, 1fr)); } .footer__brandcol { grid-column: 1 / -1; } }
 @media (max-width: 560px) { .footer__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; } .footer__col:last-of-type { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { .footer__social a { transition: none; } .footer__social a:hover { transform: none; } }
+
+/* Footer: het logo is net zo hoog als het tekstblok ernaast */
+.footer__inner { grid-template-columns: minmax(0, 2.2fr) repeat(3, minmax(0, 1fr)); }
+.footer__logo { align-self: stretch; display: flex; }
+.footer__logo img { height: 100%; width: auto; max-width: none; }
+@media (max-width: 1000px) { .footer__logo img { height: 100%; } }
+@media (max-width: 560px) { .footer__logo { align-self: start; } .footer__logo img { width: 84px; height: auto; } }
