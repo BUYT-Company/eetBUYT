@@ -3,6 +3,7 @@
 (() => {
   const root = document.getElementById('waarom-gans');
   if (!root) return;
+  const stage = root.querySelector('.wg__stage');
   const tabs = [...root.querySelectorAll('[role="tab"]')];
   const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')));
 
@@ -13,6 +14,7 @@
       tab.tabIndex = on ? 0 : -1;
       panels[i].hidden = !on;
     });
+    stage.dataset.active = tabs[index].id.replace('wg-tab-', '');
     if (focus) tabs[index].focus();
   };
 

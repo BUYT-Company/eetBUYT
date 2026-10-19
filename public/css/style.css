@@ -1631,3 +1631,8 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 
 .wg__card { right: clamp(54px, 5vw, 80px); }
 @media (max-width: 760px) { .wg__card { right: 12px; } }
+
+/* Per tabblad een eigen foto: ligt over de standaardfoto en komt tevoorschijn bij het actieve tabblad */
+.wg__photo--wie { opacity: 0; object-position: 50% 35%; transition: opacity .6s ease; }
+.wg__stage[data-active="wie"] .wg__photo--wie { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .wg__photo--wie { transition: none; } }
