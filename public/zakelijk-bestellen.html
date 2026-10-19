@@ -100,6 +100,7 @@
                 <h3 class="choice__title">Restaurants</h3>
                 <p class="choice__text">Een wild gerecht uit Nederlandse polders, met een verhaal erbij.</p>
               </div>
+              <button class="zb-venue__plus" type="button" data-venue="restaurants" aria-haspopup="dialog" aria-label="Meer over Restaurants"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
             </article>
           </li>
           <li>
@@ -108,6 +109,7 @@
                 <h3 class="choice__title">Cateraars</h3>
                 <p class="choice__text">Gans voor de borrel, het buffet of het diner.</p>
               </div>
+              <button class="zb-venue__plus" type="button" data-venue="cateraars" aria-haspopup="dialog" aria-label="Meer over Cateraars"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
             </article>
           </li>
           <li>
@@ -116,6 +118,7 @@
                 <h3 class="choice__title">Evenementen</h3>
                 <p class="choice__text">Iets bijzonders voor feesten, festivals en bedrijfsevents.</p>
               </div>
+              <button class="zb-venue__plus" type="button" data-venue="evenementen" aria-haspopup="dialog" aria-label="Meer over Evenementen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
             </article>
           </li>
           <li>
@@ -124,6 +127,7 @@
                 <h3 class="choice__title">Bars en caf&eacute;s</h3>
                 <p class="choice__text">Van gerookte ganzenborst op de plank tot shoarma in het broodje.</p>
               </div>
+              <button class="zb-venue__plus" type="button" data-venue="bars" aria-haspopup="dialog" aria-label="Meer over Bars en cafés"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
             </article>
           </li>
         </ul>
@@ -260,6 +264,41 @@
       </div>
     </section>
   </main>
+
+    <dialog class="zb-panel" id="venue-panel" aria-labelledby="venue-title">
+      <div class="zb-panel__head" id="venue-head">
+        <button class="zb-panel__close" type="button" aria-label="Sluiten" data-close-panel><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <h2 id="venue-title"></h2>
+      </div>
+      <div class="zb-panel__body">
+        <div class="zb-panel__content" data-for="restaurants" data-title="Restaurants" data-bg="#007F4F" data-fg="#FFF8E8" hidden>
+          <p class="zb-panel__lead">Een wild gerecht uit Nederlandse polders, met een verhaal erbij. Zo komt een gans die anders weggegooid wordt op het bord van je gasten.</p>
+          <h3>Dit past bij jou</h3>
+          <ul class="zb-panel__list"><li><strong>Ganzenborstfilet</strong><span>De borst als hoofdgerecht op het bord.</span></li><li><strong>Ganzenbiefstuk</strong><span>Een malse biefstuk van wilde gans.</span></li><li><strong>Ganzenpoten</strong><span>Voor langzaam garen, zoals stoof of confit.</span></li></ul>
+          <p class="zb-panel__note">Prijzen en hoeveelheden bespreken we in de offerte.</p>
+        </div>
+        <div class="zb-panel__content" data-for="cateraars" data-title="Cateraars" data-bg="#D8ED36" data-fg="#123326" hidden>
+          <p class="zb-panel__lead">Gans voor de borrel, het buffet of het diner. Vertel wat je gasten krijgen, dan denken we mee over de producten.</p>
+          <h3>Dit past bij jou</h3>
+          <ul class="zb-panel__list"><li><strong>Gerookte ganzenborst</strong><span>Pastrami van gans, dun gesneden op de plank of in een broodje.</span></li><li><strong>Ganzenshoarma</strong><span>Gekruid met shoarmakruiden, voor broodjes en bowls.</span></li><li><strong>Ganzenpoten</strong><span>Voor langzaam garen, zoals stoof of confit.</span></li></ul>
+          <p class="zb-panel__note">Prijzen en hoeveelheden bespreken we in de offerte.</p>
+        </div>
+        <div class="zb-panel__content" data-for="evenementen" data-title="Evenementen" data-bg="#FF6652" data-fg="#123326" hidden>
+          <p class="zb-panel__lead">Iets bijzonders voor feesten, festivals en bedrijfsevents. Noem in je aanvraag de datum en het aantal gasten.</p>
+          <h3>Dit past bij jou</h3>
+          <ul class="zb-panel__list"><li><strong>Ganzenshoarma</strong><span>Gekruid met shoarmakruiden, voor broodjes en bowls.</span></li><li><strong>Gerookte ganzenborst</strong><span>Pastrami van gans, dun gesneden op de plank of in een broodje.</span></li></ul>
+          <p class="zb-panel__note">Prijzen en hoeveelheden bespreken we in de offerte.</p>
+        </div>
+        <div class="zb-panel__content" data-for="bars" data-title="Bars en caf&eacute;s" data-bg="#123326" data-fg="#FFF8E8" hidden>
+          <p class="zb-panel__lead">Van gerookte ganzenborst op de plank tot shoarma in het broodje. Een wild hapje met een verhaal voor aan de bar.</p>
+          <h3>Dit past bij jou</h3>
+          <ul class="zb-panel__list"><li><strong>Gerookte ganzenborst</strong><span>Pastrami van gans, dun gesneden op de plank of in een broodje.</span></li><li><strong>Ganzenshoarma</strong><span>Gekruid met shoarmakruiden, voor broodjes en bowls.</span></li></ul>
+          <p class="zb-panel__note">Prijzen en hoeveelheden bespreken we in de offerte.</p>
+        </div>
+        <a class="btn btn--primary zb-panel__cta" href="#offerte" data-soort="afnemen" data-close-panel><span class="btn__label">Vraag een offerte aan</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </dialog>
+
 
   <footer class="footer">
     <div class="wrap footer__inner">
