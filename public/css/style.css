@@ -1728,3 +1728,9 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 @media (min-width: 1001px) {
   .footer__col { padding-top: 12.8px; }
 }
+
+/* Telefoon: groter logo in verhouding tot het adresblok */
+@media (max-width: 560px) {
+  .footer__brandcol { grid-template-columns: 104px minmax(0, 1fr); column-gap: 20px; }
+  .footer__logo { width: 104px; }
+}
