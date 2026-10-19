@@ -1509,3 +1509,12 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .footer__logo img { display: block; width: 100%; height: auto; max-width: none; }
 .footer__brandcol { grid-template-columns: clamp(110px, 12.5vw, 180px) minmax(0, 1fr); }
 @media (max-width: 560px) { .footer__logo { width: 84px; } .footer__brandcol { grid-template-columns: 84px minmax(0, 1fr); } .footer__logo img { width: 100%; height: auto; } }
+
+/* Juridische pagina's: genummerde leden en inhoudsopgave */
+.legal__list { padding-left: 1.6em; }
+.legal__list li { margin-bottom: .5em; padding-left: .2em; }
+.legal__toc { margin: 1.6em 0 .4em; padding: 18px 22px; border-radius: 16px; background: var(--sand); }
+.legal__toc ol { margin: 0; padding-left: 1.4em; columns: 2; column-gap: 2rem; }
+.legal__toc li { break-inside: avoid; padding: 2px 0; }
+.legal h2[id] { scroll-margin-top: calc(var(--header-h) + 16px); }
+@media (max-width: 640px) { .legal__toc ol { columns: 1; } }
