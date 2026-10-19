@@ -1605,3 +1605,6 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__head .wg__title { max-width: 10.7em; }
 .wg__go { left: calc(100% + 16px); bottom: calc(clamp(28px, 4vw, 48px) + .25rem); }
 .wg__head { display: flow-root; }
+
+/* "Waarom gans?": grotere kicker, in verhouding met de kop (4rem) */
+.wg .wrap .kicker { font-size: clamp(.95rem, 1.3vw, 1.2rem); letter-spacing: .2em; margin-bottom: 1.1rem; }
