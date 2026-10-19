@@ -1608,3 +1608,26 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 
 /* "Waarom gans?": grotere kicker, in verhouding met de kop (4rem) */
 .wg .wrap .kicker { font-size: clamp(.95rem, 1.3vw, 1.2rem); letter-spacing: .2em; margin-bottom: 1.1rem; }
+
+/* Subtiele pijlen (zonder cirkel) links en rechts van de tekstkaart */
+.wg__step { position: absolute; top: 50%; width: 44px; height: 44px; padding: 0; display: grid; place-items: center; border: 0; background: none; color: var(--cream); cursor: pointer; opacity: .9; filter: drop-shadow(0 1px 4px rgba(18, 51, 38, .7)); transform: translateY(-50%); transition: opacity .2s ease, transform .5s var(--spring); }
+.wg__step svg { width: 26px; height: 26px; }
+.wg__step--prev { left: -48px; }
+.wg__step--next { right: -48px; }
+.wg__step:hover { opacity: 1; }
+.wg__step--prev:hover { transform: translate(-4px, -50%); }
+.wg__step--next:hover { transform: translate(4px, -50%); }
+.wg__step:focus-visible { outline: 3px solid var(--cream); outline-offset: 0; border-radius: 10px; }
+@media (max-width: 760px) {
+  .wg__card { padding-inline: 46px; }
+  .wg__step { color: var(--ink); filter: none; opacity: .65; width: 40px; }
+  .wg__step--prev { left: 2px; }
+  .wg__step--next { right: 2px; }
+  .wg__step--prev:hover { transform: translate(-3px, -50%); }
+  .wg__step--next:hover { transform: translate(3px, -50%); }
+  .wg__step:focus-visible { outline-color: var(--ink); }
+}
+@media (prefers-reduced-motion: reduce) { .wg__step { transition: none; } .wg__step:hover { transform: translateY(-50%); } }
+
+.wg__card { right: clamp(54px, 5vw, 80px); }
+@media (max-width: 760px) { .wg__card { right: 12px; } }

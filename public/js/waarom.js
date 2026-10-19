@@ -24,4 +24,17 @@
       if (e.key in keys) { e.preventDefault(); select(keys[e.key], true); }
     });
   });
+
+  /* Vorige/volgende-pijlen naast de tekstkaart: bladeren door de vier blokken, rond van het laatste naar het eerste.
+     De pijl staat in elke kaart; na het wisselen krijgt dezelfde pijl in de nieuwe kaart de focus. */
+  root.addEventListener('click', (e) => {
+    const step = e.target.closest('[data-wg-step]');
+    if (!step) return;
+    const dir = Number(step.dataset.wgStep);
+    const current = Math.max(0, tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true'));
+    const next = (current + dir + tabs.length) % tabs.length;
+    select(next, false);
+    const again = panels[next].querySelector(`[data-wg-step="${dir}"]`);
+    if (again) again.focus({ preventScroll: true });
+  });
 })();
