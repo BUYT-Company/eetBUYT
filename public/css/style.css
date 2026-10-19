@@ -1661,3 +1661,7 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__go svg { width: 46%; height: 46%; }
 .wg__go::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
 @media (max-width: 640px) { .wg__go { margin: 0 auto 24px; } }
+/* Pijlknop: ≈ 0,85 × kopgrootte op desktop (54 px bij 64 px), 34 px minimum op tablet en telefoon */
+.wg__head { --wg-go: clamp(34px, calc(var(--wg-fs) * .85), 56px); }
+.wg__go { border-width: 2px; }
+@media (max-width: 1250px) { .wg__go { border-width: 1.8px; } }
