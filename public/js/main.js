@@ -434,6 +434,10 @@
         const tel = (data.telefoon || '').trim();
         delete data.telefoon;
         if (tel && data.type === 'zakelijk') data.bericht = `Telefoon: ${tel}\n\n${data.bericht || ''}`.trim();
+        /* Op de zakelijke pagina kiest de bezoeker afnemen of samenwerken; dat gaat als regel in het bericht mee. */
+        const soort = data.soort;
+        delete data.soort;
+        if (soort === 'afnemen' || soort === 'samenwerken') data.bericht = `Soort aanvraag: ${soort}\n\n${data.bericht || ''}`.trim();
         const res = await fetch('/api/request', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
