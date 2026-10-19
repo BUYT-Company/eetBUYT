@@ -1571,3 +1571,37 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__more.btn { display: inline-flex; padding: 0; border: 0; letter-spacing: 0; text-transform: none; font: 700 .98rem/1 var(--font-body); color: var(--cream); }
 .wg__more.btn:hover { border: 0; }
 .wg__card p { margin-bottom: 1.4rem; }
+
+/* Handgetekende pijl naast de kop, naar de Over ons-pagina */
+.wg__head { position: relative; width: fit-content; max-width: 100%; margin-inline: auto; }
+.wg__head .wg__title { max-width: 13em; margin-inline: auto; }
+.wg__aside { position: absolute; left: calc(100% + 8px); bottom: -.4rem; display: grid; justify-items: start; gap: 2px; padding: 8px; color: var(--coral); text-decoration: none; transition: transform .5s var(--spring); }
+.wg__aside span { font: 800 1.15rem/1 var(--font-display); letter-spacing: -.02em; color: var(--ink); transform: rotate(-4deg); transform-origin: left bottom; }
+.wg__aside svg { width: clamp(64px, 6vw, 96px); height: auto; margin-left: 6px; transform: translateY(-4px); }
+.wg__aside:hover { transform: translateX(4px) rotate(-2deg); }
+.wg__aside:hover span { text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.wg__aside:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; border-radius: 12px; }
+@media (max-width: 1250px) { .wg__aside { position: static; margin: 14px auto 0; display: inline-flex; align-items: center; gap: 8px; } .wg__aside span { transform: none; } .wg__aside svg { width: 52px; margin: 0; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .wg__aside { transition: none; } .wg__aside:hover { transform: none; } }
+.wg__aside { width: max-content; white-space: nowrap; }
+.wg__aside span { font-size: 1.3rem; }
+
+/* Knop "Lees meer" onder de kop in plaats van de pijl */
+.wg__head { display: grid; justify-items: center; width: auto; }
+.wg__head .wg__title { margin-bottom: clamp(18px, 2.4vw, 28px); }
+.wg__lees { margin-bottom: clamp(28px, 4vw, 48px); }
+.wg__aside { display: none; }
+
+/* Alleen een pijlknop rechts naast de kop, naar de Over ons-pagina */
+.wg__head { display: block; position: relative; width: fit-content; max-width: 100%; margin-inline: auto; }
+.wg__head .wg__title { margin-bottom: clamp(28px, 4vw, 48px); }
+.wg__lees, .wg__aside { display: none; }
+.wg__go { position: absolute; left: calc(100% + 20px); bottom: calc(clamp(28px, 4vw, 48px) + .35rem); display: grid; place-items: center; width: 56px; height: 56px; border: 2px solid var(--ink); border-radius: 50%; color: var(--ink); text-decoration: none; transition: transform .6s var(--spring), background-color .2s ease, border-color .2s ease; }
+.wg__go svg { width: 24px; height: 24px; }
+.wg__go:hover { transform: scale(1.1); background: var(--lime); border-color: var(--lime); }
+.wg__go:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+@media (max-width: 1250px) { .wg__go { position: static; margin: calc(-1 * clamp(10px, 2vw, 24px)) auto clamp(28px, 4vw, 48px); } .wg__head .wg__title { margin-bottom: 18px; } }
+@media (prefers-reduced-motion: reduce) { .wg__go { transition: none; } .wg__go:hover { transform: none; } }
+.wg__head .wg__title { max-width: 10.7em; }
+.wg__go { left: calc(100% + 16px); bottom: calc(clamp(28px, 4vw, 48px) + .25rem); }
+.wg__head { display: flow-root; }
