@@ -1554,3 +1554,9 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__tab[aria-selected="true"]:hover { background: var(--ink); }
 .wg__tab:focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
 .wg__tabs { gap: 10px; }
+
+/* Kop van "Waarom gans?" in dezelfde stijl als de andere sectiekoppen: links, groen kicker, onderstreept sleutelwoord */
+.wg .wrap { text-align: left; }
+.wg .wrap .kicker { margin-bottom: 1rem; }
+.wg__title { max-width: 16em; margin: 0 0 clamp(28px, 4vw, 48px); font-size: clamp(2.3rem, 5vw, 4rem); letter-spacing: -.045em; }
+.wg__tabs { justify-content: flex-start; }
