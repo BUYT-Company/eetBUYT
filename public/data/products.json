@@ -89,20 +89,6 @@
       "tile": "#F0EADB"
     },
     {
-      "id": "saucijzen",
-      "name": "Saucijzen",
-      "pricePerKgCents": 2200,
-      "pack": "Verpakt per ca. 500 gram",
-      "packGrams": 500,
-      "priceCents": 1100,
-      "priceApprox": false,
-      "ingredients": "",
-      "allergens": false,
-      "image": "assets/favicon.svg",
-      "photo": false,
-      "tile": "#D8ED36"
-    },
-    {
       "id": "gehaktballen",
       "name": "Gehaktballen",
       "pricePerKgCents": 2500,
@@ -114,7 +100,7 @@
       "allergens": false,
       "image": "assets/favicon.svg",
       "photo": false,
-      "tile": "#F0EADB"
+      "tile": "#D8ED36"
     },
     {
       "id": "grillworst",
@@ -128,7 +114,7 @@
       "allergens": false,
       "image": "assets/favicon.svg",
       "photo": false,
-      "tile": "#D8ED36"
+      "tile": "#F0EADB"
     },
     {
       "id": "rookworst",
@@ -142,7 +128,7 @@
       "allergens": false,
       "image": "assets/favicon.svg",
       "photo": false,
-      "tile": "#F0EADB"
+      "tile": "#D8ED36"
     },
     {
       "id": "burgers",
@@ -156,7 +142,7 @@
       "allergens": false,
       "image": "assets/favicon.svg",
       "photo": false,
-      "tile": "#D8ED36"
+      "tile": "#F0EADB"
     }
   ]
 }
