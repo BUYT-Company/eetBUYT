@@ -1474,3 +1474,23 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 
 /* Verhaal-blok zonder linklijst: één kolom tot de opmaak definitief is */
 @media (min-width: 721px) { .story-teaser .wrap { grid-template-columns: minmax(0, 1fr); } .story-teaser__lead { max-width: 36em; } }
+
+/* Footer-indeling: merkkolom met logo, adres en socials, daarnaast Shop, Over ons en Zakelijk */
+.footer__inner { display: grid; grid-template-columns: minmax(0, 1.7fr) repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); align-items: start; }
+.footer__brandcol { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(16px, 2vw, 28px); row-gap: 20px; align-items: start; }
+.footer__logo { display: block; flex: none; padding: 0; }
+.footer__logo::after, .footer__social a::after { display: none; }
+.footer__logo img { display: block; width: clamp(64px, 6vw, 88px); height: auto; }
+.footer__about p { margin: 0 0 .5rem; line-height: 1.5; }
+.footer__about .footer__brand { margin-bottom: .5rem !important; font-size: 1.9rem; }
+.footer .footer__social { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 0 -10px; }
+.footer__social a { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; color: var(--cream); transition: color .2s ease, background-color .2s ease, transform .3s var(--spring); }
+.footer__social svg { width: 26px; height: 26px; }
+.footer__social a:hover { color: var(--lime); transform: translateY(-2px); }
+.footer__social a:focus-visible { outline: 3px solid var(--lime); outline-offset: 2px; }
+.footer__brandcol .footer__news { grid-column: 1 / -1; }
+.footer__col .footer__head { margin: 0 0 1rem !important; }
+.footer__col ul { gap: 10px; }
+@media (max-width: 1000px) { .footer__inner { grid-template-columns: repeat(3, minmax(0, 1fr)); } .footer__brandcol { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .footer__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; } .footer__col:last-of-type { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { .footer__social a { transition: none; } .footer__social a:hover { transform: none; } }
