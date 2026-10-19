@@ -1560,3 +1560,9 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg .wrap .kicker { margin-bottom: 1rem; }
 .wg__title { max-width: 16em; margin: 0 0 clamp(28px, 4vw, 48px); font-size: clamp(2.3rem, 5vw, 4rem); letter-spacing: -.045em; }
 .wg__tabs { justify-content: flex-start; }
+
+/* "Waarom gans?": kop en tabs gecentreerd boven de foto */
+.wg .wrap { text-align: center; }
+.wg__title { margin-inline: auto; }
+.wg__tabs { justify-content: center; }
+@media (max-width: 760px) { .wg__tabs { justify-content: flex-start; } }
