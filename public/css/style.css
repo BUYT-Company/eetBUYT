@@ -1468,3 +1468,6 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
 
 .choose__grid .choice__img { object-position: center 30%; }
+
+/* Homepage-hero: bovenhoeken recht, de zijkanten lopen door tot achter de groene balk */
+.hero { border-top-left-radius: 0; border-top-right-radius: 0; }
