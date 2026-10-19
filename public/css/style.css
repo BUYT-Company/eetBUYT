@@ -1501,3 +1501,5 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .footer__logo img { height: 100%; width: auto; max-width: none; }
 @media (max-width: 1000px) { .footer__logo img { height: 100%; } }
 @media (max-width: 560px) { .footer__logo { align-self: start; } .footer__logo img { width: 84px; height: auto; } }
+
+.footer__about .footer__legal { margin: .9rem 0 0; font-size: .88rem; opacity: .72; }
