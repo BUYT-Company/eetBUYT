@@ -1665,3 +1665,10 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__head { --wg-go: clamp(34px, calc(var(--wg-fs) * .85), 56px); }
 .wg__go { border-width: 2px; }
 @media (max-width: 1250px) { .wg__go { border-width: 1.8px; } }
+
+/* Op telefoon staat de pijl ook rechts naast de kop (kop krijgt ruimte, het blok blijft gecentreerd) */
+@media (max-width: 640px) {
+  .wg__head { max-width: calc(100% - 52px); transform: translateX(-21px); }
+  .wg__head .wg__title { margin-bottom: var(--wg-mb); }
+  .wg__go { position: absolute; margin: 0; left: calc(100% + 8px); bottom: calc(var(--wg-mb) + (var(--wg-fs) - var(--wg-go)) / 2); }
+}
