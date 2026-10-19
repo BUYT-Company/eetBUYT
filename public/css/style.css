@@ -1716,3 +1716,10 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .footer__col:last-of-type { grid-column: auto; }
   .footer__about .footer__brand { font-size: 1.7rem; }
 }
+
+/* Tablet: de drie linkkolommen als groep in het midden, met gelijke ruimte ertussen en aan de randen */
+@media (min-width: 561px) and (max-width: 1000px) {
+  .footer__inner { display: flex; flex-wrap: wrap; justify-content: space-evenly; }
+  .footer__brandcol { flex: 0 0 100%; }
+  .footer__col { flex: 0 0 auto; width: max-content; }
+}
