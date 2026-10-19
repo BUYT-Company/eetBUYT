@@ -1466,3 +1466,5 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .site-header .nav a:not(.btn)::after { background: var(--coral); }
 }
 @media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+
+.choose__grid .choice__img { object-position: center 30%; }
