@@ -1685,3 +1685,10 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .wg__tab { padding: .75rem 1.2rem; font-size: .9rem; }
   .wg__tabs::after { content: ""; flex: 0 0 20px; }
 }
+
+/* Tabbalk is te slepen (muis) en te vegen (vinger) wanneer hij niet past */
+@media (max-width: 760px) {
+  .wg__tabs { cursor: grab; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+  .wg__tabs.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+  .wg__tabs.is-dragging .wg__tab { pointer-events: none; }
+}
