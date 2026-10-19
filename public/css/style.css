@@ -1459,7 +1459,10 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .site-header .burger[aria-expanded="true"] { background: var(--cream); }
 .site-header .burger[aria-expanded="true"] span { background: var(--green); }
 .site-header .scroll-line { background: var(--lime); }
+/* Het uitgeklapte menu is crème, de balk zelf blijft poldergroen */
 @media (max-width: 900px) {
-  .site-header .nav { background: var(--green); border-bottom-color: var(--hair-light); box-shadow: 0 18px 30px -20px rgba(18, 51, 38, .6); }
+  .site-header .nav { background: var(--cream); border-bottom-color: var(--hair); box-shadow: 0 18px 30px -20px rgba(18, 51, 38, .5); }
+  .site-header .nav a:not(.btn) { color: var(--ink); }
+  .site-header .nav a:not(.btn)::after { background: var(--coral); }
 }
 @media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
