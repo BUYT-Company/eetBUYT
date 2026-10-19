@@ -7,7 +7,7 @@ Volg daarvoor [verkoop-openzetten.md](verkoop-openzetten.md), met de standaardpr
 
 - [x] **KvK-nummer** 42196561 staat sinds 19 oktober 2026 in `public/privacy.html`. Nog invullen in `intern/verwerkingsregister.xlsx` (blad Algemeen, B7) en eventueel in de footer.
 - [ ] **Verwerkersovereenkomsten (DPA's)** controleren en vastleggen: Supabase, Cloudflare, Resend, Google (Analytics). De privacyverklaring zegt dat die er zijn.
-- [ ] **Algemene voorwaarden, herroepingsrecht, allergeneninformatie** online zetten.
+- [ ] **Algemene voorwaarden, herroepingsrecht, allergeneninformatie** online zetten. De footer linkt sinds 19 okt 2026 naar `voorwaarden.html`, `levering-verzending.html` en `retourbeleid.html`; dat zijn nu paginaatjes met "komt binnenkort" en `noindex`. Vul de teksten in en haal `noindex` weg, voeg ze dan toe aan `sitemap.xml`.
 - [ ] **Zakelijke rekening** openen, daarna Mollie instellen (`MOLLIE_API_KEY`).
 - [ ] **Bezorgdienst** kiezen. Zodra die vaststaat: privacyverklaring bijwerken.
 - [ ] **Prijzen, verzendkosten en bezorggebied** definitief maken (`public/data/products.json`).

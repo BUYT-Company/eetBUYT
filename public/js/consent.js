@@ -113,11 +113,19 @@
       btn.className = 'consent__link';
       btn.textContent = 'Cookie-instellingen';
       btn.addEventListener('click', show);
-      const priv = document.createElement('a');
-      priv.className = 'consent__link';
-      priv.href = 'privacy.html';
-      priv.textContent = 'Privacyverklaring';
-      bottom.append(priv, btn);
+      const links = [
+        ['voorwaarden.html', 'Algemene voorwaarden'],
+        ['privacy.html', 'Privacyverklaring'],
+        ['levering-verzending.html', 'Levering & verzending'],
+        ['retourbeleid.html', 'Retourbeleid']
+      ].map(([href, label]) => {
+        const a = document.createElement('a');
+        a.className = 'consent__link';
+        a.href = href;
+        a.textContent = label;
+        return a;
+      });
+      bottom.append(...links, btn);
     }
     const saved = read();
     if (saved === 'ja' || saved === 'nee') apply(saved);
