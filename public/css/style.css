@@ -1723,3 +1723,8 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .footer__brandcol { flex: 0 0 100%; }
   .footer__col { flex: 0 0 auto; width: max-content; }
 }
+
+/* Desktop: de kopjes Shop / Over ons / Zakelijk op dezelfde hoogte als "BUYT" (regel van 45,6px, kopje 20px) */
+@media (min-width: 1001px) {
+  .footer__col { padding-top: 12.8px; }
+}
