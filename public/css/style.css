@@ -1672,3 +1672,16 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .wg__head .wg__title { margin-bottom: var(--wg-mb); }
   .wg__go { position: absolute; margin: 0; left: calc(100% + 8px); bottom: calc(var(--wg-mb) + (var(--wg-fs) - var(--wg-go)) / 2); }
 }
+
+/* Telefoon: kop met meer regelafstand zodat de golflijn onder "onbenut" tussen de regels valt */
+@media (max-width: 640px) {
+  .wg__title { line-height: 1.16; }
+  .wg__title em { white-space: nowrap; padding-bottom: .08em; }
+  .wg__go { bottom: calc(var(--wg-mb) + (var(--wg-fs) * 1.16 - var(--wg-go)) / 2); }
+}
+/* Telefoon: tabbladen kleiner, netjes uitgelijnd op de rand van de foto en met een uitloop als hint dat je kunt scrollen */
+@media (max-width: 760px) {
+  .wg__tabs { padding: 16px 16px 6px; gap: 8px; scroll-padding-inline: 16px; scroll-snap-type: x proximity; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  .wg__tab { padding: .75rem 1.2rem; font-size: .9rem; }
+  .wg__tabs::after { content: ""; flex: 0 0 20px; }
+}

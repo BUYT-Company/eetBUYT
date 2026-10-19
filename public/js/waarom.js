@@ -15,6 +15,9 @@
       panels[i].hidden = !on;
     });
     stage.dataset.active = tabs[index].id.replace('wg-tab-', '');
+    /* Op smalle schermen scrollt de tabbalk: houd het gekozen tabblad in beeld */
+    const bar = tabs[index].parentElement;
+    if (bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: Math.max(0, tabs[index].offsetLeft - 16), behavior: 'smooth' });
     if (focus) tabs[index].focus();
   };
 
