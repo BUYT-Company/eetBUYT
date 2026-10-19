@@ -5,7 +5,7 @@ Wat al klaar is staat onderaan. Vink af en verwijder wat klaar is.
 ## Vóór de verkoop opengaat
 Volg daarvoor [verkoop-openzetten.md](verkoop-openzetten.md), met de standaardprompt en de volledige checklist.
 
-- [ ] **KvK-nummer**: inschrijving op 19 oktober 2026. Daarna invullen in `public/privacy.html` (zin "KvK-nummer: volgt na inschrijving ...", en de datum "Laatst bijgewerkt" bijwerken) en in de footer.
+- [x] **KvK-nummer** 42196561 staat sinds 19 oktober 2026 in `public/privacy.html`. Nog invullen in `intern/verwerkingsregister.xlsx` (blad Algemeen, B7) en eventueel in de footer.
 - [ ] **Verwerkersovereenkomsten (DPA's)** controleren en vastleggen: Supabase, Cloudflare, Resend, Google (Analytics). De privacyverklaring zegt dat die er zijn.
 - [ ] **Algemene voorwaarden, herroepingsrecht, allergeneninformatie** online zetten.
 - [ ] **Zakelijke rekening** openen, daarna Mollie instellen (`MOLLIE_API_KEY`).
