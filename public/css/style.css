@@ -1736,3 +1736,7 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 }
 
 .choose__grid .choice__img--face { object-position: 60% 22%; }
+
+/* Partnerblokken: de uitnodigingskaart loopt over de volle breedte onder de partnerfoto's */
+@media (min-width: 761px) { .zb-cases__grid > li:last-child { grid-column: 1 / -1; } .zb-cases__grid > li:last-child .choice { min-height: 0; } }
+.zb-cases__grid .choice__img[src*="merkelbach"] { object-position: center 40%; }
