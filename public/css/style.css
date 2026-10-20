@@ -1742,3 +1742,5 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .zb-cases__grid .choice__img[src*="merkelbach"] { object-position: center 40%; }
 
 .zb-venue .choice__img[src*="zakelijk-bars"] { object-position: 48% 50%; }
+
+.zb-venue .choice__img[src*="zakelijk-evenementen"] { object-position: left center; }
