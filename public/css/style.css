@@ -1734,3 +1734,5 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
   .footer__brandcol { grid-template-columns: 104px minmax(0, 1fr); column-gap: 20px; }
   .footer__logo { width: 104px; }
 }
+
+.choose__grid .choice__img--face { object-position: 60% 22%; }
