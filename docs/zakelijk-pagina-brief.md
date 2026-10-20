@@ -29,7 +29,7 @@ Dit zijn de vragen waar de inspiratie antwoord op moet geven.
 
 ## Mogelijke opbouw (om bij de inspiratie te toetsen)
 1. Kop met één belofte en één knop naar het formulier.
-2. Waarom BUYT voor de keuken (wild, Nederlands, van prullenbak naar bord), alleen bevestigde feiten.
+2. Waarom BUYT voor de keuken (wild, Nederlands, van polder naar bord), alleen bevestigde feiten.
 3. Producten voor de keuken: de vijf producten, per kilo, met een regel over gebruik.
 4. Zo werkt zakelijk bestellen (aanvraag → bevestiging → levering).
 5. Aanvraagformulier, bovenaan bereikbaar via een kleverige knop op mobiel.

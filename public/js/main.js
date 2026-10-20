@@ -307,7 +307,7 @@
     }
   }
 
-  /* Vergelijken: prullenbak of bord */
+  /* Vergelijken: onbenut of bord */
   const ba = $('[data-ba]');
   if (ba) {
     const range = $('.ba__range', ba);
@@ -316,7 +316,7 @@
       v = clamp(v, 0, 100);
       ba.style.setProperty('--pos', `${v}%`);
       range.value = String(Math.round(v));
-      range.setAttribute('aria-valuetext', v < 35 ? 'vooral de prullenbak' : v > 65 ? 'vooral het bord' : 'half prullenbak, half bord');
+      range.setAttribute('aria-valuetext', v < 35 ? 'vooral onbenut' : v > 65 ? 'vooral het bord' : 'half onbenut, half bord');
     };
     let dragging = false;
     const fromEvent = (e) => {

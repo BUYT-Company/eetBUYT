@@ -21,7 +21,7 @@ Success: visitors order, ideally in as few clicks as possible, and goose becomes
 
 ## Positioning
 
-Wild goose from Dutch soil that would otherwise be thrown away: "van prullenbak naar bord". A neighbouring meat brand cannot truthfully claim this origin and this mission.
+Wild goose from Dutch soil that would otherwise be thrown away: "van polder naar bord". A neighbouring meat brand cannot truthfully claim this origin and this mission.
 
 ## Operating Context
 
