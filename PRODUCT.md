@@ -35,7 +35,7 @@ Wild goose from Dutch soil that would otherwise be thrown away: "van polder naar
 
 Confirmed facts that may be stated on the site:
 
-- About 330,000 geese are shot in the Netherlands every year (Dierenbescherming, Feb 2024). No percentage for unused meat is confirmed: "at least ~70%" is only an own calculation (see Onderzoek/Buyt-Bronnenoverzicht-Ganzencijfers.pdf) and must be labelled as such; "95%" and "80%" must not be used.
+- About 330,000 geese are shot in the Netherlands every year (Dierenbescherming, Feb 2024). No percentage for unused meat is confirmed: on the site use "het overgrote deel" (owner's decision, 21 Oct 2026). "~70%" is only an own calculation (see Onderzoek/Buyt-Bronnenoverzicht-Ganzencijfers.pdf); "95%" and "80%" must not be used.
 - The meat is wild and from Dutch soil.
 - Products (21 Sept 2026, owner's choice, data taken from natuurlijkwild.com/bestellen and marked as draft in `data/products.json`): ganzenshoarma, gerookte ganzenborst (pastrami), ganzenborstfilet, ganzenbiefstuk, ganzenpoten. The mixed goose/wild boar products (half-om-half gehakt, saucijzen, hamburger, gehaktballen) were considered and removed by the owner.
 - Products are priced per kilo; pack weights are "ca." (approximate), so the cart shows indicative prices. Ganzenbiefstuk has no known pack weight (priceCents null, "Prijs op gewicht"). Gerookte ganzenborst is sold per piece (€ 7,50, ca. 250 g); its per-kilo price (€ 30) is derived.
