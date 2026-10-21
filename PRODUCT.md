@@ -15,7 +15,7 @@ Two audiences, equally important, confirmed by the owner:
 
 ## Product Purpose
 
-BUYT brings the goose back on the plate. In the Netherlands roughly 330,000 geese are shot each year and roughly 95% of the meat ends up in the bin. BUYT makes wild, Dutch goose meat popular with consumers and with horeca, through campaigns, dinners and chefs cooking with the products. The website has to sell the products (webshop) and win business customers.
+BUYT brings the goose back on the plate. In the Netherlands roughly 330,000 geese are shot each year and most of the meat is never used. BUYT makes wild, Dutch goose meat popular with consumers and with horeca, through campaigns, dinners and chefs cooking with the products. The website has to sell the products (webshop) and win business customers.
 
 Success: visitors order, ideally in as few clicks as possible, and goose becomes as normal a choice as chicken or beef.
 
@@ -35,7 +35,7 @@ Wild goose from Dutch soil that would otherwise be thrown away: "van polder naar
 
 Confirmed facts that may be stated on the site:
 
-- About 330,000 geese are shot in the Netherlands every year; about 95% ends up in the bin.
+- About 330,000 geese are shot in the Netherlands every year (Dierenbescherming, Feb 2024). No percentage for unused meat is confirmed: "at least ~70%" is only an own calculation (see Onderzoek/Buyt-Bronnenoverzicht-Ganzencijfers.pdf) and must be labelled as such; "95%" and "80%" must not be used.
 - The meat is wild and from Dutch soil.
 - Products (21 Sept 2026, owner's choice, data taken from natuurlijkwild.com/bestellen and marked as draft in `data/products.json`): ganzenshoarma, gerookte ganzenborst (pastrami), ganzenborstfilet, ganzenbiefstuk, ganzenpoten. The mixed goose/wild boar products (half-om-half gehakt, saucijzen, hamburger, gehaktballen) were considered and removed by the owner.
 - Products are priced per kilo; pack weights are "ca." (approximate), so the cart shows indicative prices. Ganzenbiefstuk has no known pack weight (priceCents null, "Prijs op gewicht"). Gerookte ganzenborst is sold per piece (€ 7,50, ca. 250 g); its per-kilo price (€ 30) is derived.
