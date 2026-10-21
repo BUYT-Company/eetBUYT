@@ -26,8 +26,8 @@ Wild goose from Dutch soil that would otherwise be thrown away: "van polder naar
 ## Operating Context
 
 - Company: BUYT, based in Amsterdam, Netherlands.
-- Site is static HTML/CSS/JS in a GitHub repository, deployed by Netlify (eetbuyt.nl). No build step.
-- Orders: Netlify Forms record every order and every business request. Online payment through Mollie is prepared (Netlify Functions) but not active until a Mollie API key is set.
+- Site is static HTML/CSS/JS in a GitHub repository, served by a Cloudflare Worker (eetbuyt.nl, branch `cloudflare-supabase`). No build step.
+- Orders: the Worker records every order and every business request in Supabase. Online payment through Mollie is not built yet (to be added in the Worker once the business account and `MOLLIE_API_KEY` exist).
 - Delivery: pick-up or local delivery, in or around Amsterdam. Exact area and pick-up arrangements are not decided yet. Delivery schedule (decided 28 Sept 2026, built on branch `cloudflare-supabase`): Thursday 17:00–21:00 and Saturday 10:00–16:00, in 2-hour windows, max. 5 orders per window, orders must be placed by 23:59 the day before.
 - Content, prices and imagery are still being defined by the owner; ChatGPT will be used to generate photos and product images.
 

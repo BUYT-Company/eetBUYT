@@ -16,17 +16,19 @@ BUYT brengt de wilde gans terug op het bord ("van polder naar bord"). De site ve
 ## Techniek en deploy
 - Site: statische HTML/CSS/JS in `public/`, geen buildstap, geen npm voor de site. Vanilla animaties (WAAPI, CSS, IntersectionObserver), geen GSAP of Lenis. Respecteer `prefers-reduced-motion` en no-JS-fallbacks.
 - Backend: Cloudflare Worker `buyt-website` (`worker/index.js`, `worker/lib/*`), config in `wrangler.jsonc`. Alleen `public/` wordt geserveerd. Supabase (EU) bewaart bestellingen: de browser praat nooit met Supabase, alleen de Worker (gewone `fetch` naar PostgREST, geen SDK). Migraties in `supabase/migrations/`.
-- **Live staat op Cloudflare, branch `cloudflare-supabase`.** Netlify en `main` zijn achterhaald: stel niets voor voor Netlify. (PRODUCT.md noemt Netlify onder "Operating Context" nog; dat is verouderd.) `netlify/` en `netlify.toml` zijn restanten die later opgeruimd worden.
+- **Live staat op Cloudflare, branch `cloudflare-supabase`.** Netlify is helemaal weg (map `netlify/` en `netlify.toml` zijn verwijderd) en `main` is achterhaald: stel niets voor voor Netlify. Mollie moet nog in de Worker gebouwd worden.
 - Prijzen van de 5 losse producten komen uit een privé Google Sheet via `worker/lib/sheetPrices.js` (`/api/products`, wijzigingen binnen ~5 min live). `public/data/products.json` is alleen de reserve en moet af en toe gelijkgetrokken worden. Zie [docs/prijzen-sheet-koppelen.md](docs/prijzen-sheet-koppelen.md).
 - Beheerportaal onder `/admin` (wachtwoord plus code): bestellingen, bezorging, klanten, zakelijk, analytics. Zie [docs/ontwerp-beheerportaal.md](docs/ontwerp-beheerportaal.md).
 - Tests: `node --test worker/test/*.test.mjs` (53 tests, allemaal geslaagd op 21 okt 2026).
 - Lokaal bekijken: `.claude/launch.json` heeft `buyt-public` (poort 8124, map `public`). Let op: de Browser-pane toont verkeerde screenshots na echt scrollen; scroll met `document.body.style.marginTop = -Ypx` en wacht een paar seconden.
 
 ## Merk (bindend)
-Bron: `Inspiratie website/buyt-huisstijlvoorstel.html` (staat niet in deze map; vraag de eigenaar waar het nu staat). Tokens staan in `:root` van `public/css/style.css`.
+Bron: `C:\Users\hrski\OneDrive\Documenten\Zakelijk\BUYT\Inspiratie website\BUYT-huisstijlvoorstel-herzien3.pdf` (actuele versie; de oudere `buyt-huisstijlvoorstel.html` staat in dezelfde map). Tokens staan in `:root` van `public/css/style.css`.
 - Kleuren: Poldergroen #007F4F, Lentelimoen #D8ED36, Paprikakoraal #FF6652, Room #FFF8E8, Diepgroen #123326.
 - Lettertypes: Bricolage Grotesque 700-800 (koppen), DM Sans 400-700 (tekst en knoppen), zelf gehost.
 - Regels: groene hero, roomkleurige panelen, koraal knoppen met donkere tekst, limoen alleen voor korte labels, grote tekst en campagneblokken, nooit roomkleurige tekst op koraal, maximaal één accentkleur per blok.
+- Contrast: diepgroen op koraal (4,76:1), room op groen (4,78:1) en diepgroen op limoen zijn goed; roomwitte tekst op koraal (2,73:1) is te laag; limoen op poldergroen alleen voor grote tekst of decoratie.
+- Toon (herzien3): warm en helder, uitnodigend en verbindend, niet confronterend of activistisch (BUYT is "De Ontdekker" met "De Zorger" eronder). Woorden als ontdekken, herkomst, benutten, delen. De slogan is **"Daar word je wild van!"** (volgens de eigenaar, 21 okt 2026; het huisstijl-PDF noemt "Wild van hier. Met zorg op tafel." en vervangt daarmee de oude slogan "Van prullenbak naar bord", die niet meer gebruikt wordt). Onderbouw duurzaamheidsclaims; leg herkomst en verantwoord gebruik concreet uit.
 - Logo altijd één kleur (groen op room, room op groen, donker op limoen). Bestanden `public/assets/logo-animatie.svg` en `logo-still.svg` blijven enkelkleurig poldergroen.
 - Verdienprincipe: wat geld oplevert (producten, mandje, afrekenen, zakelijke aanvraag) zo hoog mogelijk op de pagina, bestellen in zo min mogelijk klikken. B2C koopt online, B2B vraagt een offerte aan; meng die twee routes niet.
 

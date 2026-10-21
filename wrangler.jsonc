@@ -7,7 +7,7 @@
   "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
-    // Alleen public/ wordt geserveerd: worker/, supabase/, docs/, netlify/ en de configbestanden
+    // Alleen public/ wordt geserveerd: worker/, supabase/, docs/ en de configbestanden
     // staan hier fysiek buiten, in plaats van te vertrouwen op .assetsignore (zie ontwerp §4/§16).
     "directory": "public",
     "binding": "ASSETS",
