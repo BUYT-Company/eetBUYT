@@ -32,6 +32,15 @@ Bron: `C:\Users\hrski\OneDrive\Documenten\Zakelijk\BUYT\Inspiratie website\BUYT-
 - Logo altijd één kleur (groen op room, room op groen, donker op limoen). Bestanden `public/assets/logo-animatie.svg` en `logo-still.svg` blijven enkelkleurig poldergroen.
 - Verdienprincipe: wat geld oplevert (producten, mandje, afrekenen, zakelijke aanvraag) zo hoog mogelijk op de pagina, bestellen in zo min mogelijk klikken. B2C koopt online, B2B vraagt een offerte aan; meng die twee routes niet.
 
+## Merkidee, doelgroep en kanalen
+Bron: `C:\Users\hrski\OneDrive\Documenten\Zakelijk\BUYT\Inspiratie website\BUYT-merkidee-doelgroep-en-kanalen.pdf` (strategisch voorstel, 3 pagina's).
+- **Idee:** wilde gans uit de Noord-Hollandse polder krijgt een plek aan tafel. Een onbekend product dat je kunt ontdekken via herkenbare producten en gerechten. Smaak opent de deur, transparantie en zorg geven vertrouwen. Belofte: bijzonder vlees, dichtbij en begrijpelijk.
+- **Doelgroep:** de bewuste vleeseter. Eet vlees, wil weten waar het vandaan komt, heeft ruimte om anders te kiezen en betaalt meer voor kwaliteit en duidelijke herkomst. Remmers: onbekende smaak, bereiding en prijs. Dus: proeven, herkenbare producten (burger, shoarma, pastrami), behapbare porties, een heldere prijs per maaltijd en een eenvoudig recept. Premium, maar toegankelijk.
+- **Golden Circle (volgorde in het merkverhaal: eerst waarom):** WHY waarde geven aan wat de polder biedt, met respect voor dier, natuur en de mensen in de keten. HOW herkomst, zorg en smaak: educatie, samenwerken met jagers en wildverwerkers, de route van polder naar bord inzichtelijk maken, laten proeven, bereidingstips. WHAT producten van wilde gans voor thuis en horeca, plus recepten, proeverijen, diners, interviews en een mini-docu. Bij een eerste proefmoment mag smaak de opening zijn.
+- **Kanalen:** verkoop (horeca, consumenten via de eigen website, marktverkoop), eigen media (social voor nieuwsgierigheid, website voor verdieping en houvast; elk bericht krijgt één concrete vervolgstap) en beleving (diners, interviews, mini-docu, bijvoorbeeld met Daan van der Lecq).
+- **Route:** ontdekken via verhalen en educatie, dan vertrouwen door herkomst, proeven, kopen, opnieuw kiezen.
+- De PDF noemt ganzenburgers; op de site staan nu alleen de 5 producten uit PRODUCT.md. Gebruik de PDF voor toon en richting, niet als productlijst.
+
 ## Waar staat wat
 | Onderwerp | Plek |
 |---|---|
