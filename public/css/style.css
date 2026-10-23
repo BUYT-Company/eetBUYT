@@ -1746,7 +1746,7 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 
 .zb-venue .choice__img[src*="zakelijk-bars"] { object-position: 48% 50%; }
 
-.zb-venue .choice__img[src*="zakelijk-evenementen"] { object-position: left center; }
+.zb-venue .choice__img[src*="zakelijk-evenementen"] { object-position: center 40%; }
 
 
 /* Wachtlijst (winkel dicht). Wat bij open of dicht hoort, wisselt op de class van <html> die js/shop-gate.js zet.
