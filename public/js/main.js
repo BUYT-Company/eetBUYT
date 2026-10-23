@@ -467,16 +467,23 @@
     let done = false;
     try {
       const data = Object.fromEntries(new FormData(form));
-      const res = await fetch('/api/newsletter', {
+      /* Het formulier in de hero (alleen zichtbaar bij dichte winkel) meldt aan voor de wachtlijst, met thuis/zakelijk en het nieuwsbriefvakje. Nieuwsbriefblok en pop-up zijn altijd gewoon de nieuwsbrief. */
+      const waitlist = form.name === 'wachtlijst';
+      const payload = { email: data.email, 'bot-field': data['bot-field'], turnstile: data['cf-turnstile-response'] };
+      if (waitlist) {
+        payload.segment = data.segment === 'zakelijk' ? 'zakelijk' : 'particulier';
+        payload.newsletter = Boolean(form.elements.newsletter && form.elements.newsletter.checked);
+      }
+      const res = await fetch(waitlist ? '/api/waitlist' : '/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, turnstile: data['cf-turnstile-response'] })
+        body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error(String(res.status));
       form.reset();
       ok.hidden = false;
       rememberNews('ingeschreven');
-      if (window.buytTrack) window.buytTrack('sign_up', { method: 'nieuwsbrief' });
+      if (window.buytTrack) window.buytTrack('sign_up', { method: waitlist ? 'wachtlijst' : 'nieuwsbrief' });
       done = true;
     } catch (_) {
       err.hidden = false;
@@ -485,6 +492,15 @@
     if (window.turnstile && widget) window.turnstile.reset(widget);
     return done;
   };
+
+  /* Wachtlijst in de hero (alleen zichtbaar zolang de winkel dicht is) */
+  const wait = $('form[name="wachtlijst"]');
+  if (wait) {
+    wait.addEventListener('submit', (e) => {
+      e.preventDefault();
+      subscribe(wait, $('.form__msg--ok', wait), $('.form__msg--err', wait), $('.cf-turnstile', wait));
+    });
+  }
 
   const news = $('form[name="nieuwsbrief"]');
   if (news) {

@@ -14,9 +14,9 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=8">
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261023c">
   <script>document.documentElement.classList.add('js')</script>
-  <script src="js/shop-gate.js"></script>
+  <script src="js/shop-gate.js?v=20261023c"></script>
   <script src="js/consent.js?v=2" defer></script>
   <script src="js/cart.js" defer></script>
   <script src="js/brand.js?v=2" defer></script>
@@ -34,14 +34,14 @@
         <span class="brand__name">BUYT</span>
       </a>
       <nav id="nav" class="nav" aria-label="Hoofdmenu">
-        <a href="index.html#producten">Producten</a>
+        <a class="only-open" href="index.html#producten">Producten</a>
         <a href="index.html#zakelijk">Zakelijk</a>
         <a href="verhaal.html">Ons verhaal</a>
         <a href="index.html#vragen">Contact</a>
-        <a class="btn btn--primary btn--sm nav__cta" href="index.html#producten"><span class="btn__label">Bestel nu</span></a>
+        <a class="btn btn--primary btn--sm nav__cta only-open" href="index.html#producten"><span class="btn__label">Bestel nu</span></a>
       </nav>
       <div class="header__tools">
-        <a class="cart-btn" href="afrekenen.html" aria-label="Winkelmandje, leeg">
+        <a class="cart-btn only-open" href="afrekenen.html" aria-label="Winkelmandje, leeg">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
           <span class="cart-btn__count" data-cart-count hidden>0</span>
         </a>
@@ -113,8 +113,8 @@
       <nav class="footer__col" aria-label="Shop">
         <p class="footer__head">Shop</p>
         <ul>
-          <li><a href="index.html#producten">Producten</a></li>
-          <li><a href="afrekenen.html">Winkelmandje</a></li>
+          <li class="only-open"><a href="index.html#producten">Producten</a></li>
+          <li class="only-open"><a href="afrekenen.html">Winkelmandje</a></li>
           <li><a href="index.html#faq">Veelgestelde vragen</a></li>
         </ul>
       </nav>

@@ -15,14 +15,14 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=8">
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261023c">
   <script>document.documentElement.classList.add('js')</script>
-  <script src="js/shop-gate.js"></script>
+  <script src="js/shop-gate.js?v=20261023c"></script>
   <script src="js/consent.js?v=2" defer></script>
   <script src="js/cart.js" defer></script>
   <script src="js/brand.js?v=2" defer></script>
   <script src="js/fade.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=20261023c" defer></script>
   <script src="js/header-hide.js" defer></script>
 </head>
 <body id="top">
@@ -56,14 +56,14 @@
         <span class="brand__name">BUYT</span>
       </a>
       <nav id="nav" class="nav" aria-label="Hoofdmenu">
-        <a href="index.html#producten">Producten</a>
+        <a class="only-open" href="index.html#producten">Producten</a>
         <a href="index.html#zakelijk">Zakelijk</a>
         <a href="verhaal.html">Ons verhaal</a>
         <a href="index.html#vragen">Contact</a>
-        <a class="btn btn--primary btn--sm nav__cta" href="index.html#producten"><span class="btn__label">Bestel nu</span></a>
+        <a class="btn btn--primary btn--sm nav__cta only-open" href="index.html#producten"><span class="btn__label">Bestel nu</span></a>
       </nav>
       <div class="header__tools">
-        <a class="cart-btn" href="afrekenen.html" aria-label="Winkelmandje, leeg">
+        <a class="cart-btn only-open" href="afrekenen.html" aria-label="Winkelmandje, leeg">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
           <span class="cart-btn__count" data-cart-count hidden>0</span>
         </a>
@@ -152,7 +152,7 @@
             <div class="step__body">
               <span class="step__num">01</span>
               <h3>Wild uit Nederland</h3>
-              <p>Elk jaar worden er ongeveer 330.000 ganzen geschoten. Het vlees is wild en van eigen bodem.</p>
+              <p>Elk jaar worden er ongeveer 330.000<sup class="fn" id="bron-1-ref"><a href="#bron-1" aria-label="Bron 1, onderaan de pagina">1</a></sup> ganzen geschoten. Het vlees is wild en van eigen bodem.</p>
             </div>
             <img class="step__art step__art--photo" src="assets/stap-wild-uit-nederland-1400.jpg" srcset="assets/stap-wild-uit-nederland-700.jpg 700w, assets/stap-wild-uit-nederland-1400.jpg 1400w" sizes="(min-width: 901px) 45vw, 90vw" alt="Wilde ganzen grazen in een weiland bij een Nederlands dorp" width="1400" height="933" loading="lazy" decoding="async">
           </li>
@@ -295,7 +295,7 @@
           </div>
           <div class="stat reveal">
             <svg class="stat__icon" viewBox="0 0 130 80" aria-hidden="true"><use href="#goose-fly"/></svg>
-            <p class="stat__num"><span data-count="330000">330.000</span></p>
+            <p class="stat__num"><span data-count="330000">330.000</span><sup class="fn" id="bron-1-ref-2"><a href="#bron-1" aria-label="Bron 1, onderaan de pagina">1</a></sup></p>
             <p class="stat__label">ganzen geschoten per jaar in Nederland</p>
           </div>
           <div class="stat reveal">
@@ -311,9 +311,20 @@
       <div class="wrap">
         <h2 id="cta-title" class="reveal">Kook je met <em>ons mee?</em></h2>
         <div class="story-cta__actions reveal">
-          <a class="btn btn--primary" href="index.html#producten"><span class="btn__label">Bestel nu</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
-          <a class="btn btn--dark" href="index.html#zakelijk"><span class="btn__label">Zakelijk bestellen</span></a>
+          <a class="btn btn--primary only-open" href="index.html#producten"><span class="btn__label">Bestel nu</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--dark only-open" href="index.html#zakelijk"><span class="btn__label">Zakelijk bestellen</span></a>
+          <!-- Winkel dicht: wachtlijst in plaats van bestellen (wisselt vanzelf met SALES_OPEN, zie shop-gate.js) -->
+          <a class="btn btn--primary only-closed" href="index.html#wachtlijst"><span class="btn__label">Zet me op de wachtlijst</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn--dark only-closed" href="index.html#wachtlijst"><span class="btn__label">Zakelijk op de wachtlijst</span></a>
         </div>
+      </div>
+    </section>
+    <section class="sources" id="bronnen" aria-labelledby="sources-title">
+      <div class="wrap">
+        <h2 id="sources-title" class="sources__title">Bronnen</h2>
+        <ol class="sources__list">
+          <li id="bron-1"><a href="assets/bronnen/Factsheet-Schade-door-ganzen-in-landelijk-gebied-Dierenbescherming-feb-24.pdf" target="_blank" rel="noopener">Dierenbescherming, factsheet <em>Schade door ganzen in landelijk gebied</em>, februari 2024 (pdf)</a>: in Nederland worden jaarlijks meer dan 330.000 ganzen geschoten. <a class="sources__back" href="#bron-1-ref" aria-label="Terug naar de tekst">&uarr;</a></li>
+        </ol>
       </div>
     </section>
   </main>
@@ -338,8 +349,8 @@
       <nav class="footer__col" aria-label="Shop">
         <p class="footer__head">Shop</p>
         <ul>
-          <li><a href="index.html#producten">Producten</a></li>
-          <li><a href="afrekenen.html">Winkelmandje</a></li>
+          <li class="only-open"><a href="index.html#producten">Producten</a></li>
+          <li class="only-open"><a href="afrekenen.html">Winkelmandje</a></li>
           <li><a href="index.html#faq">Veelgestelde vragen</a></li>
         </ul>
       </nav>

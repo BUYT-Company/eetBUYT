@@ -1745,3 +1745,65 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .zb-venue .choice__img[src*="zakelijk-bars"] { object-position: 48% 50%; }
 
 .zb-venue .choice__img[src*="zakelijk-evenementen"] { object-position: left center; }
+
+
+/* Wachtlijst (winkel dicht). Wat bij open of dicht hoort, wisselt op de class van <html> die js/shop-gate.js zet.
+   only-closed = alleen zichtbaar zolang de winkel dicht is (wachtlijst); only-open = alleen zodra de winkel open is (bestellen). */
+html.shop-open .only-closed { display: none !important; }
+html:not(.shop-open) .only-open { display: none !important; }
+
+/* Wachtlijstpaneel in de hero: roomkleurig paneel op de groene illustratie, zoals de andere panelen op de site */
+.waitlist { display: grid; gap: 16px; width: min(100%, 520px); padding: clamp(20px, 3vw, 30px); background: var(--cream); color: var(--ink); border-radius: var(--panel-radius, 28px); box-shadow: 0 2px 6px rgba(18, 51, 38, .1), 0 24px 56px rgba(18, 51, 38, .28); }
+.waitlist__title { margin: 0; font: 800 clamp(1.7rem, 3vw, 2.3rem)/1.05 var(--font-display); letter-spacing: -.04em; color: var(--ink); }
+.hero .waitlist em { color: var(--green); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q12.5 1 25 6T50 6T75 6T100 6' fill='none' stroke='%23FF6652' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .2em; }
+.waitlist__seg { display: inline-flex; gap: 4px; justify-self: start; margin: 0; padding: 4px; border: 0; border-radius: 999px; background: rgba(18, 51, 38, .09); }
+.waitlist__seg label { position: relative; cursor: pointer; }
+.waitlist__seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.waitlist__seg span { display: block; padding: .55rem 1.2rem; border-radius: 999px; font: 700 .95rem/1.2 var(--font-body); color: var(--ink); transition: background-color .2s ease, color .2s ease; }
+.waitlist__seg input:checked + span { background: var(--ink); color: var(--cream); }
+.waitlist__seg input:focus-visible + span { outline: 3px solid var(--coral); outline-offset: 2px; }
+.waitlist__row { display: flex; align-items: center; gap: 8px; padding: 5px 5px 5px 20px; background: #fff; border: 2.5px solid var(--ink); border-radius: 999px; box-shadow: 5px 5px 0 var(--ink); transition: box-shadow .25s ease; }
+.waitlist__row:focus-within { box-shadow: 5px 5px 0 var(--coral); }
+.waitlist__row input { flex: 1; min-width: 0; border: 0; background: transparent; font: 600 1.02rem var(--font-body); color: var(--ink); padding: .6rem 0; outline: none; }
+.waitlist__row input::placeholder { color: var(--muted); }
+.waitlist__row .btn { flex: none; }
+.waitlist__row .btn__label { padding: .9rem 1.4rem; font-size: .98rem; white-space: nowrap; }
+.waitlist__check { display: flex; align-items: center; gap: 10px; cursor: pointer; font: 600 .95rem/1.3 var(--font-body); color: var(--ink); }
+.waitlist__check input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: var(--green); cursor: pointer; }
+.waitlist__privacy { margin: 0; font-size: .85rem; line-height: 1.5; color: var(--muted); }
+.waitlist__privacy a { color: var(--ink); text-underline-offset: 3px; }
+.waitlist .form__msg { margin: 0; }
+
+/* Voetnoot: een klein rond label naast het cijfer, geel (limoen) bij hover of focus */
+.fn { font-size: 1rem; line-height: 0; vertical-align: baseline; }
+.fn a { display: inline-flex; align-items: center; justify-content: center; min-width: 1.35rem; height: 1.35rem; margin-left: .25em; padding: 0 .3em; border-radius: 999px; background: color-mix(in srgb, currentColor 18%, transparent); color: inherit; font: 700 .72rem/1 var(--font-body); letter-spacing: 0; text-decoration: none; vertical-align: .6em; transition: background-color .2s ease, color .2s ease, transform .3s var(--ease-out); }
+.fn a:hover, .fn a:focus-visible { background: var(--lime); color: var(--ink); transform: scale(1.12); }
+.fn:target a { background: var(--lime); color: var(--ink); }
+
+/* Bronnenblok onderaan: gewoon zwarte (diepgroene) tekst, zonder gekleurde woorden of golflijn */
+.sources { padding-block: clamp(32px, 5vw, 56px) clamp(40px, 6vw, 72px); }
+.sources__title { margin: 0 0 .6rem; font: 700 .85rem/1.2 var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.sources__list { margin: 0; padding-left: 1.3em; font-size: .95rem; line-height: 1.6; color: var(--ink); max-width: 70ch; }
+.sources__list li { padding-left: .3em; scroll-margin-top: 90px; border-radius: 8px; transition: background-color .3s ease; }
+.sources__list li:target { background: var(--lime); box-shadow: 0 0 0 .4em var(--lime); }
+.sources__list a { color: var(--ink); text-underline-offset: 3px; }
+.sources__list em { color: inherit; background: none; padding: 0; font-style: normal; }
+.sources__back { margin-left: .4em; text-decoration: none; font-weight: 700; }
+
+@media (max-width: 720px) {
+  .waitlist__row { padding-left: 16px; }
+  .waitlist__row input { font-size: .95rem; }
+  .waitlist__row .btn__label { padding: .8rem 1rem; font-size: .9rem; }
+}
+
+/* Verfijning wachtlijstpaneel, voetnoot en ruimte onder de hero */
+.waitlist { box-sizing: border-box; grid-template-columns: minmax(0, 1fr); }
+.waitlist__row { min-width: 0; margin-right: 5px; }
+.waitlist__privacy { max-width: none; overflow-wrap: break-word; }
+.hero .waitlist em { background-image: none; padding-bottom: 0; }
+.fn a { min-width: 0; height: auto; margin-left: .12em; padding: .1em .22em; border-radius: 6px; background: none; font: 700 .6em/1 var(--font-body); vertical-align: .85em; }
+.fn a:hover, .fn a:focus-visible { background: var(--lime); color: var(--ink); transform: none; }
+.fn:target a { background: none; }
+.hero ~ .choose { margin-top: clamp(72px, 9vw, 130px); }
+.fn { font-size: inherit; }
+.fn a { font-size: .7em; vertical-align: .75em; }

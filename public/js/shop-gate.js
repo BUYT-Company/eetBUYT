@@ -8,6 +8,17 @@
   const root = document.documentElement;
   const KEY = 'buyt-shop';
   const local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  /* Lokaal: ?winkel=dicht toont de dichte winkel op alle pagina's van dit tabblad, ?winkel=open zet dat weer uit */
+  const FORCE = 'buyt-local-closed';
+  const forced = () => {
+    if (!local) return false;
+    try {
+      if (/[?&]winkel=dicht/.test(location.search)) sessionStorage.setItem(FORCE, '1');
+      if (/[?&]winkel=open/.test(location.search)) sessionStorage.removeItem(FORCE);
+      return sessionStorage.getItem(FORCE) === '1';
+    } catch (_) { return /[?&]winkel=dicht/.test(location.search); }
+  };
+  const forcedClosed = forced();
 
   const remember = (v) => { try { sessionStorage.setItem(KEY, v); } catch (_) {} };
   const recall = () => { try { return sessionStorage.getItem(KEY); } catch (_) { return null; } };
@@ -53,7 +64,7 @@
   if (document.body) setupDismiss(); else document.addEventListener('DOMContentLoaded', setupDismiss);
 
   /* Laatst bekende stand alvast toepassen (alleen weergave, de server beslist) */
-  const cached = recall();
+  const cached = forcedClosed ? 'closed' : recall();
   if (cached) apply(cached); else apply('closed');
 
   fetch('/api/shop-status', { cache: 'no-store', credentials: 'same-origin' })
@@ -65,7 +76,7 @@
     })
     .catch(() => {
       /* Lokaal (python-server zonder Worker) gewoon open om aan te kunnen werken; anders dicht */
-      const state = local ? 'open' : 'closed';
+      const state = local && !forcedClosed ? 'open' : 'closed';
       remember(state);
       apply(state);
     });

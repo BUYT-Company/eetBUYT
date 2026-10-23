@@ -3,6 +3,7 @@
 import baseCatalog from '../public/data/products.json';
 import { currentCatalog } from './lib/sheetPrices.js';
 import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/validate.js';
+import { validateWaitlist } from './lib/waitlist.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
 import { notifyOwner } from './lib/notify.js';
@@ -187,6 +188,68 @@ async function handleNewsletter(request, env) {
   return json(200, { ok: true });
 }
 
+// Wachtlijst: een e-mailadres (en thuis of zakelijk) in waitlist_signups. Staat het nieuwsbriefvakje aan, dan komt het adres
+// ook in newsletter_signups (source 'wachtlijst'). Een zakelijke aanmelding komt ook binnen als zakelijke aanvraag.
+async function handleWaitlist(request, env, ctx) {
+  const body = await readBody(request);
+  if (body.tooLarge || body.bad || !body.data || typeof body.data !== 'object') return error(400, 'invalid_input');
+  const data = body.data;
+
+  if (data['bot-field']) return error(400, 'invalid_input');
+  if (!(await verifyTurnstile(env, turnstileToken(data), request.headers.get('CF-Connecting-IP')))) {
+    return error(400, 'turnstile_failed');
+  }
+
+  const checked = validateWaitlist(data);
+  if (!checked.ok) return error(400, 'invalid_input');
+  const { email, segment, newsletter } = checked.value;
+
+  let isNew = true;
+  try {
+    await insert(env, 'waitlist_signups', { email, segment, newsletter });
+  } catch (e) {
+    // 409 = dit adres stond er al in: voor de bezoeker is dat hetzelfde als net aangemeld.
+    if (e instanceof SupabaseError && e.status === 409) isNew = false;
+    else {
+      console.error('waitlist_failed', e instanceof SupabaseError ? e.status : 'unknown');
+      return error(500, 'server_error');
+    }
+  }
+
+  if (newsletter) {
+    try {
+      await insert(env, 'newsletter_signups', { email, source: 'wachtlijst' });
+    } catch (e) {
+      if (!(e instanceof SupabaseError && e.status === 409)) console.error('waitlist_newsletter_failed', e instanceof SupabaseError ? e.status : 'unknown');
+    }
+  }
+
+  if (isNew && segment === 'zakelijk') {
+    try {
+      await insert(env, 'business_requests', {
+        name: 'Wachtlijst (zakelijk)',
+        email,
+        type: 'zakelijk',
+        message: 'Aangemeld via de wachtlijst op de homepage. Geen bericht.'
+      });
+    } catch (e) {
+      console.error('waitlist_business_failed', e instanceof SupabaseError ? e.status : 'unknown');
+    }
+  }
+
+  if (isNew) {
+    ctx.waitUntil(notifyOwner(env, {
+      title: segment === 'zakelijk' ? 'Wachtlijst: zakelijk' : 'Wachtlijst: nieuwe aanmelding',
+      // Geen e-mailadres in de melding (dataminimalisatie).
+      message: segment === 'zakelijk' ? 'Nieuwe zakelijke aanmelding op de wachtlijst' : 'Nieuwe aanmelding op de wachtlijst',
+      url: SUPABASE_DASHBOARD_URL,
+      urlTitle: 'Bekijk in Supabase'
+    }));
+  }
+
+  return json(200, { ok: true });
+}
+
 // Openbare, alleen-lezen lijst met de eerstvolgende boekbare bezorgmomenten en hun vrije plekken.
 // Geen persoonsgegevens, dus geen Turnstile/honeypot nodig voor dit ene, informatieve endpoint.
 async function handleDeliverySlots(request, env) {
@@ -235,6 +298,7 @@ const routes = {
   '/api/order': { POST: handleOrder },
   '/api/request': { POST: handleRequest },
   '/api/newsletter': { POST: handleNewsletter },
+  '/api/waitlist': { POST: handleWaitlist },
   '/api/delivery-slots': { GET: handleDeliverySlots },
   '/api/shop-status': { GET: handleShopStatus }
 };
