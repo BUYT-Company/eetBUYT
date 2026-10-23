@@ -8,7 +8,7 @@ BUYT brengt de wilde gans terug op het bord ("van polder naar bord"). De site ve
 ## Harde regels
 1. **Nooit zelf committen of pushen.** Vraag eerst en wacht op een duidelijk ja. Een eerder ja geldt niet voor latere wijzigingen. Pushes naar `cloudflare-supabase` gaan direct live.
 2. **Alleen waar is.** Gebruik op de site alleen feiten uit "Bevestigde feiten" in PRODUCT.md. Verzin geen testimonials, cijfers, leverbeloftes of recensies. Open beslissingen blijven zichtbaar open in de bron.
-3. **Cijfers over ganzen:** alleen citeerbare cijfers met bron (>330.000 geschoten per jaar, Dierenbescherming feb. 2024). Op de site staat geen percentage voor onbenut vlees: gebruik daar "het overgrote deel" (besluit eigenaar, 21 okt 2026). "~70%" is alleen een eigen berekening. **Nooit "95%" of "80%".** Zie het bronnenoverzicht hieronder.
+3. **Cijfers over ganzen:** alleen citeerbare cijfers met bron (>330.000 geschoten per jaar, Dierenbescherming feb. 2024). Op de site staat geen percentage voor onbenut vlees: gebruik daar "een te groot deel" (besluit eigenaar, 23 okt 2026; eerder "het overgrote deel"). "~70%" is alleen een eigen berekening. **Nooit "95%" of "80%".** Zie het bronnenoverzicht hieronder.
 4. **Geen geheimen in bestanden of chat.** Sleutels en secrets staan in Cloudflare (Workers & Pages, buyt-website, Settings, Variables and Secrets). De repository is openbaar: `intern/verwerkingsregister.xlsx` staat bewust niet in git.
 5. **Geen wapens, bloed of jachtbeeld** op de site. De gans die geschoten is, wordt feitelijk benoemd waar relevant.
 6. **Winkel staat bewust dicht** (`SALES_OPEN: "false"` in `wrangler.jsonc`). Pas openzetten als de eigenaar dat zegt, en dan volgens [docs/verkoop-openzetten.md](docs/verkoop-openzetten.md).
