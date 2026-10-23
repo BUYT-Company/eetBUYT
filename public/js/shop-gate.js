@@ -27,26 +27,45 @@
     document.querySelectorAll('[data-shop-body]').forEach((el) => { el.inert = locked; });
   };
 
-  const apply = (state) => {
+  /* Ontwikkelmodus: ingelogde beheerders zien de winkel ook als die dicht is. Met de knop rechtsonder wissel je tussen
+     wat zij zien (ontwikkelmodus) en wat bezoekers nu zien (klantweergave). De keuze blijft bewaard in deze browser. */
+  const VIEW = 'buyt-dev-view';
+  const customerView = () => { try { return localStorage.getItem(VIEW) === 'klant'; } catch (_) { return false; } };
+  const toggleView = () => {
+    try { if (customerView()) localStorage.removeItem(VIEW); else localStorage.setItem(VIEW, 'klant'); } catch (_) {}
+    location.reload();
+  };
+
+  /* real = wat de server meldt; de weergave voor een beheerder in klantweergave is 'closed'.
+     sync leest altijd de laatste stand: apply wordt eerst met de bewaarde stand en daarna met het antwoord van de server aangeroepen. */
+  let latest = { real: 'closed', state: 'closed' };
+  const sync = () => {
+    const { real, state } = latest;
     const open = state === 'open' || state === 'dev';
-    root.classList.toggle('shop-open', open);
-    root.classList.toggle('shop-dev', state === 'dev');
-    const sync = () => {
-      lockedBodies(!open);
-      const tag = document.querySelector('.shop-devtag');
-      if (state === 'dev' && !tag) {
-        const t = document.createElement('p');
-        t.className = 'shop-devtag';
-        t.textContent = 'Ontwikkelmodus: de winkel is dicht voor bezoekers';
-        document.body.appendChild(t);
-      } else if (state !== 'dev' && tag) tag.remove();
-    };
-    if (document.body) sync(); else document.addEventListener('DOMContentLoaded', sync);
+    lockedBodies(!open);
+    let tag = document.querySelector('.shop-devtag');
+    if (real === 'dev') {
+      if (!tag) {
+        tag = document.createElement('button');
+        tag.type = 'button';
+        tag.className = 'shop-devtag';
+        tag.addEventListener('click', toggleView);
+        document.body.appendChild(tag);
+      }
+      tag.textContent = state === 'dev' ? 'Ontwikkelmodus aan: klik voor klantweergave' : 'Klantweergave: klik voor ontwikkelmodus';
+      tag.title = state === 'dev' ? 'Nu zie je de winkel zoals hij open is. Klik om te zien wat bezoekers zien.' : 'Nu zie je wat bezoekers zien. Klik om de ontwikkelmodus weer aan te zetten.';
+    } else if (tag) tag.remove();
     /* De afrekenpagina is voor bezoekers niet bereikbaar zolang de winkel dicht is */
-    if (!open) {
-      const guard = () => { if (document.querySelector('main.checkout')) location.replace('index.html#producten'); };
-      if (document.body) guard(); else document.addEventListener('DOMContentLoaded', guard);
-    }
+    if (!open && document.querySelector('main.checkout')) location.replace('index.html#producten');
+  };
+  if (!document.body) document.addEventListener('DOMContentLoaded', sync);
+
+  const apply = (real) => {
+    const state = real === 'dev' && customerView() ? 'closed' : real;
+    latest = { real, state };
+    root.classList.toggle('shop-open', state === 'open' || state === 'dev');
+    root.classList.toggle('shop-dev', state === 'dev');
+    if (document.body) sync();
   };
 
   /* Het bericht "Binnenkort bestellen mogelijk" is weg te klikken; de blur blijft zolang de winkel dicht is */
