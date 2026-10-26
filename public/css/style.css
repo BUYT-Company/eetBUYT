@@ -1848,3 +1848,10 @@ html:not(.shop-open) .only-open { display: none !important; }
 .hero .fn a:hover, .hero .fn a:focus-visible { background: none; color: var(--lime); }
 .hero .fn:target a { background: none; color: var(--lime); }
 @media (prefers-reduced-motion: reduce) { .hero .fn a { transition: none; } }
+
+/* Geen groene gloed over de hero-video: alleen een neutrale, donkere sluier waar de tekst staat, zodat die leesbaar blijft */
+.hero--illustration .hero__art::after { background: linear-gradient(90deg, rgba(0, 0, 0, .55) 0%, rgba(0, 0, 0, .38) 34%, rgba(0, 0, 0, .08) 60%, rgba(0, 0, 0, 0) 74%); }
+@media (max-width: 900px) {
+  .hero--illustration .hero__art::after, .hero--photo .hero__art::after { background: linear-gradient(0deg, rgba(0, 0, 0, .82) 0%, rgba(0, 0, 0, .66) 38%, rgba(0, 0, 0, .3) 66%, rgba(0, 0, 0, 0) 90%); }
+  .hero h1, .hero .lead { text-shadow: 0 1px 14px rgba(0, 0, 0, .45); }
+}
