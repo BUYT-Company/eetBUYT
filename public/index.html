@@ -20,8 +20,8 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=8">
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/hero-a.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/style.css?v=20261023g">
+  <link rel="preload" href="assets/hero-video-poster.webp" as="image" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="css/style.css?v=20261026e">
   <script>
     (function () {
       var d = document.documentElement;
@@ -114,12 +114,17 @@
               "Grauwe ganzen grazen op een dijk naast een sloot in het Nederlandse polderlandschap";
            3. pas de <link rel="preload"> in de <head> aan naar assets/hero-b.webp. -->
       <div class="hero__art">
-        <img src="assets/hero-a.webp" alt="Illustratie van een Nederlands polderlandschap met een sloot en grauwe ganzen die grazen" width="1672" height="941" fetchpriority="high" decoding="async">
+        <!-- Achtergrondvideo (stil, in een lus). De poster is ook de terugval bij weinig beweging of een trage verbinding; de oude illustratie staat nog in assets/hero-a.webp. -->
+        <img src="assets/hero-video-poster.webp" alt="" width="1672" height="941" fetchpriority="high" decoding="async">
+        <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="assets/hero-video-poster.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+          <source src="assets/hero-video.webm" type="video/webm">
+          <source src="assets/hero-video.mp4" type="video/mp4">
+        </video>
       </div>
       <div class="wrap hero__inner">
         <div class="hero__copy">
           <h1 id="hero-title" data-split>Kook je met <em>ons mee?</em></h1>
-          <p class="lead" data-in style="--d:1">In Nederland worden elk jaar 330.000<sup class="fn" id="bron-1-ref"><a href="#bron-1" aria-label="Bron 1, onderaan de pagina">1</a></sup> ganzen geschoten, om schade en overlast bij boeren te voorkomen. Van al die ganzen blijft een te groot deel onbenut. BUYT brengt de gans op het bord. <a class="lead__more" href="verhaal.html">Lees meer</a></p>
+          <p class="lead" data-in style="--d:1">In Nederland worden elk jaar 330.000<sup class="fn" id="bron-1-ref"><a href="#bron-1" aria-label="Bron 1, onderaan de pagina">1</a></sup> ganzen geschoten, om schade en overlast bij boeren te voorkomen. Van al die ganzen blijft een te groot deel onbenut. BUYT brengt de gans op het bord. <a class="lead__more" href="verhaal.html">Lees meer<span class="lead__arrow" aria-hidden="true">&rarr;</span></a></p>
           <!-- Wachtlijst (winkel dicht): zodra SALES_OPEN op "true" staat, verdwijnt dit formulier en komen de bestelknoppen terug (class only-closed / only-open, zie shop-gate.js). -->
           <form class="waitlist only-closed" id="wachtlijst" name="wachtlijst" method="POST" action="/api/waitlist" data-in style="--d:2">
             <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>

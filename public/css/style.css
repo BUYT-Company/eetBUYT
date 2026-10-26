@@ -210,6 +210,8 @@ em {
 .hero { position: relative; margin-inline: var(--inset); border-radius: var(--panel-radius); background: var(--green); color: var(--cream); min-height: clamp(600px, 84vh, 820px); display: flex; align-items: flex-start; overflow: hidden; }
 .hero__art { position: absolute; inset: 0; }
 .hero__art img { width: 100%; height: 100%; object-fit: cover; }
+.hero__art .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+@media (prefers-reduced-motion: reduce) { .hero__art .hero__video { display: none; } }
 /* Twee varianten voor de hero-afbeelding: .hero--illustration (nu actief) en .hero--photo (zie de opmerking bij de hero in index.html) */
 .hero--illustration .hero__art img { object-position: 60% 100%; }
 /* Lead en knoppen vallen over het heldere grasland: een donkergroene sluier links houdt ze leesbaar */
@@ -1811,3 +1813,38 @@ html:not(.shop-open) .only-open { display: none !important; }
 .fn a { font-size: .7em; vertical-align: .75em; }
 
 .waitlist__lead { margin: -6px 0 0; font-size: 1rem; line-height: 1.5; color: var(--muted); max-width: 40ch; text-wrap: pretty; }
+
+/* Hero op mobiel en tablet: de video vult het hele paneel (geen groen blok boven een afbeelding), de tekst staat onderin op een donkergroene verloopsluier */
+@media (max-width: 900px) {
+  .hero { margin-inline: 0; border-radius: 0 0 var(--panel-radius) var(--panel-radius); flex-direction: column; justify-content: flex-end; min-height: max(560px, calc(100svh - var(--header-h))); }
+  .hero__art { position: absolute; inset: 0; order: 0; height: auto; width: auto; align-self: auto; -webkit-mask-image: none; mask-image: none; }
+  .hero__art .hero__video, .hero__art img { object-position: 58% 50%; }
+  /* Sluier: onderaan dicht genoeg voor de tekst, bovenaan loopt hij uit zodat het beeld te zien blijft */
+  .hero--illustration .hero__art::after, .hero--photo .hero__art::after { display: block; content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(0deg, rgba(10, 42, 29, .92) 0%, rgba(10, 42, 29, .84) 38%, rgba(10, 42, 29, .5) 66%, rgba(10, 42, 29, .12) 88%, rgba(10, 42, 29, 0) 100%),
+      linear-gradient(180deg, rgba(10, 42, 29, .28) 0%, rgba(10, 42, 29, 0) 22%); }
+  .hero__inner { width: 100%; padding-top: clamp(150px, 34vh, 300px); padding-bottom: clamp(24px, 4vw, 40px); }
+  .hero__copy { max-width: 36rem; }
+  .hero h1, .hero .lead { text-shadow: 0 1px 14px rgba(10, 42, 29, .55); }
+}
+@media (min-width: 721px) and (max-width: 900px) {
+  .hero h1 { font-size: clamp(3.4rem, 9vw, 4.6rem); }
+  .hero .lead { font-size: 1.2rem; }
+}
+
+/* "Lees meer" in de hero: tekstlink met pijl, zonder rand; bij hover loopt een lijntje van links naar rechts, zoals in de navigatiebalk */
+.hero .lead .lead__more { position: relative; display: inline-flex; align-items: baseline; gap: .35em; margin: 0 0 0 .2em; padding: 0 0 2px; border: 0; border-radius: 0; background: none; translate: none; color: var(--lime); font-weight: 600; font-size: 1em; line-height: inherit; vertical-align: baseline; }
+.hero .lead .lead__more::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
+.hero .lead .lead__more:hover::after, .hero .lead .lead__more:focus-visible::after { transform: scaleX(1); }
+.hero .lead .lead__more:hover, .hero .lead .lead__more:focus-visible { translate: none; background: none; color: var(--lime); }
+.hero .lead .lead__more:active { translate: none; }
+.lead__arrow { display: inline-block; font-weight: 700; transition: transform .25s var(--ease-out); }
+.hero .lead .lead__more:hover .lead__arrow, .hero .lead .lead__more:focus-visible .lead__arrow { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .hero .lead .lead__more::after, .lead__arrow { transition: none; } }
+
+/* Voetnootcijfer in de hero: bij hover alleen het cijfer van room naar limoen, geen blok eromheen */
+.hero .fn a { transition: color .2s ease; }
+.hero .fn a:hover, .hero .fn a:focus-visible { background: none; color: var(--lime); }
+.hero .fn:target a { background: none; color: var(--lime); }
+@media (prefers-reduced-motion: reduce) { .hero .fn a { transition: none; } }
