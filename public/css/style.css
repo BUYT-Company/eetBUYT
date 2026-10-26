@@ -1855,3 +1855,37 @@ html:not(.shop-open) .only-open { display: none !important; }
   .hero--illustration .hero__art::after, .hero--photo .hero__art::after { background: linear-gradient(0deg, rgba(0, 0, 0, .82) 0%, rgba(0, 0, 0, .66) 38%, rgba(0, 0, 0, .3) 66%, rgba(0, 0, 0, 0) 90%); }
   .hero h1, .hero .lead { text-shadow: 0 1px 14px rgba(0, 0, 0, .45); }
 }
+
+/* Wachtlijst onder de hero: poldergroen paneel over de breedte van de content (stond eerst als roomkleurig blok in de hero) */
+.waitband { padding-block: 0 clamp(40px, 6vw, 72px); }
+.waitband .waitlist { width: 100%; max-width: none; gap: clamp(20px, 3vw, 36px); padding: clamp(24px, 4vw, 48px); background: var(--green); color: var(--cream); box-shadow: none; }
+.waitlist__intro, .waitlist__fields { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.waitband .waitlist__title { color: var(--cream); font-size: clamp(2rem, 4.4vw, 3.4rem); }
+.waitband .waitlist em { color: var(--lime); background: none; padding: 0; }
+.waitband .waitlist__lead { color: var(--cream); max-width: 34ch; }
+.waitband .waitlist__seg { background: rgba(255, 248, 232, .16); }
+.waitband .waitlist__seg span { color: var(--cream); }
+.waitband .waitlist__seg input:checked + span { background: var(--cream); color: var(--ink); }
+.waitband .waitlist__seg input:focus-visible + span { outline-color: var(--lime); }
+.waitband .waitlist__row { box-shadow: none; border-color: var(--cream); }
+.waitband .waitlist__row:focus-within { box-shadow: 0 0 0 3px var(--lime); }
+.waitband .waitlist__check { color: var(--cream); }
+.waitband .waitlist__check input { accent-color: var(--coral); }
+.waitband .waitlist__privacy { color: var(--cream); }
+.waitband .waitlist__privacy a { color: var(--cream); }
+.waitband .form__msg { color: var(--cream); }
+@media (min-width: 901px) {
+  .waitband .waitlist { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; column-gap: clamp(32px, 5vw, 72px); }
+}
+@media (max-width: 900px) {
+  .waitband { padding-top: 0; }
+  .hero { margin-bottom: clamp(20px, 4vw, 32px); }
+}
+.waitband .waitlist__title { text-wrap: balance; }
+@media (min-width: 560px) { .waitband .waitlist__title { white-space: nowrap; } }
+@media (max-width: 520px) {
+  .waitband .waitlist__row { flex-direction: column; align-items: stretch; gap: 4px; padding: 6px 6px 6px 18px; border-radius: 28px; margin-right: 0; }
+  .waitband .waitlist__row input { padding: .7rem 0; }
+  .waitband .waitlist__row .btn { margin-left: -12px; }
+  .waitband .waitlist__row .btn__label { justify-content: center; text-align: center; }
+}

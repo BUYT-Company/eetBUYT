@@ -21,7 +21,7 @@
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/hero-video-poster.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/style.css?v=20261026h">
+  <link rel="stylesheet" href="css/style.css?v=20261026k">
   <script>
     (function () {
       var d = document.documentElement;
@@ -126,31 +126,40 @@
           <h1 id="hero-title" data-split>Kook je met <em>ons mee?</em></h1>
           <p class="lead" data-in style="--d:1">In Nederland worden elk jaar 330.000<sup class="fn" id="bron-1-ref"><a href="#bron-1" aria-label="Bron 1, onderaan de pagina">1</a></sup> ganzen geschoten, om schade en overlast bij boeren te voorkomen. Van al die ganzen blijft een te groot deel onbenut. BUYT brengt de gans op het bord. <a class="lead__more" href="verhaal.html">Lees meer<span class="lead__arrow" aria-hidden="true">&rarr;</span></a></p>
           <!-- Wachtlijst (winkel dicht): zodra SALES_OPEN op "true" staat, verdwijnt dit formulier en komen de bestelknoppen terug (class only-closed / only-open, zie shop-gate.js). -->
-          <form class="waitlist only-closed" id="wachtlijst" name="wachtlijst" method="POST" action="/api/waitlist" data-in style="--d:2">
-            <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-            <p class="waitlist__title">Word <em>BUYT</em>-bewust</p>
-            <p class="waitlist__lead">Zet je op de wachtlijst en je krijgt de mogelijkheid om onze producten te bestellen zodra de webshop open is.</p>
-            <fieldset class="waitlist__seg">
-              <legend class="sr-only">Ik meld me aan als</legend>
-              <label><input type="radio" name="segment" value="particulier" checked><span>Thuiskok</span></label>
-              <label><input type="radio" name="segment" value="zakelijk"><span>Zakelijk</span></label>
-            </fieldset>
-            <div class="waitlist__row">
-              <label class="sr-only" for="f-wachtlijst">E-mailadres</label>
-              <input id="f-wachtlijst" name="email" type="email" placeholder="Jouw e-mailadres" autocomplete="email" required>
-              <button class="btn btn--primary" type="submit"><span class="btn__label">Zet me op de wachtlijst</span></button>
-            </div>
-            <label class="waitlist__check"><input type="checkbox" name="newsletter"><span>Stuur me ook de nieuwsbrief</span></label>
-            <p class="waitlist__privacy">We gebruiken je e-mailadres alleen om je te mailen zodra de webshop open is, en voor de nieuwsbrief als je dat vakje aanvinkt. Lees de <a href="privacy.html">privacyverklaring</a>.</p>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl" data-appearance="interaction-only"></div>
-            <p class="form__msg form__msg--ok" role="status" hidden>Je staat op de lijst. We mailen je zodra je kunt bestellen.</p>
-            <p class="form__msg form__msg--err" role="alert" hidden>Je aanmelding is niet gelukt. Probeer het later opnieuw.</p>
-          </form>
           <div class="hero__actions only-open" data-in style="--d:2">
             <a class="btn btn--primary" href="#producten"><span class="btn__label">Bestel nu</span><span class="btn__arrow" aria-hidden="true"><span class="gate-arrow">&rarr;</span><svg class="gate-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></a>
             <a class="btn btn--outline" href="#zakelijk"><span class="btn__label">Zakelijk bestellen</span></a>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="waitband only-closed" aria-label="Wachtlijst">
+      <div class="wrap">
+      <form class="waitlist" id="wachtlijst" name="wachtlijst" method="POST" action="/api/waitlist" data-in style="--d:2">
+        <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="waitlist__intro">
+        <p class="waitlist__title">Word <em>BUYT</em>-bewust</p>
+        <p class="waitlist__lead">Zet je op de wachtlijst en je krijgt de mogelijkheid om onze producten te bestellen zodra de webshop open is.</p>
+        <fieldset class="waitlist__seg">
+          <legend class="sr-only">Ik meld me aan als</legend>
+          <label><input type="radio" name="segment" value="particulier" checked><span>Thuiskok</span></label>
+          <label><input type="radio" name="segment" value="zakelijk"><span>Zakelijk</span></label>
+        </fieldset>
+        </div>
+        <div class="waitlist__fields">
+        <div class="waitlist__row">
+          <label class="sr-only" for="f-wachtlijst">E-mailadres</label>
+          <input id="f-wachtlijst" name="email" type="email" placeholder="Jouw e-mailadres" autocomplete="email" required>
+          <button class="btn btn--primary" type="submit"><span class="btn__label">Zet me op de wachtlijst</span></button>
+        </div>
+        <label class="waitlist__check"><input type="checkbox" name="newsletter"><span>Stuur me ook de nieuwsbrief</span></label>
+        <p class="waitlist__privacy">We gebruiken je e-mailadres alleen om je te mailen zodra de webshop open is, en voor de nieuwsbrief als je dat vakje aanvinkt. Lees de <a href="privacy.html">privacyverklaring</a>.</p>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDeT2-O8JOwUgcN" data-language="nl" data-appearance="interaction-only"></div>
+        <p class="form__msg form__msg--ok" role="status" hidden>Je staat op de lijst. We mailen je zodra je kunt bestellen.</p>
+        <p class="form__msg form__msg--err" role="alert" hidden>Je aanmelding is niet gelukt. Probeer het later opnieuw.</p>
+        </div>
+      </form>
       </div>
     </section>
 
