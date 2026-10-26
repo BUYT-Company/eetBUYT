@@ -1900,3 +1900,7 @@ html:not(.shop-open) .only-open { display: none !important; }
   .hero__inner { padding-top: clamp(28px, 6vw, 56px); padding-bottom: clamp(24px, 4vw, 40px); }
   .hero--illustration .hero__art::after, .hero--photo .hero__art::after { background: linear-gradient(180deg, rgba(0, 0, 0, .82) 0%, rgba(0, 0, 0, .68) 34%, rgba(0, 0, 0, .3) 62%, rgba(0, 0, 0, 0) 85%); }
 }
+
+/* Geen sluier meer over de hero-video op welk formaat dan ook; een zachte tekstschaduw houdt de tekst leesbaar */
+.hero--illustration .hero__art::after, .hero--photo .hero__art::after { background: none !important; }
+.hero h1, .hero .lead { text-shadow: 0 1px 3px rgba(0, 0, 0, .35), 0 2px 22px rgba(0, 0, 0, .5); }
