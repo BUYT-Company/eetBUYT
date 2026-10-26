@@ -43,6 +43,20 @@ async function get(env, path, query) {
   return parsed;
 }
 
+// Past rijen aan (query is een PostgREST-filter, bijv. "order_number=eq.1001") en geeft de aangepaste rijen terug.
+export async function update(env, table, query, patch) {
+  const res = await fetch(`${env.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/${table}?${query}`, {
+    method: 'PATCH',
+    headers: { ...headers(env), 'Content-Type': 'application/json', Prefer: 'return=representation' },
+    body: JSON.stringify(patch)
+  });
+  const text = await res.text();
+  let parsed = null;
+  try { parsed = text ? JSON.parse(text) : null; } catch (_) {}
+  if (!res.ok) throw new SupabaseError(res.status, parsed);
+  return parsed;
+}
+
 // Roept een Postgres-functie aan (bijvoorbeeld create_order) en geeft het resultaat terug.
 export const rpc = (env, fn, args) => post(env, `rpc/${fn}`, args);
 

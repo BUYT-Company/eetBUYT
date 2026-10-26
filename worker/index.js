@@ -5,7 +5,8 @@ import { currentCatalog } from './lib/sheetPrices.js';
 import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/validate.js';
 import { validateWaitlist } from './lib/waitlist.js';
 import { verifyTurnstile } from './lib/turnstile.js';
-import { rpc, insert, select, SupabaseError } from './lib/supabase.js';
+import { rpc, insert, select, update, SupabaseError } from './lib/supabase.js';
+import { canPayOnline, createPayment, getPayment, syncPayment } from './lib/mollie.js';
 import { notifyOwner } from './lib/notify.js';
 import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
 import { orderConfirmationEmail, orderInternalEmail } from './lib/emailTemplates.js';
@@ -88,6 +89,15 @@ function orderMessage(order, result, origin) {
   };
 }
 
+// De prijslijst zoals deze aanvrager hem krijgt. Ontwikkelmodus: is de winkel dicht en is de beheerder ingelogd, dan staat
+// online betalen aan zodra MOLLIE_API_KEY er is (met de test_-sleutel), ook als "paymentsLive" nog uit staat.
+// Bezoekers merken daar niets van; voor hen beslist alleen "paymentsLive" in products.json.
+async function effectiveCatalog(request, env) {
+  const catalog = await currentCatalog(env, baseCatalog);
+  if (!salesOpen(env) && env.MOLLIE_API_KEY && (await isDeveloper(request, env))) return { ...catalog, paymentsLive: true, devPayments: true };
+  return catalog;
+}
+
 async function handleOrder(request, env, ctx) {
   if (!salesOpen(env) && !(await isDeveloper(request, env))) return error(403, 'sales_closed');
 
@@ -100,7 +110,8 @@ async function handleOrder(request, env, ctx) {
   if (data['bot-field']) return error(400, 'invalid_input');
   if (!(await verifyTurnstile(env, turnstileToken(data), request.headers.get('CF-Connecting-IP')))) return error(400, 'turnstile_failed');
 
-  const checked = validateOrder(data, await currentCatalog(env, baseCatalog));
+  const catalog = await effectiveCatalog(request, env);
+  const checked = validateOrder(data, catalog);
   if (!checked.ok) return error(400, 'invalid_input');
   const order = checked.value;
 
@@ -122,7 +133,78 @@ async function handleOrder(request, env, ctx) {
     ctx.waitUntil(sendOrderConfirmation(env, orderInternalEmail(order, result, origin)));
   }
 
-  return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token });
+  // Online betalen (Mollie): maak een betaling en stuur de klant naar de betaalpagina. Lukt dat niet, dan blijft de
+  // bestelling gewoon als aanvraag staan en nemen we contact op.
+  let checkoutUrl = null;
+  if (canPayOnline(env, catalog, order)) {
+    try {
+      const origin = new URL(request.url).origin;
+      const [row] = await select(env, 'orders', `select=status,mollie_payment_id&order_number=eq.${result.order_number}`);
+      if (row?.status === 'betaald') return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token, paid: true });
+      const existing = row?.mollie_payment_id ? await getPayment(env, row.mollie_payment_id) : null;
+      if (existing?.status === 'open' && existing._links?.checkout?.href) {
+        checkoutUrl = existing._links.checkout.href;
+      } else {
+        const payment = await createPayment(env, { orderNumber: result.order_number, token: result.lookup_token, cents: order.total_estimate_cents, origin });
+        await update(env, 'orders', `order_number=eq.${result.order_number}`, { status: 'wacht_op_betaling', mollie_payment_id: payment.id, mollie_status: 'open' });
+        checkoutUrl = payment.checkoutUrl;
+      }
+    } catch (e) {
+      console.error('mollie_create_failed', e instanceof Error ? e.message : 'unknown');
+    }
+  }
+
+  return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token, ...(checkoutUrl ? { checkoutUrl } : {}) });
+}
+
+// Mollie meldt hier dat een betaling is veranderd: alleen een ID, de echte status halen we zelf bij Mollie op.
+async function handleMollieWebhook(request, env, ctx) {
+  const text = await request.text();
+  const id = text.length <= 200 ? new URLSearchParams(text).get('id') : null;
+  try {
+    const synced = await syncPayment(env, id);
+    if (synced?.justPaid) {
+      ctx.waitUntil(notifyOwner(env, {
+        title: 'Betaling ontvangen',
+        message: `Bestelling #${synced.orderNumber} is betaald`,
+        url: `${new URL(request.url).origin}/admin/orders/${synced.orderNumber}`,
+        urlTitle: 'Bekijk bestelling'
+      }));
+    }
+  } catch (e) {
+    // Een fout geven we door aan Mollie (niet-200), dan probeert Mollie het later opnieuw.
+    console.error('mollie_webhook_failed', e instanceof Error ? e.message : 'unknown');
+    return new Response('error', { status: 500 });
+  }
+  return new Response('ok', { status: 200 });
+}
+
+// De bedankpagina vraagt hier de betaalstatus op met het geheime token uit de redirect. Staat de bestelling nog
+// op "wacht op betaling", dan vragen we Mollie meteen (de webhook kan later zijn dan de klant).
+async function handleOrderStatus(request, env, ctx) {
+  const token = new URL(request.url).searchParams.get('t') || '';
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) return error(400, 'invalid_input');
+  try {
+    const [row] = await select(env, 'orders', `select=status,mollie_payment_id&lookup_token=eq.${token}`);
+    if (!row) return error(404, 'not_found');
+    let status = row.status;
+    if (status === 'wacht_op_betaling' && row.mollie_payment_id) {
+      const synced = await syncPayment(env, row.mollie_payment_id);
+      if (synced) status = synced.status;
+      if (synced?.justPaid) {
+        ctx.waitUntil(notifyOwner(env, {
+          title: 'Betaling ontvangen',
+          message: `Bestelling #${synced.orderNumber} is betaald`,
+          url: `${new URL(request.url).origin}/admin/orders/${synced.orderNumber}`,
+          urlTitle: 'Bekijk bestelling'
+        }));
+      }
+    }
+    return json(200, { ok: true, status });
+  } catch (e) {
+    console.error('order_status_failed', e instanceof Error ? e.message : 'unknown');
+    return error(500, 'server_error');
+  }
 }
 
 async function handleRequest(request, env, ctx) {
@@ -288,14 +370,18 @@ async function handleDeliverySlots(request, env) {
 
 // De winkel (mandje en productkaarten) leest de prijzen hier. Zonder koppeling met het sheet is dit gewoon products.json.
 async function handleProducts(request, env) {
-  const res = json(200, await currentCatalog(env, baseCatalog));
-  res.headers.set('Cache-Control', 'public, max-age=60');
+  const catalog = await effectiveCatalog(request, env);
+  const res = json(200, catalog);
+  // Voor een ontwikkelaar (winkel dicht, beheerder ingelogd) staat online betalen aan; dat antwoord mag nooit gedeeld worden.
+  res.headers.set('Cache-Control', catalog.devPayments ? 'private, no-store' : 'public, max-age=60');
   return res;
 }
 
 const routes = {
   '/api/products': { GET: handleProducts },
   '/api/order': { POST: handleOrder },
+  '/api/order-status': { GET: handleOrderStatus },
+  '/api/mollie-webhook': { POST: handleMollieWebhook },
   '/api/request': { POST: handleRequest },
   '/api/newsletter': { POST: handleNewsletter },
   '/api/waitlist': { POST: handleWaitlist },

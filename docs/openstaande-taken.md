@@ -2,6 +2,10 @@
 
 Wat al klaar is staat onderaan. Vink af en verwijder wat klaar is.
 
+## Vandaag (27 oktober 2026)
+- [ ] **Ontwerp voor de bevestigingsmail** ("Bedankt voor je bestelling") maken; uitwerking staat verderop bij "E-mail Bedankt voor je bestelling". Past ook bij Mollie: de mail gaat nu al uit bij het plaatsen, niet pas na betaling.
+- [ ] **Mollie koppelen**: sleutel in Cloudflare, testbetaling, zie [mollie-koppelen.md](mollie-koppelen.md).
+
 ## Vóór de verkoop opengaat
 Volg daarvoor [verkoop-openzetten.md](verkoop-openzetten.md), met de standaardprompt en de volledige checklist.
 
