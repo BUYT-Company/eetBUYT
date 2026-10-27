@@ -3,7 +3,7 @@
 Wat al klaar is staat onderaan. Vink af en verwijder wat klaar is.
 
 ## Vandaag (27 oktober 2026)
-- [x] **Bevestigingsmail** ontworpen (Claude Design) en gebouwd (27 okt 2026): bevestiging pas na betaling, herinnering voor wie niet afrondt. Nog doen: migratie `0012_betaalherinnering.sql` uitvoeren, testen in Gmail, Outlook en Apple Mail (licht en donker), en de bezorgkosten toevoegen zodra ze vaststaan. De andere klantmails (onderweg, bezorgd, geannuleerd) hebben nog het oude ontwerp.
+- [x] **Bevestigingsmail** ontworpen (Claude Design) en gebouwd (27 okt 2026): bevestiging pas na betaling, herinnering voor wie niet afrondt. Nog doen: migratie `0012_betaalherinnering.sql` uitvoeren, testen in Gmail, Outlook en Apple Mail (licht en donker), en de bezorgkosten toevoegen zodra ze vaststaan. De drie statusmails (onderweg, bezorgd, geannuleerd) zitten in dezelfde reeks. **Nog te doen: de illustratie van de inpakkende gans aanleveren** (PNG; instructie in [mollie-koppelen.md](mollie-koppelen.md), "Uiterlijk van de mails") en alle vijf de mails controleren in Gmail, Outlook en Apple Mail.
 - [ ] **Mollie koppelen**: sleutel in Cloudflare, testbetaling, zie [mollie-koppelen.md](mollie-koppelen.md).
 
 ## Vóór de verkoop opengaat

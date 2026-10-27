@@ -375,7 +375,7 @@ export async function postStatus(env, ctx, request, user, number, form) {
 
   let order;
   try {
-    [order] = await select(env, 'orders', `select=order_number,status,email,customer_name,delivery_date,delivery_window&order_number=eq.${number}`);
+    [order] = await select(env, 'orders', `select=*,order_lines(*)&order_number=eq.${number}`);
   } catch (_) {
     return redirect(withMsg(back, 'mislukt'));
   }

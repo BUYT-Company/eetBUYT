@@ -11,6 +11,11 @@ De code staat in `worker/lib/mollie.js` en `worker/index.js`. Zolang de sleutel 
 
 Een bestelling die al verwerkt of betaald is, wordt nooit meer teruggezet.
 
+## Uiterlijk van de mails
+Alle bestelmails (bevestiging, herinnering, onderweg, bezorgd, geannuleerd, plus de interne mail) staan in één ontwerp in `worker/lib/emailTemplates.js` (Claude Design "BUYT bestelmails", 27 okt 2026): groene kop met logo, kartelrand, wit vlak met voortgangsbalk, donkergroene voet met polder en socials. Alle afbeeldingen zijn PNG in `public/assets/email/` (Gmail toont geen SVG). De PNG's zijn gemaakt uit de SVG's van de site; maak ze opnieuw als het logo of de polderillustratie verandert.
+- **Illustratie in de kop (inpakkende gans): nog aan te leveren.** Zet het PNG-bestand in `public/assets/email/` en vul `HEADER_ILLUSTRATION` bovenin `emailTemplates.js` in (bestandsnaam zonder `.png`, breedte en hoogte, bijvoorbeeld 330 × 120). Tot die tijd blijft de kop zonder illustratie.
+- Wil je de tekst van annuleren aanvullen met een regel over terugbetaling, voeg die dan toe aan `orderCancelledEmail` zodra de afspraak vaststaat.
+
 ## Mails rond betalen
 - **Bevestiging pas na betaling** (`worker/lib/payMail.js`, ontwerp: Claude Design "BUYT bevestigingsmail"): zodra de betaling binnen is gaat de bevestiging naar de klant en een interne mail ("Betaalde bestelling") naar `orders@eetbuyt.nl`. De pushmelding "Nieuwe bestelling" gaat nog steeds meteen bij het plaatsen, "Betaling ontvangen" bij de betaling.
 - **Zonder online betaling** (sleutel of schakelaar uit, of de betaling kon niet worden aangemaakt) gaat de bevestiging meteen, met de tekst dat we contact opnemen over de betaling.

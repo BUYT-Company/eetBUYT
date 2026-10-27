@@ -74,3 +74,39 @@ test('interne mail meldt dat de bestelling betaald is', () => {
   const mail = orderInternalEmail(order, { order_number: 1018 }, 'https://eetbuyt.nl', { paid: true });
   assert.match(mail.subject, /^Betaalde bestelling BUYT-1018/);
 });
+
+import { orderOnTheWayEmail, orderDeliveredEmail, orderCancelledEmail } from '../lib/emailTemplates.js';
+
+const row = {
+  order_number: 1018, customer_name: 'Skip Broers', email: 'skip@example.com', street: 'Teststraat 1', postcode: '1011AA', city: 'Amsterdam',
+  delivery_date: '2026-10-31', delivery_window: '10:00-12:00', total_estimate_cents: 3494,
+  order_lines: [{ qty: 2, name: 'Ganzenborstfilet', pack: 'Per 2 stuks verpakt', unit_price_cents: 1747, price_label: '€ 17,47' }]
+};
+
+test('statusmails: onderweg, bezorgd en geannuleerd in dezelfde reeks', () => {
+  const onderweg = orderOnTheWayEmail(row, 'https://eetbuyt.nl');
+  assert.match(onderweg.subject, /onderweg — BUYT-1018/);
+  assert.match(onderweg.html, /Onderweg, <span[^>]*>Skip<\/span>!/);
+  assert.match(onderweg.html, /Teststraat 1/);
+  assert.match(onderweg.html, /icoon-vrachtwagen-room\.png/);
+
+  const bezorgd = orderDeliveredEmail(row, 'https://eetbuyt.nl');
+  assert.match(bezorgd.html, /Bezorgd, <span[^>]*>Skip<\/span>!/);
+  assert.match(bezorgd.html, /Eet smakelijk/);
+
+  const geannuleerd = orderCancelledEmail(row, 'https://eetbuyt.nl');
+  assert.match(geannuleerd.html, /geannuleerd<\/span>/);
+  assert.doesNotMatch(geannuleerd.html, /icoon-vrachtwagen/); // geen voortgangsbalk bij annuleren
+  for (const m of [onderweg, bezorgd, geannuleerd]) {
+    assert.match(m.html, /orders@eetbuyt\.nl/);
+    assert.match(m.html, /Daar word je wild van!/);
+    assert.match(m.html, /polder-achtergrond\.png/);
+    assert.doesNotMatch(m.html, /info@eetbuyt\.nl|\.svg/); // alleen PNG (Gmail toont geen SVG) en één contactadres
+  }
+});
+
+test('statusmail zonder bestelregels of adres (oude aanroep) valt netjes terug', () => {
+  const mail = orderDeliveredEmail({ order_number: 7, customer_name: 'Piet', email: 'p@example.com' }, 'https://eetbuyt.nl');
+  assert.match(mail.html, /Bezorgd, <span[^>]*>Piet<\/span>!/);
+  assert.doesNotMatch(mail.html, /Je bestelling<\/div>/);
+});

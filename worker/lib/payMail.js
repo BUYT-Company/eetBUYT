@@ -3,7 +3,7 @@
 import { select, update } from './supabase.js';
 import { syncPayment } from './mollie.js';
 import { sendOrderConfirmation } from './resend.js';
-import { orderConfirmationEmail, orderInternalEmail, paymentReminderEmail } from './emailTemplates.js';
+import { orderConfirmationEmail, orderInternalEmail, paymentReminderEmail, mailOrderFromRow } from './emailTemplates.js';
 
 const REMINDER_AFTER_MS = 30 * 60 * 1000; // pas na een half uur: de klant is er dan echt niet meer mee bezig
 const REMINDER_UNTIL_MS = 24 * 60 * 60 * 1000; // na een dag is een herinnering te laat
@@ -12,18 +12,7 @@ const REMINDABLE = ['open', 'pending', 'expired', 'failed'];
 
 export const siteOrigin = (env) => env.SITE_URL || 'https://eetbuyt.nl';
 
-// De rij uit de database in de vorm die de mailtemplates verwachten (zoals een net geplaatste bestelling).
-function mailOrder(row) {
-  return {
-    customer: { customer_name: row.customer_name, email: row.email, phone: row.phone, street: row.street, postcode: row.postcode, city: row.city, note: row.note },
-    lines: row.order_lines || [],
-    total_estimate_cents: row.total_estimate_cents,
-    has_unpriced: row.has_unpriced,
-    is_indicative: row.is_indicative,
-    delivery_date: row.delivery_date,
-    delivery_window: row.delivery_window
-  };
-}
+const mailOrder = mailOrderFromRow;
 
 async function loadOrder(env, orderNumber) {
   const [row] = await select(env, 'orders', `select=*,order_lines(*)&order_number=eq.${orderNumber}`);

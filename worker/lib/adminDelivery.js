@@ -151,7 +151,7 @@ export async function postRoute(env, ctx, request, user, form) {
   if (!isYmd(date) || !isWindow(window)) return redirect('/admin/delivery');
   let rows;
   try {
-    rows = await select(env, 'orders', `select=order_number,status,email,customer_name,delivery_date,delivery_window&delivery_date=eq.${date}&delivery_window=eq.${encodeURIComponent(window)}&status=eq.klaargemaakt`);
+    rows = await select(env, 'orders', `select=*,order_lines(*)&delivery_date=eq.${date}&delivery_window=eq.${encodeURIComponent(window)}&status=eq.klaargemaakt`);
   } catch (_) {
     return redirect(withMsg('/admin/delivery', 'mislukt'));
   }
