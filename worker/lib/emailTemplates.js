@@ -165,7 +165,7 @@ function footer(origin, number) {
 <table role="presentation" cellpadding="0" cellspacing="0" align="center"><tr><td align="center">${img(origin, 'logo-cream', 56, 53, 'margin:0 auto;')}</td></tr></table>
 <div style="margin-top:14px;font-size:1rem;font-weight:700;color:${COLOR.cream};">Daar word je wild van!</div>
 <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:14px auto 0;"><tr>${socials}</tr></table>
-<div style="margin-top:14px;font-size:.8rem;line-height:1.6;color:#D6DCCF;">BUYT &middot; Vondelstraat 130, 1054 GS Amsterdam &middot; KvK 42196561</div>
+<div style="margin-top:14px;font-size:.8rem;line-height:1.6;color:#D6DCCF;">BUYT &middot; KvK 42196561</div>
 <div style="margin-top:6px;font-size:.75rem;line-height:1.6;color:#C3CCBF;">${number ? `Deze mail hoort bij bestelling ${number}.<br>` : ''}${link(`${origin}/voorwaarden`, 'Algemene voorwaarden')} &nbsp;&middot;&nbsp; ${link(`${origin}/privacy`, 'Privacy')}</div>
 </td>`;
 }
@@ -191,8 +191,8 @@ function shell({ origin, preheader, bodyHtml, number }) {
 <table role="presentation" width="560" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" style="width:100%;max-width:560px;background:#FFFFFF;border-radius:24px;overflow:hidden;">
 <tr><td bgcolor="${COLOR.green}" style="background:${COLOR.green};padding:28px 36px ${HEADER_ILLUSTRATION ? '0' : '20px'};">
 <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-<td valign="middle">${img(origin, 'logo-cream', 40, 38)}</td>
-<td valign="middle" style="padding-left:10px;font:800 1.6rem/1 ${FONT_DISPLAY};letter-spacing:-.04em;color:${COLOR.cream};">BUYT</td>
+<td valign="middle">${img(origin, 'logo-cream', 88, 84)}</td>
+<td valign="middle" style="padding-left:14px;font:800 2rem/1 ${FONT_DISPLAY};letter-spacing:-.04em;color:${COLOR.cream};">BUYT</td>
 </tr></table>
 </td></tr>
 ${illustration}
