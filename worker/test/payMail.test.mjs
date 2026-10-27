@@ -7,7 +7,7 @@ const NOW = new Date('2026-10-27T14:00:00Z');
 const hoursAgo = (h) => new Date(NOW.getTime() - h * 3600e3).toISOString();
 const base = { status: 'nieuw', paid_at: null, reminder_sent_at: null, mollie_payment_id: 'tr_abc123', mollie_status: 'expired', created_at: hoursAgo(3), delivery_date: '2026-10-31' };
 
-test('herinnering: onbetaalde bestelling tussen een uur en een dag oud', () => {
+test('herinnering: onbetaalde bestelling tussen een half uur en een dag oud', () => {
   assert.equal(needsReminder(base, NOW), true);
   assert.equal(needsReminder({ ...base, mollie_status: 'open' }, NOW), true);
   assert.equal(needsReminder({ ...base, mollie_status: 'failed' }, NOW), true);
@@ -22,7 +22,8 @@ test('herinnering: nooit bij bewust geannuleerd, betaald, geannuleerde bestellin
 });
 
 test('herinnering: te vroeg, te laat of bezorgdatum voorbij', () => {
-  assert.equal(needsReminder({ ...base, created_at: hoursAgo(0.5) }, NOW), false);
+  assert.equal(needsReminder({ ...base, created_at: hoursAgo(0.25) }, NOW), false);
+  assert.equal(needsReminder({ ...base, created_at: hoursAgo(0.6) }, NOW), true);
   assert.equal(needsReminder({ ...base, created_at: hoursAgo(25) }, NOW), false);
   assert.equal(needsReminder({ ...base, delivery_date: '2026-10-26' }, NOW), false);
   assert.equal(needsReminder({ ...base, delivery_date: '2026-10-27' }, NOW), true);
