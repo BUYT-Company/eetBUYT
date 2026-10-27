@@ -63,7 +63,7 @@ test('syncPayment: ongeldig of onbekend ID doet niets', async () => {
 
 test('syncPayment: betaald zet de bestelling op betaald', async () => {
   const calls = fakeFetch([
-    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, status: 'wacht_op_betaling', total_estimate_cents: 4250 }] },
+    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, mollie_status: 'open', total_estimate_cents: 4250 }] },
     { match: '/v2/payments/tr_abc123', body: { status: 'paid', amount: { currency: 'EUR', value: '42.50' }, paidAt: '2026-10-27T10:00:00+00:00' } },
     { match: '/rest/v1/payment_events', method: 'POST', body: null },
     { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [{ order_number: 1001 }] }
@@ -71,13 +71,28 @@ test('syncPayment: betaald zet de bestelling op betaald', async () => {
   const out = await syncPayment(env, 'tr_abc123');
   assert.deepEqual(out, { status: 'betaald', justPaid: true, orderNumber: 1001 });
   const patch = calls.find((c) => c.init.method === 'PATCH');
-  assert.match(patch.url, /status=in\.\(aanvraag,wacht_op_betaling,betaling_mislukt\)/);
-  assert.equal(JSON.parse(patch.init.body).status, 'betaald');
+  assert.match(patch.url, /mollie_status\.neq\.paid/);
+  const sent = JSON.parse(patch.init.body);
+  assert.equal(sent.mollie_status, 'paid');
+  assert.equal(sent.paid_at, '2026-10-27T10:00:00+00:00');
+  // De bestelstatus van het beheer (nieuw/klaargemaakt/...) blijft ongemoeid: anders weigert de database het.
+  assert.equal('status' in sent, false);
+});
+
+test('syncPayment: al betaalde bestelling wordt niet nog eens als nieuw betaald gemeld', async () => {
+  fakeFetch([
+    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, mollie_status: 'paid', total_estimate_cents: 4250 }] },
+    { match: '/v2/payments/tr_abc123', body: { status: 'paid', amount: { currency: 'EUR', value: '42.50' } } },
+    { match: '/rest/v1/payment_events', method: 'POST', body: null },
+    { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [] }
+  ]);
+  const out = await syncPayment(env, 'tr_abc123');
+  assert.deepEqual(out, { status: 'betaald', justPaid: false, orderNumber: 1001 });
 });
 
 test('syncPayment: afwijkend bedrag wordt geweigerd', async () => {
   fakeFetch([
-    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, status: 'wacht_op_betaling', total_estimate_cents: 4250 }] },
+    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, mollie_status: 'open', total_estimate_cents: 4250 }] },
     { match: '/v2/payments/tr_abc123', body: { status: 'paid', amount: { currency: 'EUR', value: '1.00' } } }
   ]);
   await assert.rejects(() => syncPayment(env, 'tr_abc123'), /amount_mismatch/);

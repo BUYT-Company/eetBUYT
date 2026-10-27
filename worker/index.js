@@ -6,7 +6,7 @@ import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/
 import { validateWaitlist } from './lib/waitlist.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, update, SupabaseError } from './lib/supabase.js';
-import { canPayOnline, createPayment, getPayment, syncPayment } from './lib/mollie.js';
+import { canPayOnline, createPayment, getPayment, syncPayment, paymentStateFor } from './lib/mollie.js';
 import { notifyOwner } from './lib/notify.js';
 import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
 import { orderConfirmationEmail, orderInternalEmail } from './lib/emailTemplates.js';
@@ -139,14 +139,14 @@ async function handleOrder(request, env, ctx) {
   if (canPayOnline(env, catalog, order)) {
     try {
       const origin = new URL(request.url).origin;
-      const [row] = await select(env, 'orders', `select=status,mollie_payment_id&order_number=eq.${result.order_number}`);
-      if (row?.status === 'betaald') return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token, paid: true });
+      const [row] = await select(env, 'orders', `select=mollie_status,mollie_payment_id&order_number=eq.${result.order_number}`);
+      if (row?.mollie_status === 'paid') return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token, paid: true });
       const existing = row?.mollie_payment_id ? await getPayment(env, row.mollie_payment_id) : null;
       if (existing?.status === 'open' && existing._links?.checkout?.href) {
         checkoutUrl = existing._links.checkout.href;
       } else {
         const payment = await createPayment(env, { orderNumber: result.order_number, token: result.lookup_token, cents: order.total_estimate_cents, origin });
-        await update(env, 'orders', `order_number=eq.${result.order_number}`, { status: 'wacht_op_betaling', mollie_payment_id: payment.id, mollie_status: 'open' });
+        await update(env, 'orders', `order_number=eq.${result.order_number}`, { mollie_payment_id: payment.id, mollie_status: 'open' });
         checkoutUrl = payment.checkoutUrl;
       }
     } catch (e) {
@@ -185,9 +185,9 @@ async function handleOrderStatus(request, env, ctx) {
   const token = new URL(request.url).searchParams.get('t') || '';
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) return error(400, 'invalid_input');
   try {
-    const [row] = await select(env, 'orders', `select=status,mollie_payment_id&lookup_token=eq.${token}`);
+    const [row] = await select(env, 'orders', `select=mollie_status,mollie_payment_id&lookup_token=eq.${token}`);
     if (!row) return error(404, 'not_found');
-    let status = row.status;
+    let status = paymentStateFor(row.mollie_status);
     if (status === 'wacht_op_betaling' && row.mollie_payment_id) {
       const synced = await syncPayment(env, row.mollie_payment_id);
       if (synced) status = synced.status;

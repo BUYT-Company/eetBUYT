@@ -11,6 +11,9 @@ De code staat in `worker/lib/mollie.js` en `worker/index.js`. Zolang de sleutel 
 
 Een bestelling die al verwerkt of betaald is, wordt nooit meer teruggezet.
 
+## Waar staat de betaalstatus?
+Niet in `orders.status`: sinds migratie `0006` is dat de beheerstatus (nieuw, klaargemaakt, onderweg, bezorgd, geannuleerd) en weigert de database andere waarden. De betaling staat in `mollie_status` (`open`, `paid`, `failed`, `canceled`, `expired`) en `paid_at`. In het beheer is die nog niet zichtbaar (open punt).
+
 ## Online betalen staat alleen aan als alles klopt
 `MOLLIE_API_KEY` is gezet, `"paymentsLive": true` in `public/data/products.json`, en de bestelling heeft geen regel met "prijs op gewicht".
 

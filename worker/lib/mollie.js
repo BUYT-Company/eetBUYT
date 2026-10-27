@@ -47,11 +47,15 @@ export async function createPayment(env, { orderNumber, token, cents, origin }) 
   return { id: payment.id, checkoutUrl: payment._links?.checkout?.href || null };
 }
 
-// Haalt de betaling op bij Mollie (de enige bron van waarheid) en past de bestelling aan.
+// Betaalstand voor de bedankpagina, afgeleid van de Mollie-status die bij de bestelling staat.
+// De bestelstatus (orders.status, het beheer: nieuw/klaargemaakt/...) blijft hier buiten: betalen is een eigen spoor.
+export const paymentStateFor = (mollieStatus) => orderStatusFor(mollieStatus) || 'onbekend';
+
+// Haalt de betaling op bij Mollie (de enige bron van waarheid) en slaat de betaalstatus op bij de bestelling.
 // Geeft { status, justPaid, orderNumber } terug, of null als het ID onbekend of ongeldig is.
 export async function syncPayment(env, paymentId) {
   if (typeof paymentId !== 'string' || !PAYMENT_ID.test(paymentId)) return null;
-  const rows = await select(env, 'orders', `select=order_number,status,total_estimate_cents&mollie_payment_id=eq.${paymentId}`);
+  const rows = await select(env, 'orders', `select=order_number,mollie_status,total_estimate_cents&mollie_payment_id=eq.${paymentId}`);
   const order = rows?.[0];
   if (!order) return null;
 
@@ -63,17 +67,21 @@ export async function syncPayment(env, paymentId) {
 
   const status = orderStatusFor(payment.status);
   await insert(env, 'payment_events', { mollie_payment_id: paymentId, mollie_status: payment.status }).catch(() => {});
-  if (!status) return { status: order.status, justPaid: false, orderNumber: order.order_number };
+  if (!status) return { status: paymentStateFor(order.mollie_status), justPaid: false, orderNumber: order.order_number };
 
-  // Alleen vóór verwerking aanpassen: een verzonden bestelling of een eenmaal betaalde bestelling blijft zoals ze is.
-  const patch = { status, mollie_status: payment.status };
+  // Een eenmaal betaalde bestelling blijft betaald (een latere melding mag dat nooit terugdraaien).
+  const patch = { mollie_status: payment.status };
   if (status === 'betaald') patch.paid_at = payment.paidAt || new Date().toISOString();
   const changed = await update(
     env,
     'orders',
-    `mollie_payment_id=eq.${paymentId}&status=in.(aanvraag,wacht_op_betaling,betaling_mislukt)`,
+    `mollie_payment_id=eq.${paymentId}&or=(mollie_status.is.null,mollie_status.neq.paid)`,
     patch
   );
   const applied = Array.isArray(changed) && changed.length > 0;
-  return { status: applied ? status : order.status, justPaid: applied && status === 'betaald' && order.status !== 'betaald', orderNumber: order.order_number };
+  return {
+    status: applied ? status : paymentStateFor(order.mollie_status),
+    justPaid: applied && status === 'betaald',
+    orderNumber: order.order_number
+  };
 }
