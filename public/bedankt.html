@@ -58,8 +58,9 @@
         </div>
         <div data-state="mislukt" hidden>
           <h1>De betaling is <em>niet gelukt</em></h1>
-          <p>Er is niets afgeschreven. Je mandje staat nog klaar, dus je kunt het opnieuw proberen.</p>
-          <a class="btn btn--primary" href="afrekenen.html"><span class="btn__label">Opnieuw afrekenen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <p>Er is niets afgeschreven. Je bestelling staat nog klaar, dus je kunt het opnieuw proberen zonder alles weer in te vullen.</p>
+          <a class="btn btn--primary" data-retry href="afrekenen.html"><span class="btn__label">Opnieuw betalen</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a>
+          <p class="form__msg form__msg--err" data-retry-err hidden>Opnieuw betalen lukt nu niet. Probeer het zo nog eens, of <a href="afrekenen.html">bestel opnieuw</a>.</p>
         </div>
         <div data-state="onbekend" hidden>
           <h1>Bedankt <em>voor je bezoek</em></h1>

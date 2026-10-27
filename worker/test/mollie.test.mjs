@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { amountValue, orderStatusFor, canPayOnline, createPayment, syncPayment } from '../lib/mollie.js';
+import { amountValue, orderStatusFor, canPayOnline, createPayment, syncPayment, retryPayment } from '../lib/mollie.js';
 
 const env = { MOLLIE_API_KEY: 'test_x', SUPABASE_URL: 'https://db.example', SUPABASE_SERVICE_ROLE_KEY: 'sb_secret_x' };
 
@@ -118,4 +118,30 @@ test('syncPayment: bij een nog open betaling komt de betaallink mee, zodat de kl
   ]);
   const out = await syncPayment(env, 'tr_abc123');
   assert.deepEqual(out, { status: 'wacht_op_betaling', checkoutUrl: 'https://www.mollie.com/checkout/select-method/x', justPaid: false, orderNumber: 1001 });
+});
+
+const TOKEN = '412fc29f-2506-4388-9a4a-1623239328cc';
+
+test('retryPayment: afgebroken betaling krijgt een nieuwe betaling voor dezelfde bestelling', async () => {
+  const calls = fakeFetch([
+    { match: '/rest/v1/orders?select', body: [{ order_number: 1015, status: 'nieuw', mollie_status: 'canceled', mollie_payment_id: 'tr_old', total_estimate_cents: 3494, has_unpriced: false }] },
+    { match: '/v2/payments', method: 'POST', body: { id: 'tr_new123', _links: { checkout: { href: 'https://www.mollie.com/checkout/select-method/n' } } } },
+    { match: '/rest/v1/orders?order_number', method: 'PATCH', body: [{ order_number: 1015 }] }
+  ]);
+  const out = await retryPayment(env, TOKEN, 'https://eetbuyt.nl');
+  assert.deepEqual(out, { checkoutUrl: 'https://www.mollie.com/checkout/select-method/n' });
+  assert.equal(JSON.parse(calls.find((c) => c.url.includes('/v2/payments')).init.body).amount.value, '34.94');
+  assert.equal(JSON.parse(calls.find((c) => c.init.method === 'PATCH').init.body).mollie_payment_id, 'tr_new123');
+});
+
+test('retryPayment: betaald, geannuleerd of onbekend token geeft niets', async () => {
+  for (const row of [
+    { order_number: 1, status: 'nieuw', mollie_status: 'paid', total_estimate_cents: 100, has_unpriced: false },
+    { order_number: 1, status: 'geannuleerd', mollie_status: 'canceled', total_estimate_cents: 100, has_unpriced: false }
+  ]) {
+    fakeFetch([{ match: '/rest/v1/orders?select', body: [row] }]);
+    assert.equal(await retryPayment(env, TOKEN, 'https://eetbuyt.nl'), null);
+  }
+  fakeFetch([{ match: '/rest/v1/orders?select', body: [] }]);
+  assert.equal(await retryPayment(env, TOKEN, 'https://eetbuyt.nl'), null);
 });

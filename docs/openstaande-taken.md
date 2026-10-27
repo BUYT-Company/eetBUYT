@@ -3,7 +3,7 @@
 Wat al klaar is staat onderaan. Vink af en verwijder wat klaar is.
 
 ## Vandaag (27 oktober 2026)
-- [ ] **Ontwerp voor de bevestigingsmail** ("Bedankt voor je bestelling") maken; uitwerking staat verderop bij "E-mail Bedankt voor je bestelling". Past ook bij Mollie: de mail gaat nu al uit bij het plaatsen, niet pas na betaling.
+- [ ] **Ontwerp voor de bevestigingsmail** ("Bedankt voor je bestelling") maken; uitwerking staat verderop bij "E-mail Bedankt voor je bestelling". Past ook bij Mollie: de mail gaat nu al uit bij het plaatsen, niet pas na betaling, en **vermeldt niet dat er nog betaald moet worden**. Beslis in dit ontwerp: mail pas na betaling, of nu met een duidelijke regel "betaling volgt" (en een link om af te ronden).
 - [ ] **Mollie koppelen**: sleutel in Cloudflare, testbetaling, zie [mollie-koppelen.md](mollie-koppelen.md).
 
 ## Vóór de verkoop opengaat
@@ -73,7 +73,7 @@ Domein-eigenschap `eetbuyt.nl` is geverifieerd (DNS-record in Cloudflare, niet v
 - [ ] **Bezorggebied als postcodes** vastleggen zodra TringTring definitief is, en dan de cirkel op de kaart en de controle bij het bestellen daarop baseren (nu: een ruwe cirkel om de zes steden). De afrekenpagina controleert het bezorggebied nu nog niet.
 - [ ] **Instagram-bezoek meetbaar maken**: zet in het Instagram-profiel de link `https://eetbuyt.nl/?utm_source=instagram&utm_medium=bio`, dan zie je Instagram als bron bij Analytics.
 - [ ] **Later: echte socials-cijfers** (volgers, bereik) via Meta. Het Instagram-account is al zakelijk en gekoppeld aan een Facebook-pagina.
-- [ ] **E-mail "Bedankt voor je bestelling"** opnieuw ontwerpen. De huidige template staat in `worker/lib/emailTemplates.js` (`orderConfirmationEmail` voor de klant, `orderInternalEmail` voor jullie zelf), verstuurd via Resend (`worker/lib/resend.js`). Denk aan huisstijl, een duidelijke samenvatting, bezorgmoment en contactgegevens, en test in Gmail, Outlook en Apple Mail, zowel licht als donker.
+- [ ] **E-mail "Bedankt voor je bestelling"** opnieuw ontwerpen. De huidige template staat in `worker/lib/emailTemplates.js` (`orderConfirmationEmail` voor de klant, `orderInternalEmail` voor jullie zelf), verstuurd via Resend (`worker/lib/resend.js`). Denk aan huisstijl, een duidelijke samenvatting, bezorgmoment en contactgegevens, en test in Gmail, Outlook en Apple Mail, zowel licht als donker. De huidige mail zegt niets over een nog openstaande betaling (zie hierboven bij Vandaag).
 - [ ] **Later (na het beheer):** definitieve prijzen zonder "circa" en definitieve productfoto's (ook op de publieke site); voorraad gekoppeld aan inkoop en verkoop; Mollie; echte socials-cijfers via Meta; koppeling met de bezorgdienst (waarschijnlijk Tring Tring). Zie sectie 10 van het beheerontwerp.
 
 ## Klaar

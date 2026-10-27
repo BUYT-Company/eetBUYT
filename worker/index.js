@@ -6,7 +6,7 @@ import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/
 import { validateWaitlist } from './lib/waitlist.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, update, SupabaseError } from './lib/supabase.js';
-import { canPayOnline, createPayment, getPayment, syncPayment, paymentStateFor } from './lib/mollie.js';
+import { canPayOnline, createPayment, getPayment, syncPayment, paymentStateFor, retryPayment } from './lib/mollie.js';
 import { notifyOwner } from './lib/notify.js';
 import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
 import { orderConfirmationEmail, orderInternalEmail } from './lib/emailTemplates.js';
@@ -177,6 +177,20 @@ async function handleMollieWebhook(request, env, ctx) {
     return new Response('error', { status: 500 });
   }
   return new Response('ok', { status: 200 });
+}
+
+// "Opnieuw betalen" op de bedankpagina: een nieuwe betaling voor dezelfde bestelling, zonder het formulier opnieuw in te vullen.
+async function handleOrderRetry(request, env) {
+  const token = new URL(request.url).searchParams.get('t') || '';
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token) || !env.MOLLIE_API_KEY) return error(400, 'invalid_input');
+  try {
+    const result = await retryPayment(env, token, new URL(request.url).origin);
+    if (!result?.checkoutUrl) return error(409, 'not_retryable');
+    return json(200, { ok: true, checkoutUrl: result.checkoutUrl });
+  } catch (e) {
+    console.error('order_retry_failed', e instanceof Error ? e.message : 'unknown');
+    return error(500, 'server_error');
+  }
 }
 
 // De bedankpagina vraagt hier de betaalstatus op met het geheime token uit de redirect. Staat de bestelling nog
@@ -383,6 +397,7 @@ const routes = {
   '/api/order': { POST: handleOrder },
   '/api/order-status': { GET: handleOrderStatus },
   '/api/mollie-webhook': { POST: handleMollieWebhook },
+  '/api/order-retry': { POST: handleOrderRetry },
   '/api/request': { POST: handleRequest },
   '/api/newsletter': { POST: handleNewsletter },
   '/api/waitlist': { POST: handleWaitlist },

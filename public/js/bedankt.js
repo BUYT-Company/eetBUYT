@@ -114,6 +114,22 @@
   const token = params.get('o');
   if (!token) { show('onbekend'); return; }
 
+  /* Opnieuw betalen voor dezelfde bestelling: de server maakt een nieuwe Mollie-betaling en wij sturen de klant erheen */
+  const retry = $('[data-retry]');
+  if (retry) {
+    retry.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const err = $('[data-retry-err]');
+      err.hidden = true;
+      try {
+        const res = await fetch(`/api/order-retry?t=${encodeURIComponent(token)}`, { method: 'POST' });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && /^https:\/\/www\.mollie\.com\//.test(body.checkoutUrl || '')) { window.location.href = body.checkoutUrl; return; }
+      } catch (_) {}
+      err.hidden = false;
+    });
+  }
+
   /* De betaling kan een moment later bevestigd zijn dan de klant terug is: bij "open" een paar keer opnieuw vragen */
   const check = (attempt) => {
     fetch(`/api/order-status?t=${encodeURIComponent(token)}`, { cache: 'no-store' })

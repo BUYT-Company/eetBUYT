@@ -47,6 +47,23 @@ export async function createPayment(env, { orderNumber, token, cents, origin }) 
   return { id: payment.id, checkoutUrl: payment._links?.checkout?.href || null };
 }
 
+// Opnieuw betalen voor dezelfde bestelling (de klant haakte af of de betaling mislukte): nieuwe Mollie-betaling
+// met hetzelfde bedrag. Het geheime lookup-token uit de redirect is de sleutel. Geeft { checkoutUrl } of null.
+export async function retryPayment(env, token, origin) {
+  const [order] = await select(env, 'orders', `select=order_number,status,mollie_status,mollie_payment_id,total_estimate_cents,has_unpriced&lookup_token=eq.${token}`);
+  if (!order || order.status === 'geannuleerd' || order.has_unpriced || !(order.total_estimate_cents > 0)) return null;
+  const state = paymentStateFor(order.mollie_status);
+  if (state === 'betaald' || state === 'onbekend') return null;
+  // Staat de oude betaling nog open, gebruik dan zijn link in plaats van een tweede betaling te maken.
+  if (state === 'wacht_op_betaling' && order.mollie_payment_id) {
+    const existing = await getPayment(env, order.mollie_payment_id);
+    if (existing.status === 'open' && existing._links?.checkout?.href) return { checkoutUrl: existing._links.checkout.href };
+  }
+  const payment = await createPayment(env, { orderNumber: order.order_number, token, cents: order.total_estimate_cents, origin });
+  await update(env, 'orders', `order_number=eq.${order.order_number}`, { mollie_payment_id: payment.id, mollie_status: 'open' });
+  return { checkoutUrl: payment.checkoutUrl };
+}
+
 // Betaalstand voor de bedankpagina, afgeleid van de Mollie-status die bij de bestelling staat.
 // De bestelstatus (orders.status, het beheer: nieuw/klaargemaakt/...) blijft hier buiten: betalen is een eigen spoor.
 export const paymentStateFor = (mollieStatus) => orderStatusFor(mollieStatus) || 'onbekend';
