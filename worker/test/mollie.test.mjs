@@ -90,6 +90,17 @@ test('syncPayment: al betaalde bestelling wordt niet nog eens als nieuw betaald 
   assert.deepEqual(out, { status: 'betaald', justPaid: false, orderNumber: 1001 });
 });
 
+test('syncPayment: webhook was ons voor, toch geeft de bedankpagina "betaald"', async () => {
+  fakeFetch([
+    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, mollie_status: 'open', total_estimate_cents: 4250 }] },
+    { match: '/v2/payments/tr_abc123', body: { status: 'paid', amount: { currency: 'EUR', value: '42.50' } } },
+    { match: '/rest/v1/payment_events', method: 'POST', body: null },
+    { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [] }
+  ]);
+  const out = await syncPayment(env, 'tr_abc123');
+  assert.deepEqual(out, { status: 'betaald', justPaid: false, orderNumber: 1001 });
+});
+
 test('syncPayment: afwijkend bedrag wordt geweigerd', async () => {
   fakeFetch([
     { match: '/rest/v1/orders?select', body: [{ order_number: 1001, mollie_status: 'open', total_estimate_cents: 4250 }] },

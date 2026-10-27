@@ -79,8 +79,10 @@ export async function syncPayment(env, paymentId) {
     patch
   );
   const applied = Array.isArray(changed) && changed.length > 0;
+  // De status komt uit Mollie zelf. Was een gelijktijdige melding (de webhook) ons voor, dan is `applied` onwaar,
+  // maar de betaling is dan nog steeds wat Mollie zegt; alleen de melding "net betaald" laten we dan aan de ander.
   return {
-    status: applied ? status : paymentStateFor(order.mollie_status),
+    status,
     justPaid: applied && status === 'betaald',
     orderNumber: order.order_number
   };

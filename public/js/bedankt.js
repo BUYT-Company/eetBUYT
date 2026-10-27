@@ -114,19 +114,24 @@
   const token = params.get('o');
   if (!token) { show('onbekend'); return; }
 
-  fetch(`/api/order-status?t=${encodeURIComponent(token)}`)
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-    .then(({ status }) => {
-      if (status === 'betaald') {
-        window.BuytCart.clear();
-        show('betaald');
-      } else if (status === 'betaling_mislukt') {
-        show('mislukt');
-      } else if (status === 'wacht_op_betaling') {
-        show('open');
-      } else {
-        show('onbekend');
-      }
-    })
-    .catch(() => show('onbekend'));
+  /* De betaling kan een moment later bevestigd zijn dan de klant terug is: bij "open" een paar keer opnieuw vragen */
+  const check = (attempt) => {
+    fetch(`/api/order-status?t=${encodeURIComponent(token)}`, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then(({ status }) => {
+        if (status === 'betaald') {
+          window.BuytCart.clear();
+          show('betaald');
+        } else if (status === 'betaling_mislukt') {
+          show('mislukt');
+        } else if (status === 'wacht_op_betaling') {
+          if (attempt < 4) setTimeout(() => check(attempt + 1), 2000);
+          else show('open');
+        } else {
+          show('onbekend');
+        }
+      })
+      .catch(() => show('onbekend'));
+  };
+  check(0);
 })();
