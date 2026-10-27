@@ -1,6 +1,6 @@
 // Gedeelde indeling van het beheer: navigatie links (laptop) of tabbalk onderaan (telefoon), kop, en
 // de beveiligingskoppen. De stijl komt uit adminCss.js, het beetje JavaScript uit adminJs.js.
-import { esc } from './adminFormat.js';
+import { esc, paymentState, PAY_LABEL } from './adminFormat.js';
 import { STATUS_LABEL } from './orderStatus.js';
 import css from './adminCss.js';
 import js from './adminJs.js';
@@ -56,6 +56,13 @@ const TABS = [
   ...NAV.slice(0, 4),
   { key: 'more', href: '/admin/more', label: 'Meer', icon: ICON.more, count: 'newBusiness' }
 ];
+
+// Betaallabel naast de status. Bij een geannuleerde bestelling niet (daar is betalen niet meer van belang).
+export const payBadge = (o) => {
+  if (o.status === 'geannuleerd') return '';
+  const p = paymentState(o);
+  return `<span class="badge badge--pay-${p}">${esc(PAY_LABEL[p])}</span>`;
+};
 
 export const badge = (status) => `<span class="badge badge--${esc(status)}">${esc(STATUS_LABEL[status] || status)}</span>`;
 

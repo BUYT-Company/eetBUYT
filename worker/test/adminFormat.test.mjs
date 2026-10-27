@@ -48,3 +48,13 @@ test('begroeting volgt het uur in Amsterdam', () => {
 test('esc maakt HTML onschadelijk', () => {
   assert.equal(esc('<img src=x onerror="a">'), '&lt;img src=x onerror=&quot;a&quot;&gt;');
 });
+
+test('betaalstand uit mollie_status', async () => {
+  const { paymentState, PAY_LABEL } = await import('../lib/adminFormat.js');
+  assert.equal(paymentState({ mollie_status: 'paid' }), 'betaald');
+  for (const s of ['open', 'pending', 'authorized']) assert.equal(paymentState({ mollie_status: s }), 'open');
+  for (const s of ['failed', 'canceled', 'expired']) assert.equal(paymentState({ mollie_status: s }), 'mislukt');
+  assert.equal(paymentState({ mollie_status: null }), 'geen');
+  assert.equal(paymentState({}), 'geen');
+  assert.equal(PAY_LABEL.betaald, 'Betaald');
+});

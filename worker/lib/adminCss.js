@@ -121,6 +121,16 @@ textarea { min-height: 88px; resize: vertical; }
 .badge--bezorgd::before { background: var(--green); }
 .badge--geannuleerd { color: var(--muted); text-decoration: line-through; }
 .badge--geannuleerd::before { background: var(--line-strong); }
+.badge--pay-betaald::before { background: var(--green); }
+.badge--pay-open::before { background: var(--lime); box-shadow: 0 0 0 1px #A9BC10; }
+.badge--pay-mislukt { border-color: var(--coral); }
+.badge--pay-mislukt::before { background: var(--coral); }
+.badge--pay-geen { color: var(--muted); }
+.c-status .badge + .badge, .stop__top .badge + .badge, .page-head h1 .badge + .badge { margin-left: 6px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: -6px 0 16px; }
+.filters a { display: inline-flex; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; font-size: .875rem; font-weight: 500; }
+.filters a:hover { color: var(--ink); }
+.filters a[aria-current="true"] { color: var(--green); border-color: var(--green); background: var(--wash); }
 
 /* Tabbladen */
 .tabs { display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid var(--line); margin-bottom: 18px; scrollbar-width: none; }

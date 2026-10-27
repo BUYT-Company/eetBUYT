@@ -2,7 +2,7 @@
 // de route starten en een gedeelde link voor de bezorgdienst. De gedeelde pagina staat buiten de login
 // en toont alleen wat de bezorger nodig heeft (geen e-mailadres, geen bedragen).
 import { select, rpc, SupabaseError } from './supabase.js';
-import { esc, layout, bare, badge, flash, ICON } from './adminUi.js';
+import { esc, layout, bare, badge, payBadge, flash, ICON } from './adminUi.js';
 import {
   amsterdamToday, fmtLongDay, fmtDateTime, isYmd, isWindow, isUuid, addressLine, mapsUrl, linesSummary
 } from './adminFormat.js';
@@ -11,7 +11,7 @@ import { newToken, isTokenShape, hashToken } from './shareToken.js';
 import { chrome, csrfField, redirect, withMsg, MESSAGES, sendStatusMail } from './adminOrders.js';
 
 const MAX_PER_SLOT = 5; // zelfde getal als in supabase/migrations/0004
-const COLUMNS = 'order_number,customer_name,phone,street,postcode,city,note,status,delivery_date,delivery_window,order_lines(qty,name)';
+const COLUMNS = 'order_number,customer_name,phone,street,postcode,city,note,status,mollie_status,delivery_date,delivery_window,order_lines(qty,name)';
 
 const windowLabel = (w) => w.replace('-', '–');
 
@@ -35,7 +35,7 @@ function stopHtml(o, csrf) {
   return `<li class="stop${done ? ' stop--done' : ''}">
 ${check}
 <div class="stop__main">
-<div class="stop__top"><a class="row-link" href="/admin/orders/${o.order_number}">${esc(o.customer_name)}</a> ${badge(o.status)}</div>
+<div class="stop__top"><a class="row-link" href="/admin/orders/${o.order_number}">${esc(o.customer_name)}</a> ${badge(o.status)}${payBadge(o)}</div>
 <div class="stop__line"><a href="${esc(mapsUrl(o))}" target="_blank" rel="noopener noreferrer">${esc(addressLine(o))}</a>${o.phone ? ` · <a href="tel:${esc(o.phone)}">${esc(o.phone)}</a>` : ''}</div>
 <div class="stop__line muted">${esc(linesSummary(o.order_lines))}</div>
 ${o.note ? `<div class="stop__note">${esc(o.note)}</div>` : ''}

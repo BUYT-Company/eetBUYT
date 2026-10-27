@@ -46,7 +46,18 @@ export function delta(current, previous, previousOrders, noun = 'bestellingen') 
 export const PERIODS = { dag: 'Vandaag', '7d': '7 dagen', '30d': '30 dagen' };
 export const periodOr = (p, fallback = '7d') => (Object.prototype.hasOwnProperty.call(PERIODS, p) ? p : fallback);
 
-export const TABS = ['nieuw', 'klaargemaakt', 'onderweg', 'bezorgd', 'alle'];
+// Betaalstand van een bestelling, afgeleid van mollie_status (zie docs/mollie-koppelen.md). Los van de beheerstatus.
+// geen = nog geen online betaling gestart (of de betaling kon niet worden aangemaakt).
+export const PAY_LABEL = { betaald: 'Betaald', open: 'Wacht op betaling', mislukt: 'Betaling mislukt', geen: 'Niet online betaald' };
+export function paymentState(o) {
+  const s = o && o.mollie_status;
+  if (s === 'paid') return 'betaald';
+  if (s === 'open' || s === 'pending' || s === 'authorized') return 'open';
+  if (s === 'failed' || s === 'canceled' || s === 'expired') return 'mislukt';
+  return 'geen';
+}
+
+export const TABS =['nieuw', 'klaargemaakt', 'onderweg', 'bezorgd', 'alle'];
 export const tabOr = (t) => (TABS.includes(t) ? t : 'nieuw');
 
 export const PAGE_SIZE = 25;

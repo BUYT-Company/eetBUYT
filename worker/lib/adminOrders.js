@@ -2,9 +2,9 @@
 // gewone HTML van de Worker; wijzigingen gaan via formulieren (POST) met een CSRF-token. Statusregels
 // staan in orderStatus.js, de wijziging zelf gebeurt in één databasestap (set_order_status).
 import { select, rpc } from './supabase.js';
-import { esc, layout, badge, flash, ICON } from './adminUi.js';
+import { esc, layout, badge, payBadge, flash, ICON } from './adminUi.js';
 import {
-  eur, fmtDateTime, fmtDelivery, fmtDeliveryShort, orderTotal, delta, PERIODS, periodOr, TABS, tabOr,
+  paymentState, PAY_LABEL, eur, fmtDateTime, fmtDelivery, fmtDeliveryShort, orderTotal, delta, PERIODS, periodOr, TABS, tabOr,
   PAGE_SIZE, pageOr, cleanQuery, greeting
 } from './adminFormat.js';
 import {
@@ -14,7 +14,7 @@ import { csrfToken, checkPost } from './adminAuth.js';
 import { sendOrderConfirmation } from './resend.js';
 import { orderOnTheWayEmail, orderDeliveredEmail, orderCancelledEmail } from './emailTemplates.js';
 
-const LIST_COLUMNS = 'order_number,customer_name,city,status,total_estimate_cents,total_final_cents,is_indicative,has_unpriced,delivery_date,delivery_window,created_at';
+const LIST_COLUMNS = 'order_number,customer_name,city,status,total_estimate_cents,total_final_cents,is_indicative,has_unpriced,delivery_date,delivery_window,created_at,mollie_status';
 
 export const MESSAGES = {
   status: ['ok', 'Status bijgewerkt.'],
@@ -140,7 +140,7 @@ function rowHtml(o, csrf, back) {
     : '';
   return `<tr>
 <td class="c-main"><a class="row-link" href="/admin/orders/${o.order_number}">BUYT-${o.order_number}</a><span class="cell-sub">${esc(fmtDateTime(o.created_at))}</span></td>
-<td class="c-status" data-label="">${badge(o.status)}</td>
+<td class="c-status" data-label="">${badge(o.status)}${payBadge(o)}</td>
 <td class="c-wide">${esc(o.customer_name)}<span class="cell-sub">${esc(o.city)}</span></td>
 <td class="c-wide" data-label="Bezorging:">${esc(fmtDeliveryShort(o.delivery_date, o.delivery_window))}</td>
 <td class="num tnum c-wide" data-label="Totaal:">${esc(orderTotal(o))}</td>
@@ -167,18 +167,25 @@ export async function ordersPage(env, request, user, url) {
   const tab = tabOr(url.searchParams.get('tab'));
   const page = pageOr(url.searchParams.get('pagina'));
   const date = /^\d{4}-\d{2}-\d{2}$/.test(url.searchParams.get('bezorging') || '') ? url.searchParams.get('bezorging') : null;
+  // Filter "Nog niet betaald": alles wat niet betaald is en niet geannuleerd (ook bestellingen zonder online betaling).
+  const unpaid = url.searchParams.get('betaling') === 'open';
   const { csrf, counts } = await chrome(env, request);
 
   let rows = [];
   let tally = {};
+  let unpaidCount = 0;
   let failed = false;
   try {
     let q = `select=${LIST_COLUMNS}&order=created_at.desc&limit=${PAGE_SIZE + 1}&offset=${(page - 1) * PAGE_SIZE}`;
     if (tab !== 'alle') q += `&status=eq.${tab}`;
     if (date) q += `&delivery_date=eq.${date}`;
-    const [list, statuses] = await Promise.all([select(env, 'orders', q), select(env, 'orders', 'select=status&limit=5000')]);
+    if (unpaid) q += '&status=neq.geannuleerd&or=(mollie_status.is.null,mollie_status.neq.paid)';
+    const [list, statuses] = await Promise.all([select(env, 'orders', q), select(env, 'orders', 'select=status,mollie_status&limit=5000')]);
     rows = list;
-    for (const s of statuses) tally[s.status] = (tally[s.status] || 0) + 1;
+    for (const s of statuses) {
+      tally[s.status] = (tally[s.status] || 0) + 1;
+      if (s.status !== 'geannuleerd' && paymentState(s) !== 'betaald') unpaidCount += 1;
+    }
   } catch (_) {
     failed = true;
   }
@@ -186,7 +193,8 @@ export async function ordersPage(env, request, user, url) {
   const hasNext = rows.length > PAGE_SIZE;
   rows = rows.slice(0, PAGE_SIZE);
   const total = Object.values(tally).reduce((a, b) => a + b, 0);
-  const base = date ? `&amp;bezorging=${date}` : '';
+  const base = (date ? `&amp;bezorging=${date}` : '') + (unpaid ? '&amp;betaling=open' : '');
+  const filterHtml = `<div class="filters" role="group" aria-label="Betaling"><a href="/admin/orders?tab=${tab}${date ? `&amp;bezorging=${date}` : ''}${unpaid ? '' : '&amp;betaling=open'}"${unpaid ? ' aria-current="true"' : ''}>Nog niet betaald (${unpaidCount})</a></div>`;
   const tabsHtml = TABS.map((t) => {
     const n = t === 'alle' ? total : tally[t] || 0;
     return `<a href="/admin/orders?tab=${t}${base}"${t === tab ? ' aria-current="page"' : ''}>${esc(t === 'alle' ? 'Alle' : STATUS_LABEL[t])}<span class="n">${n}</span></a>`;
@@ -194,12 +202,13 @@ export async function ordersPage(env, request, user, url) {
 
   let body = `<div class="page-head"><div><h1>Bestellingen</h1>${date ? `<p>Bezorging op ${esc(fmtDelivery(date, '00:00-00:00').split(',')[0])}. <a href="/admin/orders?tab=${tab}">Filter wissen</a></p>` : ''}</div></div>`;
   if (msg) body += flash(msg[1], msg[0]);
-  body += `${searchForm(csrf)}<nav class="tabs" aria-label="Status">${tabsHtml}</nav>`;
+  body += `${searchForm(csrf)}<nav class="tabs" aria-label="Status">${tabsHtml}</nav>${filterHtml}`;
 
   if (failed) {
     body += '<p class="card card__pad error" role="alert">Kon de bestellingen niet ophalen. Probeer het later opnieuw.</p>';
   } else if (!rows.length) {
-    body += `<div class="card empty"><h2>${esc(EMPTY[tab][0])}</h2><p>${esc(EMPTY[tab][1])}</p></div>`;
+    const [h, p] = unpaid ? ['Alles is betaald', 'Er zijn geen bestellingen in deze lijst die nog niet betaald zijn.'] : EMPTY[tab];
+    body += `<div class="card empty"><h2>${esc(h)}</h2><p>${esc(p)}</p></div>`;
   } else {
     body += tableHtml(rows, csrf, tab);
     if (page > 1 || hasNext) {
@@ -303,7 +312,8 @@ export async function orderDetailPage(env, request, user, number, url) {
 
   const main = `
 <section class="card card__pad"><h2>Producten</h2><table class="lines"><tbody>${lines || '<tr><td>Geen regels gevonden</td><td></td></tr>'}</tbody></table>
-<div class="total"><span>Totaal</span><span class="tnum">${esc(orderTotal(o))}</span></div>${o.has_unpriced ? '<p class="note">Sommige producten worden op gewicht berekend; het definitieve bedrag volgt na het wegen.</p>' : ''}</section>
+<div class="total"><span>Totaal</span><span class="tnum">${esc(orderTotal(o))}</span></div>
+<dl class="dl dl--pay"><dt>Betaling</dt><dd>${esc(PAY_LABEL[paymentState(o)])}${o.paid_at ? ` op ${esc(fmtDateTime(o.paid_at))}` : ''}${o.mollie_payment_id ? `<span class="cell-sub">Mollie-betaling ${esc(o.mollie_payment_id)}</span>` : ''}</dd></dl>${o.has_unpriced ? '<p class="note">Sommige producten worden op gewicht berekend; het definitieve bedrag volgt na het wegen.</p>' : ''}</section>
 <section class="card card__pad"><h2>Klant</h2><dl class="dl">
 <dt>Naam</dt><dd>${esc(o.customer_name)}</dd>
 <dt>E-mail</dt><dd><a href="mailto:${esc(o.email)}">${esc(o.email)}</a></dd>
@@ -319,7 +329,7 @@ ${o.note ? `<dt>Opmerking</dt><dd>${esc(o.note)}</dd>` : ''}
 ${timelineHtml(o, events)}</section>`;
 
   const body = `${back}
-<div class="page-head"><div><h1>BUYT-${o.order_number} ${badge(o.status)}</h1><p>Geplaatst op ${esc(fmtDateTime(o.created_at))}</p></div>
+<div class="page-head"><div><h1>BUYT-${o.order_number} ${badge(o.status)}${payBadge(o)}</h1><p>Geplaatst op ${esc(fmtDateTime(o.created_at))}</p></div>
 <div class="actions">${primary}</div></div>
 ${msg ? flash(msg[1], msg[0]) : ''}
 ${nextMail ? `<p class="note note--tight">${esc(nextMail)}</p>` : ''}
