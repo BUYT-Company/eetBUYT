@@ -188,9 +188,10 @@ async function handleOrderStatus(request, env, ctx) {
     const [row] = await select(env, 'orders', `select=mollie_status,mollie_payment_id&lookup_token=eq.${token}`);
     if (!row) return error(404, 'not_found');
     let status = paymentStateFor(row.mollie_status);
+    let checkoutUrl = null;
     if (status === 'wacht_op_betaling' && row.mollie_payment_id) {
       const synced = await syncPayment(env, row.mollie_payment_id);
-      if (synced) status = synced.status;
+      if (synced) { status = synced.status; checkoutUrl = synced.checkoutUrl; }
       if (synced?.justPaid) {
         ctx.waitUntil(notifyOwner(env, {
           title: 'Betaling ontvangen',
@@ -200,7 +201,7 @@ async function handleOrderStatus(request, env, ctx) {
         }));
       }
     }
-    return json(200, { ok: true, status });
+    return json(200, { ok: true, status, ...(checkoutUrl ? { checkoutUrl } : {}) });
   } catch (e) {
     console.error('order_status_failed', e instanceof Error ? e.message : 'unknown');
     return error(500, 'server_error');

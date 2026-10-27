@@ -67,7 +67,7 @@ export async function syncPayment(env, paymentId) {
 
   const status = orderStatusFor(payment.status);
   await insert(env, 'payment_events', { mollie_payment_id: paymentId, mollie_status: payment.status }).catch(() => {});
-  if (!status) return { status: paymentStateFor(order.mollie_status), justPaid: false, orderNumber: order.order_number };
+  if (!status) return { status: paymentStateFor(order.mollie_status), checkoutUrl: null, justPaid: false, orderNumber: order.order_number };
 
   // Een eenmaal betaalde bestelling blijft betaald (een latere melding mag dat nooit terugdraaien).
   const patch = { mollie_status: payment.status };
@@ -83,6 +83,7 @@ export async function syncPayment(env, paymentId) {
   // maar de betaling is dan nog steeds wat Mollie zegt; alleen de melding "net betaald" laten we dan aan de ander.
   return {
     status,
+    checkoutUrl: payment.status === 'open' ? payment._links?.checkout?.href || null : null,
     justPaid: applied && status === 'betaald',
     orderNumber: order.order_number
   };

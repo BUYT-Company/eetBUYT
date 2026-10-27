@@ -69,7 +69,7 @@ test('syncPayment: betaald zet de bestelling op betaald', async () => {
     { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [{ order_number: 1001 }] }
   ]);
   const out = await syncPayment(env, 'tr_abc123');
-  assert.deepEqual(out, { status: 'betaald', justPaid: true, orderNumber: 1001 });
+  assert.deepEqual(out, { status: 'betaald', checkoutUrl: null, justPaid: true, orderNumber: 1001 });
   const patch = calls.find((c) => c.init.method === 'PATCH');
   assert.match(patch.url, /mollie_status\.neq\.paid/);
   const sent = JSON.parse(patch.init.body);
@@ -87,7 +87,7 @@ test('syncPayment: al betaalde bestelling wordt niet nog eens als nieuw betaald 
     { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [] }
   ]);
   const out = await syncPayment(env, 'tr_abc123');
-  assert.deepEqual(out, { status: 'betaald', justPaid: false, orderNumber: 1001 });
+  assert.deepEqual(out, { status: 'betaald', checkoutUrl: null, justPaid: false, orderNumber: 1001 });
 });
 
 test('syncPayment: webhook was ons voor, toch geeft de bedankpagina "betaald"', async () => {
@@ -98,7 +98,7 @@ test('syncPayment: webhook was ons voor, toch geeft de bedankpagina "betaald"', 
     { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [] }
   ]);
   const out = await syncPayment(env, 'tr_abc123');
-  assert.deepEqual(out, { status: 'betaald', justPaid: false, orderNumber: 1001 });
+  assert.deepEqual(out, { status: 'betaald', checkoutUrl: null, justPaid: false, orderNumber: 1001 });
 });
 
 test('syncPayment: afwijkend bedrag wordt geweigerd', async () => {
@@ -107,4 +107,15 @@ test('syncPayment: afwijkend bedrag wordt geweigerd', async () => {
     { match: '/v2/payments/tr_abc123', body: { status: 'paid', amount: { currency: 'EUR', value: '1.00' } } }
   ]);
   await assert.rejects(() => syncPayment(env, 'tr_abc123'), /amount_mismatch/);
+});
+
+test('syncPayment: bij een nog open betaling komt de betaallink mee, zodat de klant verder kan', async () => {
+  fakeFetch([
+    { match: '/rest/v1/orders?select', body: [{ order_number: 1001, mollie_status: 'open', total_estimate_cents: 4250 }] },
+    { match: '/v2/payments/tr_abc123', body: { status: 'open', amount: { currency: 'EUR', value: '42.50' }, _links: { checkout: { href: 'https://www.mollie.com/checkout/select-method/x' } } } },
+    { match: '/rest/v1/payment_events', method: 'POST', body: null },
+    { match: '/rest/v1/orders?mollie_payment_id', method: 'PATCH', body: [{ order_number: 1001 }] }
+  ]);
+  const out = await syncPayment(env, 'tr_abc123');
+  assert.deepEqual(out, { status: 'wacht_op_betaling', checkoutUrl: 'https://www.mollie.com/checkout/select-method/x', justPaid: false, orderNumber: 1001 });
 });

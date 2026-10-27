@@ -118,15 +118,23 @@
   const check = (attempt) => {
     fetch(`/api/order-status?t=${encodeURIComponent(token)}`, { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then(({ status }) => {
+      .then(({ status, checkoutUrl }) => {
         if (status === 'betaald') {
           window.BuytCart.clear();
           show('betaald');
         } else if (status === 'betaling_mislukt') {
           show('mislukt');
         } else if (status === 'wacht_op_betaling') {
-          if (attempt < 4) setTimeout(() => check(attempt + 1), 2000);
-          else show('open');
+          if (attempt < 2) setTimeout(() => check(attempt + 1), 2000);
+          else {
+            /* Mollie geeft de betaallink terug zolang de betaling nog open staat: de klant kan daar verder */
+            const resume = $('[data-resume]');
+            if (resume && /^https:\/\/www\.mollie\.com\//.test(checkoutUrl || '')) {
+              resume.href = checkoutUrl;
+              resume.hidden = false;
+            }
+            show('open');
+          }
         } else {
           show('onbekend');
         }
