@@ -3,7 +3,7 @@
 Wat al klaar is staat onderaan. Vink af en verwijder wat klaar is.
 
 ## Vandaag (27 oktober 2026)
-- [ ] **Ontwerp voor de bevestigingsmail** ("Bedankt voor je bestelling") maken; uitwerking staat verderop bij "E-mail Bedankt voor je bestelling". Past ook bij Mollie: de mail gaat nu al uit bij het plaatsen, niet pas na betaling, en **vermeldt niet dat er nog betaald moet worden**. Beslis in dit ontwerp: mail pas na betaling, of nu met een duidelijke regel "betaling volgt" (en een link om af te ronden).
+- [x] **Bevestigingsmail** ontworpen (Claude Design) en gebouwd (27 okt 2026): bevestiging pas na betaling, herinnering voor wie niet afrondt. Nog doen: migratie `0012_betaalherinnering.sql` uitvoeren, testen in Gmail, Outlook en Apple Mail (licht en donker), en de bezorgkosten toevoegen zodra ze vaststaan. De andere klantmails (onderweg, bezorgd, geannuleerd) hebben nog het oude ontwerp.
 - [ ] **Mollie koppelen**: sleutel in Cloudflare, testbetaling, zie [mollie-koppelen.md](mollie-koppelen.md).
 
 ## Vóór de verkoop opengaat

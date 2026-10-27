@@ -1,7 +1,7 @@
 // HTML-e-mails in de BUYT-huisstijl (kleuren/fonts overgenomen uit public/css/style.css).
 // Tabel-gebaseerde opmaak met alles inline: e-mailclients (vooral Outlook desktop) ondersteunen
 // geen flexbox/grid en negeren <style>-blokken vaak, dus geen CSS-variabelen of externe classes.
-import { formatEuro } from './validate.js';
+import { formatEuro } from './money.js';
 import { formatDelivery } from './delivery.js';
 
 const COLOR = {
@@ -63,7 +63,7 @@ ${bodyHtml}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
 <tr><td style="background:${COLOR.ink};border-radius:24px;padding:26px 32px;text-align:center;">
 <div style="font:800 1.15rem/1 ${FONT_DISPLAY};letter-spacing:-.04em;color:${COLOR.cream};margin-bottom:6px;">BUYT</div>
-<p style="margin:0;color:rgba(255,248,232,.75);font-size:.82rem;">Gans verdient beter &middot; Amsterdam</p>
+<p style="margin:0;color:rgba(255,248,232,.75);font-size:.82rem;">Daar word je wild van! &middot; Amsterdam</p>
 ${footerNote ? `<p style="margin:10px 0 0;color:rgba(255,248,232,.55);font-size:.75rem;">${footerNote}</p>` : ''}
 </td></tr>
 </table>
@@ -86,29 +86,11 @@ function itemRow(line) {
 function totalsRow(order) {
   const label = order.has_unpriced && order.total_estimate_cents === 0
     ? 'Volgt (prijs op gewicht)'
-    : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
+    : formatEuro(order.total_estimate_cents);
   return `<tr>
-<td style="padding:14px 0 0;font-weight:800;font-size:.98rem;color:${COLOR.ink};">Totaal${order.is_indicative ? ' (indicatief)' : ''}</td>
+<td style="padding:14px 0 0;font-weight:800;font-size:.98rem;color:${COLOR.ink};">Totaal</td>
 <td style="padding:14px 0 0;text-align:right;font-weight:800;font-size:.98rem;color:${COLOR.green};">${label}</td>
 </tr>`;
-}
-
-// Drie stappen zoals bij een pakketbezorger, maar met wat we écht weten: er is geen live tracking
-// (dit is fase 1, geen vervoerder-koppeling), dus "Bezorgd" toont de gekozen datum, niet een status
-// die we niet kunnen bijhouden.
-function statusSteps(order) {
-  const dateLabel = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'short' }).format(new Date(`${order.delivery_date}T00:00:00`));
-  const step = (label, sub, done) => `<td align="center" valign="top" style="width:33%;">
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;"><tr>
-<td style="width:26px;height:26px;border-radius:50%;background:${done ? COLOR.lime : COLOR.cream};border:2px solid ${done ? COLOR.lime : 'rgba(18,51,38,.3)'};text-align:center;vertical-align:middle;font-weight:800;color:${COLOR.ink};font-size:.78rem;line-height:22px;">${done ? '&#10003;' : ''}</td>
-</tr></table>
-<div style="margin-top:6px;font-size:.65rem;font-weight:700;color:${COLOR.ink};text-transform:uppercase;letter-spacing:.03em;">${label}</div>
-${sub ? `<div style="font-size:.65rem;color:${MUTED};">${sub}</div>` : ''}
-</td>`;
-  const line = `<td valign="top" style="padding-top:12px;"><div style="border-top:2px solid rgba(18,51,38,.18);font-size:0;line-height:0;">&nbsp;</div></td>`;
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 22px;">
-<tr>${step('Besteld', 'Vandaag', true)}${line}${step('Klaargemaakt', '', false)}${line}${step('Bezorgd', dateLabel, false)}</tr>
-</table>`;
 }
 
 function deliveryChip(order) {
@@ -120,25 +102,10 @@ function deliveryChip(order) {
 </table>`;
 }
 
-function indicativeNote() {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLOR.sand};border-radius:16px;margin:20px 0 0;">
-<tr><td style="padding:14px 18px;color:${MUTED};font-size:.85rem;line-height:1.5;">Dit bedrag is een schatting, want het gewicht per verpakking varieert. We nemen contact met je op na het wegen.</td></tr>
-</table>`;
-}
-
-function contactBox() {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFE7E1;border-radius:16px;margin:24px 0 0;">
-<tr><td style="padding:16px 18px;">
-<span style="font-weight:700;color:${COLOR.ink};font-size:.9rem;">&#9993;&#65039; Vraag over je bestelling?</span><br>
-<span style="color:${MUTED};font-size:.85rem;">Antwoord gerust op deze e-mail, we reageren snel.</span>
-</td></tr>
-</table>`;
-}
-
 function button(url, label) {
   return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px auto 0;">
 <tr><td style="background:${COLOR.coral};border-radius:999px;">
-<a href="${url}" style="display:inline-block;padding:12px 28px;font-weight:700;color:${COLOR.cream};text-decoration:none;font-size:.9rem;">${label}</a>
+<a href="${url}" style="display:inline-block;padding:14px 32px;font-weight:700;color:${COLOR.ink};text-decoration:none;font-size:.95rem;">${label}</a>
 </td></tr>
 </table>`;
 }
@@ -151,65 +118,210 @@ function detailRow(label, value) {
 </tr>`;
 }
 
-// Bevestigingsmail aan de klant: persoonlijk, in de speelse merktoon. Bij een indicatief bedrag
-// ("ca.") wordt uitgelegd dat het definitieve bedrag na het wegen volgt (zie ontwerp §7, stroom C)
-// — geen valse belofte van een vast bedrag. Nog geen foto van de oprichters (volgt later, zie
-// ontwerp): voor nu alleen tekst.
-export function orderConfirmationEmail(order, result, origin) {
+// ---------------------------------------------------------------------------------------------
+// Bevestigings- en herinneringsmail (ontwerp van 27 okt 2026, Claude Design "BUYT bevestigingsmail").
+// De bevestiging gaat pas na betaling; wie een betaling startte maar niet afrondde krijgt één keer een
+// herinnering (worker/lib/payMail.js). Prijzen zijn vast per verpakking: geen "schatting"-tekst meer.
+// ---------------------------------------------------------------------------------------------
+const PAY_METHOD = { ideal: 'iDEAL', creditcard: 'creditcard', applepay: 'Apple Pay', googlepay: 'Google Pay', bancontact: 'Bancontact', paypal: 'PayPal' };
+const dutchDate = (d) => new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Amsterdam' }).format(d);
+const shortDate = (d) => new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'short', timeZone: 'Europe/Amsterdam' }).format(d);
+
+// "Zaterdag 31 oktober, 10:00–12:00 uur"
+function longDelivery(dateStr, window) {
+  const label = new Intl.DateTimeFormat('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(`${dateStr}T12:00:00`));
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)}, ${window.replace('-', '–')} uur`;
+}
+
+const lineTotal = (l) => (Number.isInteger(l.unit_price_cents) ? formatEuro(l.unit_price_cents * l.qty) : l.price_label);
+
+const FIXED_PRICE_NOTE = 'Je betaalt de vaste prijs per verpakking. Het gewicht is een richtgewicht en kan maximaal 10% afwijken, zonder verrekening.';
+
+function stepDot(state) {
+  const fill = state === 'done' ? COLOR.lime : COLOR.cream;
+  const border = state === 'done' ? COLOR.lime : state === 'now' ? COLOR.coral : 'rgba(18,51,38,.3)';
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;"><tr><td style="width:28px;height:28px;border-radius:50%;background:${fill};border:2px solid ${border};text-align:center;vertical-align:middle;font-weight:800;color:${COLOR.ink};font-size:.8rem;line-height:24px;">${state === 'done' ? '&#10003;' : ''}</td></tr></table>`;
+}
+
+function stepsRow(steps) {
+  const cells = steps.map((s) => `<td align="center" valign="top" style="width:33%;">
+${stepDot(s.state)}
+<div style="margin-top:8px;font-size:.7rem;font-weight:700;color:${COLOR.ink};text-transform:uppercase;letter-spacing:.04em;">${s.label}</div>
+${s.sub ? `<div style="font-size:.72rem;color:${MUTED};">${s.sub}</div>` : ''}
+</td>`).join('');
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr>${cells}</tr></table>`;
+}
+
+function deliveryPanel(order, { withAddress }) {
   const c = order.customer;
-  // Regeleindes eruit: de naam komt in de e-mail-subject terecht en mag daar geen headers injecteren.
-  const firstName = c.customer_name.replace(/[\r\n]/g, ' ').trim().split(' ')[0];
-  const safeFirstName = escapeHtml(firstName);
-  const subject = `Bedankt voor je bestelling, ${firstName}! — BUYT-${result.order_number}`;
-  const delivery = formatDelivery(order.delivery_date, order.delivery_window);
+  const address = withAddress
+    ? `<div style="font-size:.92rem;color:${MUTED};margin-top:4px;">${escapeHtml(c.street)}, ${escapeHtml(c.postcode)} ${escapeHtml(c.city)}</div>`
+    : '';
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLOR.sand};border-radius:16px;margin:0 0 24px;"><tr><td style="padding:18px 20px;">
+<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:${MUTED};">${withAddress ? 'Bezorgmoment' : 'Gekozen bezorgmoment'}</div>
+<div style="font:800 1.3rem/1.25 ${FONT_DISPLAY};letter-spacing:-.02em;color:${COLOR.ink};margin-top:4px;">${longDelivery(order.delivery_date, order.delivery_window)}</div>
+${address}
+</td></tr></table>`;
+}
 
-  const headerHtml = `<div style="font:800 1.85rem/1.15 ${FONT_DISPLAY};letter-spacing:-.03em;color:${COLOR.cream};">Bedankt, <span style="color:${COLOR.lime};">${safeFirstName}</span>!</div>
-<p style="margin:12px 0 0;color:rgba(255,248,232,.88);font-size:.92rem;">Je bestelling <strong>BUYT-${result.order_number}</strong> is bij ons binnen.</p>`;
-
-  const bodyHtml = `${statusSteps(order)}
-${deliveryChip(order)}
+function orderTable(order, totalLabel, afterTotal = '') {
+  const rows = order.lines.map((l) => `<tr>
+<td style="padding:12px 0;border-bottom:1px solid rgba(18,51,38,.15);font-size:.95rem;color:${COLOR.ink};"><strong>${l.qty}&times;</strong> ${l.name}${l.pack ? `<div style="font-size:.82rem;color:${MUTED};">${l.pack}</div>` : ''}</td>
+<td style="padding:12px 0;border-bottom:1px solid rgba(18,51,38,.15);text-align:right;white-space:nowrap;font-size:.95rem;color:${COLOR.ink};vertical-align:top;">${lineTotal(l)}</td>
+</tr>`).join('');
+  return `<div style="font:800 1.1rem/1.2 ${FONT_DISPLAY};letter-spacing:-.02em;color:${COLOR.ink};margin:0 0 6px;">Je bestelling</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-${order.lines.map(itemRow).join('')}
-${totalsRow(order)}
+${rows}
+<tr><td style="padding:14px 0 0;font:800 1.2rem/1.2 ${FONT_DISPLAY};letter-spacing:-.02em;color:${COLOR.ink};">${totalLabel}</td>
+<td style="padding:14px 0 0;text-align:right;white-space:nowrap;font:800 1.2rem/1.2 ${FONT_DISPLAY};letter-spacing:-.02em;color:${COLOR.green};">${formatEuro(order.total_estimate_cents)}</td></tr>
 </table>
-${order.is_indicative ? indicativeNote() : ''}
-<p style="margin:24px 0 0;color:${COLOR.ink};font-size:.92rem;line-height:1.6;">We gaan voor je aan de slag. Tot bezorging!</p>
-<p style="margin:14px 0 0;color:${COLOR.ink};font-size:.92rem;">Tot snel,<br><strong>Team BUYT</strong></p>
-${contactBox()}`;
+${afterTotal}`;
+}
+
+function nextSteps(items) {
+  const row = (n, text) => `<tr>
+<td valign="top" style="width:24px;padding:0 12px 10px 0;"><div style="width:24px;height:24px;border-radius:50%;background:${COLOR.lime};text-align:center;font-weight:700;font-size:.8rem;line-height:24px;color:${COLOR.ink};">${n}</div></td>
+<td style="padding:0 0 10px;font-size:.95rem;line-height:1.5;color:${COLOR.ink};">${text}</td></tr>`;
+  return `<div style="font:800 1.1rem/1.2 ${FONT_DISPLAY};letter-spacing:-.02em;color:${COLOR.ink};margin:24px 0 10px;">Wat gebeurt er nu?</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${items.map((t, i) => row(i + 1, t)).join('')}</table>`;
+}
+
+const contactPanel = (title) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFE7E1;border-radius:16px;margin:24px 0 0;"><tr><td style="padding:16px 20px;">
+<div style="font-weight:700;color:${COLOR.ink};font-size:.95rem;">${title}</div>
+<div style="color:${MUTED};font-size:.88rem;margin-top:2px;">Antwoord op deze mail of mail <a href="mailto:orders@eetbuyt.nl" style="color:${COLOR.ink};">orders@eetbuyt.nl</a>. Noem je bestelnummer erbij.</div>
+</td></tr></table>`;
+
+const mailFooter = (origin, number) => `Deze mail hoort bij bestelling ${number}.<br><a href="${origin}/voorwaarden" style="color:${COLOR.cream};">Algemene voorwaarden</a> &nbsp;&middot;&nbsp; <a href="${origin}/privacy" style="color:${COLOR.cream};">Privacy</a>`;
+
+const firstNameOf = (c) => c.customer_name.replace(/[\r\n]/g, ' ').trim().split(' ')[0];
+
+// opts.paid: de betaling is binnen (opts.method, opts.paidAt). Zonder opts.paid is dit de bevestiging van een bestelling
+// zonder online betaling (de betaalkoppeling staat uit of mislukte): we nemen dan contact op over de betaling.
+export function orderConfirmationEmail(order, result, origin, opts = {}) {
+  const c = order.customer;
+  const firstName = firstNameOf(c); // regeleindes eruit: de naam komt in de subject terecht
+  const number = `BUYT-${result.order_number}`;
+  const delivery = formatDelivery(order.delivery_date, order.delivery_window);
+  const paid = opts.paid === true;
+  const paidAt = opts.paidAt ? new Date(opts.paidAt) : new Date();
+  const method = PAY_METHOD[opts.method];
+
+  const headerHtml = `<div style="font:800 2.2rem/1.1 ${FONT_DISPLAY};letter-spacing:-.03em;color:${COLOR.cream};">Bedankt, <span style="color:${COLOR.lime};">${escapeHtml(firstName)}</span>!</div>
+<p style="margin:14px 0 0;color:${COLOR.cream};font-size:1rem;line-height:1.5;">${paid ? `Je betaling is binnen en je bestelling <strong>${number}</strong> is bevestigd.` : `Je bestelling <strong>${number}</strong> is bij ons binnen.`}</p>`;
+
+  const steps = stepsRow([
+    { label: paid ? 'Betaald' : 'Besteld', sub: shortDate(paidAt), state: 'done' },
+    { label: 'Klaargemaakt', sub: '', state: 'todo' },
+    { label: 'Bezorgd', sub: shortDate(new Date(`${order.delivery_date}T12:00:00`)), state: 'todo' }
+  ]);
+
+  const paidLine = paid
+    ? `<div style="margin-top:6px;font-size:.82rem;color:${MUTED};">Betaald${method ? ` met ${method}` : ''} op ${dutchDate(paidAt)}</div>`
+    : '';
+  const note = `<p style="margin:16px 0 0;font-size:.82rem;line-height:1.5;color:${MUTED};">${FIXED_PRICE_NOTE}</p>`;
+  const steps2 = paid
+    ? ['Wij maken je bestelling klaar.', 'Gaat je bestelling onderweg, dan krijg je daar een mail over.', 'Je ontvangt je bestelling in het gekozen tijdvak. Zorg dat er iemand thuis is.']
+    : ['We nemen contact met je op over de betaling.', 'Wij maken je bestelling klaar.', 'Je ontvangt je bestelling in het gekozen tijdvak. Zorg dat er iemand thuis is.'];
+
+  const bodyHtml = `${steps}
+${deliveryPanel(order, { withAddress: true })}
+${orderTable(order, paid ? 'Totaal betaald' : 'Totaal', paidLine)}
+${note}
+${nextSteps(steps2)}
+${contactPanel('Vragen over je bestelling?')}
+<p style="margin:24px 0 0;color:${COLOR.ink};font-size:.95rem;line-height:1.5;">Eet smakelijk,<br><strong>Team BUYT</strong></p>`;
 
   const html = shell({
     origin,
-    preheader: `Bestelling BUYT-${result.order_number} ontvangen — bezorging ${delivery}`,
+    preheader: paid ? `Betaling ontvangen voor ${number} — bezorging ${delivery}` : `Bestelling ${number} ontvangen — bezorging ${delivery}`,
     headerHtml,
     bodyHtml,
-    footerNote: `Deze e-mail hoort bij bestelling BUYT-${result.order_number}.`,
-    showGeese: true
+    footerNote: mailFooter(origin, number),
+    showGeese: false
   });
 
-  const itemsText = order.lines.map((l) => `- ${l.qty}x ${l.name}${l.pack ? ` (${l.pack})` : ''} — ${l.price_label}`).join('\n');
-  const totalText = order.has_unpriced && order.total_estimate_cents === 0
-    ? 'we laten je het bedrag weten na het wegen'
-    : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
-  const indicativeText = order.is_indicative
-    ? '\nDit bedrag is een schatting, want het gewicht per verpakking varieert. We nemen contact met je op na het wegen.\n'
-    : '';
-  const text = `Bedankt voor je bestelling, ${c.customer_name}!
+  const itemsText = order.lines.map((l) => `- ${l.qty}x ${l.name}${l.pack ? ` (${l.pack})` : ''} — ${lineTotal(l)}`).join('\n');
+  const text = `Bedankt, ${firstName}!
 
-We hebben je bestelling BUYT-${result.order_number} ontvangen.
+${paid ? `Je betaling is binnen en je bestelling ${number} is bevestigd.` : `Je bestelling ${number} is bij ons binnen.`}
 
-Bezorgmoment: ${delivery}
+Bezorgmoment: ${longDelivery(order.delivery_date, order.delivery_window)}
+Adres: ${c.street}, ${c.postcode} ${c.city}
 
-Wat je besteld hebt:
+Je bestelling:
 ${itemsText}
 
-Geschat bedrag: ${totalText}
-${indicativeText}
-Heb je een vraag over je bestelling? Antwoord gerust op deze e-mail.
+${paid ? 'Totaal betaald' : 'Totaal'}: ${formatEuro(order.total_estimate_cents)}${paid ? `\nBetaald${method ? ` met ${method}` : ''} op ${dutchDate(paidAt)}` : ''}
+
+${FIXED_PRICE_NOTE}
+
+Wat gebeurt er nu?
+${steps2.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+Vragen over je bestelling? Antwoord op deze mail of mail orders@eetbuyt.nl, met je bestelnummer erbij.
+
+Eet smakelijk,
+Team BUYT`;
+
+  return { to: c.email, subject: `Bedankt voor je bestelling, ${firstName}! — ${number}`, html, text };
+}
+
+// Herinnering: de klant startte een betaling, rondde die niet af en annuleerde niet. payUrl is de bedankpagina van de
+// bestelling (met het geheime token): daar staat "Betaling afronden" of "Opnieuw betalen".
+export function paymentReminderEmail(order, result, origin, payUrl) {
+  const c = order.customer;
+  const firstName = firstNameOf(c);
+  const number = `BUYT-${result.order_number}`;
+  const delivery = formatDelivery(order.delivery_date, order.delivery_window);
+
+  const headerHtml = `<div style="font:800 2.2rem/1.1 ${FONT_DISPLAY};letter-spacing:-.03em;color:${COLOR.cream};">Bijna klaar, <span style="color:${COLOR.lime};">${escapeHtml(firstName)}</span>!</div>
+<p style="margin:14px 0 0;color:${COLOR.cream};font-size:1rem;line-height:1.5;">Je bestelling <strong>${number}</strong> staat klaar, maar we hebben je betaling nog niet binnen.</p>`;
+
+  const bodyHtml = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr><td align="center">
+<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:${COLOR.coral};border-radius:999px;"><a href="${payUrl}" style="display:inline-block;padding:16px 36px;font-weight:700;color:${COLOR.ink};text-decoration:none;font-size:1.05rem;">Betaling afronden</a></td></tr></table>
+<div style="margin-top:12px;font-size:.88rem;line-height:1.5;color:${MUTED};">Heb je al betaald? Dan kan het even duren voordat wij dat zien. Je krijgt dan vanzelf een bevestiging.</div>
+</td></tr></table>
+${stepsRow([
+    { label: 'Betalen', sub: 'nog te doen', state: 'now' },
+    { label: 'Klaargemaakt', sub: '', state: 'todo' },
+    { label: 'Bezorgd', sub: shortDate(new Date(`${order.delivery_date}T12:00:00`)), state: 'todo' }
+  ])}
+${deliveryPanel(order, { withAddress: false })}
+${orderTable(order, 'Nog te betalen')}
+${contactPanel('Lukt het betalen niet?')}
+<p style="margin:24px 0 0;color:${COLOR.ink};font-size:.95rem;line-height:1.5;">Tot snel,<br><strong>Team BUYT</strong></p>`;
+
+  const html = shell({
+    origin,
+    preheader: `Rond je betaling af voor ${number}`,
+    headerHtml,
+    bodyHtml,
+    footerNote: mailFooter(origin, number),
+    showGeese: false
+  });
+
+  const itemsText = order.lines.map((l) => `- ${l.qty}x ${l.name}${l.pack ? ` (${l.pack})` : ''} — ${lineTotal(l)}`).join('\n');
+  const text = `Bijna klaar, ${firstName}!
+
+Je bestelling ${number} staat klaar, maar we hebben je betaling nog niet binnen.
+
+Betaling afronden: ${payUrl}
+
+Heb je al betaald? Dan kan het even duren voordat wij dat zien. Je krijgt dan vanzelf een bevestiging.
+
+Gekozen bezorgmoment: ${longDelivery(order.delivery_date, order.delivery_window)}
+
+Je bestelling:
+${itemsText}
+
+Nog te betalen: ${formatEuro(order.total_estimate_cents)}
+
+Lukt het betalen niet? Antwoord op deze mail of mail orders@eetbuyt.nl, met je bestelnummer erbij.
 
 Tot snel,
 Team BUYT`;
 
-  return { to: c.email, subject, html, text };
+  return { to: c.email, subject: `Rond je betaling af — ${number}`, html, text };
 }
 
 // Interne mail naar de eigenaar met de volledige bestelgegevens (naast de korte pushmelding via
@@ -218,13 +330,14 @@ Team BUYT`;
 // voor snel scannen, geen verkooplaag nodig.
 const OWNER_ORDER_EMAIL = 'orders@eetbuyt.nl';
 
-export function orderInternalEmail(order, result, origin) {
+export function orderInternalEmail(order, result, origin, opts = {}) {
   const c = order.customer;
   const adminUrl = `${origin}/admin/orders/${result.order_number}`;
   const delivery = formatDelivery(order.delivery_date, order.delivery_window);
-  const subject = `Nieuwe bestelling BUYT-${result.order_number} — ${c.customer_name.replace(/[\r\n]/g, ' ').trim()}`;
+  const title = opts.paid ? 'Betaalde bestelling' : 'Nieuwe bestelling';
+  const subject = `${title} BUYT-${result.order_number} — ${c.customer_name.replace(/[\r\n]/g, ' ').trim()}`;
 
-  const headerHtml = `<div style="font:800 1.5rem/1.15 ${FONT_DISPLAY};letter-spacing:-.03em;color:${COLOR.cream};">Nieuwe bestelling</div>
+  const headerHtml = `<div style="font:800 1.5rem/1.15 ${FONT_DISPLAY};letter-spacing:-.03em;color:${COLOR.cream};">${title}</div>
 <p style="margin:8px 0 0;color:${COLOR.lime};font-weight:700;font-size:1rem;">BUYT-${result.order_number}</p>`;
 
   const noteHtml = c.note
@@ -255,9 +368,9 @@ ${button(adminUrl, 'Bekijk in het beheerscherm')}`;
   const itemsText = order.lines.map((l) => `- ${l.qty}x ${l.name}${l.pack ? ` (${l.pack})` : ''} — ${l.price_label}`).join('\n');
   const totalText = order.has_unpriced && order.total_estimate_cents === 0
     ? 'volgt (prijs op gewicht)'
-    : (order.is_indicative ? 'ca. ' : '') + formatEuro(order.total_estimate_cents);
+    : formatEuro(order.total_estimate_cents);
   const noteText = c.note ? `\nOpmerking:\n${c.note}\n` : '';
-  const text = `Nieuwe bestelling BUYT-${result.order_number}
+  const text = `${title} BUYT-${result.order_number}
 
 Klant: ${c.customer_name}
 E-mail: ${c.email}
@@ -269,7 +382,7 @@ Bezorgmoment: ${delivery}
 Producten:
 ${itemsText}
 
-Geschat bedrag: ${totalText}
+Totaal: ${totalText}
 ${noteText}
 Bekijk in het beheerscherm: ${adminUrl}`;
 

@@ -313,7 +313,7 @@ export async function orderDetailPage(env, request, user, number, url) {
   const main = `
 <section class="card card__pad"><h2>Producten</h2><table class="lines"><tbody>${lines || '<tr><td>Geen regels gevonden</td><td></td></tr>'}</tbody></table>
 <div class="total"><span>Totaal</span><span class="tnum">${esc(orderTotal(o))}</span></div>
-<dl class="dl dl--pay"><dt>Betaling</dt><dd>${esc(PAY_LABEL[paymentState(o)])}${o.paid_at ? ` op ${esc(fmtDateTime(o.paid_at))}` : ''}${o.mollie_payment_id ? `<span class="cell-sub">Mollie-betaling ${esc(o.mollie_payment_id)}</span>` : ''}</dd></dl>${o.has_unpriced ? '<p class="note">Sommige producten worden op gewicht berekend; het definitieve bedrag volgt na het wegen.</p>' : ''}</section>
+<dl class="dl dl--pay"><dt>Betaling</dt><dd>${esc(PAY_LABEL[paymentState(o)])}${o.paid_at ? ` op ${esc(fmtDateTime(o.paid_at))}` : ''}${o.mollie_payment_id ? `<span class="cell-sub">Mollie-betaling ${esc(o.mollie_payment_id)}</span>` : ''}${o.reminder_sent_at ? `<span class="cell-sub">Herinnering verstuurd op ${esc(fmtDateTime(o.reminder_sent_at))}</span>` : ''}</dd></dl>${o.has_unpriced ? '<p class="note">Sommige producten worden op gewicht berekend; het definitieve bedrag volgt na het wegen.</p>' : ''}</section>
 <section class="card card__pad"><h2>Klant</h2><dl class="dl">
 <dt>Naam</dt><dd>${esc(o.customer_name)}</dd>
 <dt>E-mail</dt><dd><a href="mailto:${esc(o.email)}">${esc(o.email)}</a></dd>

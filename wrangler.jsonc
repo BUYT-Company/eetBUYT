@@ -36,5 +36,7 @@
     // (geen geheim), maar beperk hem in Google Cloud tot eetbuyt.nl en tot alleen de Maps JavaScript API. Zie docs/analytics-koppelen.md.
     "GOOGLE_MAPS_KEY": "AIzaSyBy91coe3fmoZoUV5Po5VggtNJAvelGc08"
   },
+  // Geplande controle voor betaalherinneringen (worker/lib/payMail.js): elke 15 minuten.
+  "triggers": { "crons": ["*/15 * * * *"] },
   "observability": { "enabled": true }
 }

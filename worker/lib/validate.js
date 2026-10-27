@@ -12,7 +12,8 @@ const clean = (value, max) => (typeof value === 'string' ? value.replace(CONTROL
 const fail = () => ({ ok: false });
 
 export const isValidEmail = (value) => typeof value === 'string' && value.length <= 200 && EMAIL.test(value);
-export const formatEuro = (cents) => '€ ' + (cents / 100).toFixed(2).replace('.', ',');
+import { formatEuro } from './money.js';
+export { formatEuro };
 const priceLabel = (p) => (!Number.isInteger(p.priceCents) ? 'Prijs op gewicht' : (p.priceApprox ? 'ca. ' : '') + formatEuro(p.priceCents));
 
 // catalog = de prijslijst van het moment (products.json met de prijzen uit het Google Sheet, zie sheetPrices.js).

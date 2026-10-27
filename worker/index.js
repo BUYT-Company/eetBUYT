@@ -6,6 +6,7 @@ import { validateOrder, validateRequest, formatEuro, isValidEmail } from './lib/
 import { validateWaitlist } from './lib/waitlist.js';
 import { verifyTurnstile } from './lib/turnstile.js';
 import { rpc, insert, select, update, SupabaseError } from './lib/supabase.js';
+import { sendPaidMails, sendReminders } from './lib/payMail.js';
 import { canPayOnline, createPayment, getPayment, syncPayment, paymentStateFor, retryPayment } from './lib/mollie.js';
 import { notifyOwner } from './lib/notify.js';
 import { sendOrderConfirmation, sendBusinessRequestMail } from './lib/resend.js';
@@ -125,13 +126,9 @@ async function handleOrder(request, env, ctx) {
     return error(500, 'server_error');
   }
 
-  // Alleen de eerste keer melden/mailen; een herhaald verzoek (dubbelklik) geeft dezelfde bestelling terug.
-  if (!result.existing) {
-    const origin = new URL(request.url).origin;
-    ctx.waitUntil(notifyOwner(env, orderMessage(order, result, origin)));
-    ctx.waitUntil(sendOrderConfirmation(env, orderConfirmationEmail(order, result, origin)));
-    ctx.waitUntil(sendOrderConfirmation(env, orderInternalEmail(order, result, origin)));
-  }
+  // De pushmelding gaat meteen, alleen de eerste keer; een herhaald verzoek (dubbelklik) geeft dezelfde bestelling terug.
+  const origin = new URL(request.url).origin;
+  if (!result.existing) ctx.waitUntil(notifyOwner(env, orderMessage(order, result, origin)));
 
   // Online betalen (Mollie): maak een betaling en stuur de klant naar de betaalpagina. Lukt dat niet, dan blijft de
   // bestelling gewoon als aanvraag staan en nemen we contact op.
@@ -154,7 +151,25 @@ async function handleOrder(request, env, ctx) {
     }
   }
 
+  // De mails: bij online betalen pas na de betaling (sendPaidMails, vanuit de webhook). Zonder online betaling
+  // (of als de betaling niet kon worden aangemaakt) gaan ze nu, als bevestiging dat de bestelling binnen is.
+  if (!result.existing && !checkoutUrl) {
+    ctx.waitUntil(sendOrderConfirmation(env, orderConfirmationEmail(order, result, origin)));
+    ctx.waitUntil(sendOrderConfirmation(env, orderInternalEmail(order, result, origin)));
+  }
+
   return json(200, { ok: true, order_number: result.order_number, token: result.lookup_token, ...(checkoutUrl ? { checkoutUrl } : {}) });
+}
+
+// De betaling is net binnengekomen (dit gebeurt precies één keer per bestelling): pushmelding en de mails.
+function onJustPaid(env, ctx, request, synced) {
+  ctx.waitUntil(notifyOwner(env, {
+    title: 'Betaling ontvangen',
+    message: `Bestelling #${synced.orderNumber} is betaald`,
+    url: `${new URL(request.url).origin}/admin/orders/${synced.orderNumber}`,
+    urlTitle: 'Bekijk bestelling'
+  }));
+  ctx.waitUntil(sendPaidMails(env, synced.orderNumber, synced.method));
 }
 
 // Mollie meldt hier dat een betaling is veranderd: alleen een ID, de echte status halen we zelf bij Mollie op.
@@ -163,14 +178,7 @@ async function handleMollieWebhook(request, env, ctx) {
   const id = text.length <= 200 ? new URLSearchParams(text).get('id') : null;
   try {
     const synced = await syncPayment(env, id);
-    if (synced?.justPaid) {
-      ctx.waitUntil(notifyOwner(env, {
-        title: 'Betaling ontvangen',
-        message: `Bestelling #${synced.orderNumber} is betaald`,
-        url: `${new URL(request.url).origin}/admin/orders/${synced.orderNumber}`,
-        urlTitle: 'Bekijk bestelling'
-      }));
-    }
+    if (synced?.justPaid) onJustPaid(env, ctx, request, synced);
   } catch (e) {
     // Een fout geven we door aan Mollie (niet-200), dan probeert Mollie het later opnieuw.
     console.error('mollie_webhook_failed', e instanceof Error ? e.message : 'unknown');
@@ -206,14 +214,7 @@ async function handleOrderStatus(request, env, ctx) {
     if (status === 'wacht_op_betaling' && row.mollie_payment_id) {
       const synced = await syncPayment(env, row.mollie_payment_id);
       if (synced) { status = synced.status; checkoutUrl = synced.checkoutUrl; }
-      if (synced?.justPaid) {
-        ctx.waitUntil(notifyOwner(env, {
-          title: 'Betaling ontvangen',
-          message: `Bestelling #${synced.orderNumber} is betaald`,
-          url: `${new URL(request.url).origin}/admin/orders/${synced.orderNumber}`,
-          urlTitle: 'Bekijk bestelling'
-        }));
-      }
+      if (synced?.justPaid) onJustPaid(env, ctx, request, synced);
     }
     return json(200, { ok: true, status, ...(checkoutUrl ? { checkoutUrl } : {}) });
   } catch (e) {
@@ -482,6 +483,11 @@ async function serveFavicon(request, env, url) {
 }
 
 export default {
+  // Elke 15 minuten (wrangler.jsonc, triggers): herinnering voor wie een betaling startte maar niet afrondde.
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(sendReminders(env));
+  },
+
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const { pathname } = url;
