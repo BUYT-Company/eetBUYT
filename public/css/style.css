@@ -1904,3 +1904,29 @@ html:not(.shop-open) .only-open { display: none !important; }
 /* Geen sluier meer over de hero-video op welk formaat dan ook; een zachte tekstschaduw houdt de tekst leesbaar */
 .hero--illustration .hero__art::after, .hero--photo .hero__art::after { background: none !important; }
 .hero h1, .hero .lead { text-shadow: 0 1px 3px rgba(0, 0, 0, .35), 0 2px 22px rgba(0, 0, 0, .5); }
+
+/* Wolken en ganzen: losse lijntekeningen als sfeer (assets/sky/, verliesvrij), zwart via mask. Drie lagen van dezelfde mask maken de fijne lijnen zwarter zonder de tekening te veranderen. */
+.choose, .wg, .zb-coop { position: relative; overflow-x: clip; }
+.mission { overflow-x: clip; }
+.sky { position: absolute; z-index: 0; display: block; aspect-ratio: var(--ar, 4 / 1); width: var(--w, 280px); background: #000; -webkit-mask: var(--img) center / contain no-repeat, var(--img) center / contain no-repeat, var(--img) center / contain no-repeat; mask: var(--img) center / contain no-repeat, var(--img) center / contain no-repeat, var(--img) center / contain no-repeat; pointer-events: none; animation: sky-drift 16s ease-in-out infinite alternate; }
+.choose > .wrap, .wg > .wrap, .zb-coop > .wrap { position: relative; z-index: 1; }
+@keyframes sky-drift { from { translate: -8px 0; } to { translate: 12px -6px; } }
+/* missie: onder de twee kolommen, in de witruimte boven de golf */
+.sky--m-l { --w: clamp(150px, 16vw, 250px); --ar: 551 / 217; top: calc(100% + 6px); left: 26%; }
+.sky--m-r { --w: clamp(170px, 18vw, 280px); --ar: 812 / 411; top: calc(100% - 4px); right: 6%; animation-delay: -5s; }
+/* samenwerken (homepage) */
+.sky--z-r2 { --w: clamp(130px, 11vw, 200px); --ar: 461 / 151; right: 28vw; top: calc(var(--w) * -.33 - 105px); animation-delay: -8s; }
+.sky--z-r3 { --w: clamp(110px, 9vw, 170px); --ar: 551 / 217; right: 37vw; top: calc(var(--w) * -.39 - 150px); animation-delay: -3s; }
+.sky--z-r  { --w: clamp(100px, 8.5vw, 150px); --ar: 569 / 322; right: 14vw; top: calc(var(--w) * -.28 - 120px); }
+/* waarom gans */
+.sky--w-l { --w: clamp(150px, 16vw, 250px); --ar: 551 / 217; left: 3vw; top: 4%; }
+.sky--w-r { --w: clamp(120px, 11vw, 180px); --ar: 684 / 635; right: 5vw; top: 0; rotate: -4deg; animation-delay: -6s; }
+/* contact */
+.sky--c-l  { --w: clamp(150px, 19vw, 300px); --ar: 717 / 169; left: -2vw; top: 14%; }
+.sky--c-r  { --w: clamp(110px, 11vw, 180px); --ar: 516 / 614; right: 4vw; top: 8%; animation-delay: -4s; }
+.sky--c-r2 { --w: clamp(100px, 11vw, 170px); --ar: 461 / 151; right: -2vw; top: 46%; animation-delay: -9s; }
+/* samenwerken (zakelijk): de V-formatie rechts van de kop */
+.sky--coop { --w: clamp(230px, 21vw, 400px); --ar: 1230 / 771; right: 1.3vw; top: calc(94px - var(--w) * .3135); }
+@media (max-width: 1000px) { .sky--z-r { top: -70px; right: 4vw; } .sky--z-r2 { top: -60px; right: 30vw; } .sky--coop { --w: clamp(220px, 46vw, 340px); position: relative; display: block; margin: 8px 0 0 auto; top: auto; right: auto; } }
+@media (max-width: 760px) { .sky { --w: 110px !important; } .sky--coop { --w: 230px !important; } .sky--m-l, .sky--c-r2, .sky--z-r2, .sky--z-r3 { display: none; } }
+@media (prefers-reduced-motion: reduce) { .sky { animation: none; } }
