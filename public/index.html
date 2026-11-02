@@ -21,7 +21,7 @@
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/hero-video-poster.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/style.css?v=20261030p">
+  <link rel="stylesheet" href="css/style.css?v=20261102b">
   <script>
     (function () {
       var d = document.documentElement;
@@ -137,6 +137,9 @@
     <section class="waitband only-closed" aria-label="Wachtlijst">
       <div class="wrap">
       <form class="waitlist" id="wachtlijst" name="wachtlijst" method="POST" action="/api/waitlist" data-in style="--d:2">
+        <span class="sky sky--wl-c1" style="--img:url(/assets/sky/wolk-a.webp)" aria-hidden="true"></span>
+        <span class="sky sky--wl-c2" style="--img:url(/assets/sky/wolk-b.webp)" aria-hidden="true"></span>
+        <span class="sky sky--wl-g" style="--img:url(/assets/sky/gans-a.webp)" aria-hidden="true"></span>
         <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <div class="waitlist__intro">
         <p class="waitlist__title">Word <em>BUYT</em>-bewust</p>
@@ -385,9 +388,6 @@
     </section>
 
     <section class="choose" id="zakelijk" aria-labelledby="zakelijk-title">
-      <span class="sky sky--z-r" style="--img:url(/assets/sky/gans-a.webp)" aria-hidden="true"></span>
-      <span class="sky sky--z-r2" style="--img:url(/assets/sky/wolk-b.webp)" aria-hidden="true"></span>
-      <span class="sky sky--z-r3" style="--img:url(/assets/sky/wolk-a.webp)" aria-hidden="true"></span>
       <div class="wrap">
         <p class="kicker reveal">Zakelijk</p>
         <h2 id="zakelijk-title" class="reveal">Wil je met ons <em>samenwerken?</em></h2>
