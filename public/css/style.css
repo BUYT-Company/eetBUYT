@@ -1924,7 +1924,6 @@ html:not(.shop-open) .only-open { display: none !important; }
 /* samenwerken (zakelijk): de V-formatie rechts van de kop */
 .sky--coop { --w: clamp(260px, 26vw, 500px); --ar: 1230 / 771; right: 1.3vw; top: calc(104px - var(--w) * .3135); }
 @media (max-width: 1000px) { .sky--coop { --w: clamp(220px, 46vw, 340px); position: relative; display: block; margin: 8px 0 0 auto; top: auto; right: auto; } }
-@media (max-width: 760px) { .sky { --w: 110px !important; } .sky--coop { --w: 230px !important; } .sky--m-l, .sky--c-r2 { display: none; } }
 @media (prefers-reduced-motion: reduce) { .sky { animation: none; } }
 
 /* wachtlijstblok: wolken in het groen, de gans vliegt half uit het blok */
@@ -1932,4 +1931,28 @@ html:not(.shop-open) .only-open { display: none !important; }
 .sky--wl-c1 { --w: clamp(110px, 10vw, 170px); --ar: 551 / 217; left: 31%; bottom: 14%; }
 .sky--wl-c2 { --w: clamp(80px, 7vw, 120px); --ar: 461 / 151; left: 45%; bottom: 4%; animation-delay: -6s; }
 .sky--wl-g { --w: clamp(90px, 9vw, 160px); --ar: 569 / 322; right: 3%; bottom: calc(var(--w) * -.28); animation-delay: -3s; }
-@media (max-width: 900px) { .sky--wl-c1, .sky--wl-c2 { display: none; } .sky--wl-g { --w: 90px !important; } }
+@media (max-width: 900px) { .sky--wl-c1, .sky--wl-c2 { display: none; } }
+
+/* Tablet en mobiel: kleiner, en speels verspringend in de ruimte tussen de blokken. Een vleugel mag net achter een kop vallen (de tekst ligt boven de tekening). */
+@media (max-width: 1100px) {
+  .sky--w-l { --w: clamp(84px, 13vw, 130px); left: 5vw; top: calc(var(--w) * -.3 - 6px); rotate: -2deg; }
+  .sky--w-r { --w: clamp(66px, 10vw, 96px); right: 5vw; top: calc(var(--w) * -.62); rotate: 6deg; }
+  .sky--c-l { --w: clamp(84px, 13vw, 130px); left: 3vw; top: 26px; }
+  .sky--c-r { --w: clamp(62px, 9vw, 92px); right: 5vw; top: 10px; rotate: 8deg; }
+  .sky--c-r2 { display: block; --w: clamp(70px, 11vw, 110px); right: 9vw; bottom: 96px; top: auto; }
+  .sky--m-l { --w: clamp(80px, 12vw, 130px); left: 9%; top: calc(100% + 2px); rotate: -3deg; }
+  .sky--m-r { --w: clamp(96px, 15vw, 150px); right: 5%; top: calc(100% - 10px); rotate: 4deg; }
+  .sky--wl-g { --w: clamp(72px, 10vw, 110px); right: 6%; }
+  .sky--coop { --w: clamp(200px, 44vw, 320px); margin: -6px -2vw 16px auto; rotate: -2deg; }
+}
+@media (max-width: 560px) {
+  .sky--w-l { --w: 82px; left: 6vw; }
+  .sky--w-r { --w: 62px; right: 5vw; }
+  .sky--c-l { --w: 78px; left: 4vw; top: 22px; }
+  .sky--c-r { --w: 58px; right: 5vw; }
+  .sky--c-r2 { display: none; }
+  .sky--m-l { --w: 84px; left: 7%; top: calc(100% + 16px); }
+  .sky--m-r { --w: 100px; right: 4%; }
+  .sky--wl-g { --w: 76px; right: 7%; }
+  .sky--coop { --w: min(62vw, 250px); margin-right: -3vw; }
+}
