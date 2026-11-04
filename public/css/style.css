@@ -1956,3 +1956,6 @@ html:not(.shop-open) .only-open { display: none !important; }
   .sky--wl-g { --w: 76px; right: 7%; }
   .sky--coop { --w: min(62vw, 250px); margin-right: -3vw; }
 }
+
+/* Homepage-hero op elk formaat (web, tablet, mobiel) van rand tot rand: geen roomkleurige marge links, rechts of in de hoeken */
+.hero { margin-inline: 0; border-radius: 0; }
