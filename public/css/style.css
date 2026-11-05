@@ -1789,7 +1789,6 @@ html:not(.shop-open) .only-open { display: none !important; }
 .sources__title { margin: 0 0 .6rem; font: 700 .85rem/1.2 var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .sources__list { margin: 0; padding-left: 1.3em; font-size: .95rem; line-height: 1.6; color: var(--ink); max-width: 70ch; }
 .sources__list li { padding-left: .3em; scroll-margin-top: 90px; border-radius: 8px; transition: background-color .3s ease; }
-.sources__list li:target { background: var(--lime); box-shadow: 0 0 0 .4em var(--lime); }
 .sources__list a { color: var(--ink); text-underline-offset: 3px; }
 .sources__list em { color: inherit; background: none; padding: 0; font-style: normal; }
 .sources__back { margin-left: .4em; text-decoration: none; font-weight: 700; }
@@ -1965,7 +1964,7 @@ html:not(.shop-open) .only-open { display: none !important; }
 .footer__tel a { display: inline-flex; align-items: center; gap: .55em; padding-block: 0; color: var(--cream); }
 .footer__tel a::after { display: none; }
 .footer__tel svg { flex: none; width: 1.15em; height: 1.15em; transition: color .2s ease, transform .3s var(--spring); }
-.footer__tel span { position: relative; padding-bottom: 2px; font-variant-numeric: tabular-nums; }
+.footer__tel span { position: relative; padding-bottom: 2px; font-size: .9em; }
 .footer__tel span::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
 .footer__tel a:hover span::after, .footer__tel a:focus-visible span::after { transform: scaleX(1); }
 .footer__tel a:hover svg, .footer__tel a:focus-visible svg { color: var(--lime); transform: rotate(-12deg); }
@@ -1974,8 +1973,8 @@ html:not(.shop-open) .only-open { display: none !important; }
 /* WhatsApp-icoon naast het telefoonicoon: alleen icoon, zelfde lijnstijl en hover als het telefoonicoon */
 .footer__about .footer__tel { display: flex; align-items: center; gap: .4em; }
 .footer__tel .footer__wa { padding: .4em; margin: -.4em -.25em -.4em -.4em; }
+/* Cijfers zijn zo hoog als hoofdletters: op 90% oogt het nummer even groot als het mailadres */
 .footer__tel span { white-space: nowrap; }
-@media (min-width: 1001px) and (max-width: 1140px) { .footer__tel a { font-size: .92em; } }
 /* Smalle telefoons: logo iets kleiner zodat het telefoonnummer met beide iconen op één regel past; op de allersmalste schermen mag de regel breken */
 @media (max-width: 380px) {
   .footer__brandcol { grid-template-columns: 84px minmax(0, 1fr); column-gap: 16px; }
