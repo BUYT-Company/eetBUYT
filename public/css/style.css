@@ -1959,3 +1959,26 @@ html:not(.shop-open) .only-open { display: none !important; }
 
 /* Homepage-hero op elk formaat (web, tablet, mobiel) van rand tot rand: geen roomkleurige marge links, rechts of in de hoeken */
 .hero { margin-inline: 0; border-radius: 0; }
+
+/* Telefoonnummer in de footer: lijnicoon in dezelfde stijl als de social-iconen; het lijntje bij hover loopt alleen onder het nummer */
+.footer__about .footer__tel { margin: .55rem 0 0; }
+.footer__tel a { display: inline-flex; align-items: center; gap: .55em; padding-block: 0; color: var(--cream); }
+.footer__tel a::after { display: none; }
+.footer__tel svg { flex: none; width: 1.15em; height: 1.15em; transition: color .2s ease, transform .3s var(--spring); }
+.footer__tel span { position: relative; padding-bottom: 2px; font-variant-numeric: tabular-nums; }
+.footer__tel span::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
+.footer__tel a:hover span::after, .footer__tel a:focus-visible span::after { transform: scaleX(1); }
+.footer__tel a:hover svg, .footer__tel a:focus-visible svg { color: var(--lime); transform: rotate(-12deg); }
+@media (prefers-reduced-motion: reduce) { .footer__tel svg, .footer__tel span::after { transition: none; } .footer__tel a:hover svg { transform: none; } }
+
+/* WhatsApp-icoon naast het telefoonicoon: alleen icoon, zelfde lijnstijl en hover als het telefoonicoon */
+.footer__about .footer__tel { display: flex; align-items: center; gap: .4em; }
+.footer__tel .footer__wa { padding: .4em; margin: -.4em -.25em -.4em -.4em; }
+.footer__tel span { white-space: nowrap; }
+@media (min-width: 1001px) and (max-width: 1140px) { .footer__tel a { font-size: .92em; } }
+/* Smalle telefoons: logo iets kleiner zodat het telefoonnummer met beide iconen op één regel past; op de allersmalste schermen mag de regel breken */
+@media (max-width: 380px) {
+  .footer__brandcol { grid-template-columns: 84px minmax(0, 1fr); column-gap: 16px; }
+  .footer__logo { width: 84px; }
+}
+@media (max-width: 345px) { .footer__about .footer__tel { flex-wrap: wrap; row-gap: .2em; } }
