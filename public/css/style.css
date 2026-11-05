@@ -1981,3 +1981,8 @@ html:not(.shop-open) .only-open { display: none !important; }
   .footer__logo { width: 84px; }
 }
 @media (max-width: 345px) { .footer__about .footer__tel { flex-wrap: wrap; row-gap: .2em; } }
+
+/* Bronlink: licht bij hover limoen op, als een markeerstift achter de tekst */
+.sources__list a:not(.sources__back) { border-radius: 4px; box-shadow: 0 0 0 .15em transparent; transition: background-color .2s ease, box-shadow .2s ease; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.sources__list a:not(.sources__back):hover, .sources__list a:not(.sources__back):focus-visible { background: var(--lime); box-shadow: 0 0 0 .15em var(--lime); color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .sources__list a:not(.sources__back) { transition: none; } }
