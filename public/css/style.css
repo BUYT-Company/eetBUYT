@@ -1986,3 +1986,13 @@ html:not(.shop-open) .only-open { display: none !important; }
 .sources__list a:not(.sources__back) { text-decoration-color: currentColor; transition: text-decoration-color .2s ease; }
 .sources__list a:not(.sources__back):hover, .sources__list a:not(.sources__back):focus-visible { text-decoration-color: var(--coral); }
 @media (prefers-reduced-motion: reduce) { .sources__list a:not(.sources__back) { transition: none; } }
+
+/* Homepage: ongescrold vult de hero-video het hele scherm en ligt de navigatiebalk er transparant overheen
+   (met een zachte donkere waas voor leesbaarheid); zodra je scrolt (.is-scrolled) of het menu opent, wordt de balk weer poldergroen */
+.home .hero { margin-top: calc(-1 * var(--header-h)); min-height: max(calc(560px + var(--header-h)), 100svh); }
+.home .hero__inner { padding-top: calc(var(--header-h) + clamp(28px, 5vw, 64px)); }
+.home .site-header { transition: background-color .35s ease, box-shadow .3s ease, transform .55s var(--ease-out), opacity .4s ease; }
+.home .site-header::before { content: ""; position: absolute; inset: 0 0 -48px; z-index: -1; pointer-events: none; background: linear-gradient(rgba(0, 0, 0, .4), rgba(0, 0, 0, 0)); opacity: 0; transition: opacity .35s ease; }
+.home .site-header:not(.is-scrolled):not(:has(.nav.open)) { background: transparent; box-shadow: none; }
+.home .site-header:not(.is-scrolled):not(:has(.nav.open))::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .home .site-header, .home .site-header::before { transition: none; } }
