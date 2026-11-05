@@ -1982,7 +1982,7 @@ html:not(.shop-open) .only-open { display: none !important; }
 }
 @media (max-width: 345px) { .footer__about .footer__tel { flex-wrap: wrap; row-gap: .2em; } }
 
-/* Bronlink: bij hover kleurt de dunne onderstreping limoen */
+/* Bronlink: bij hover kleurt de dunne onderstreping koraal (limoen gaf te weinig contrast op room) */
 .sources__list a:not(.sources__back) { text-decoration-color: currentColor; transition: text-decoration-color .2s ease; }
-.sources__list a:not(.sources__back):hover, .sources__list a:not(.sources__back):focus-visible { text-decoration-color: var(--lime); }
+.sources__list a:not(.sources__back):hover, .sources__list a:not(.sources__back):focus-visible { text-decoration-color: var(--coral); }
 @media (prefers-reduced-motion: reduce) { .sources__list a:not(.sources__back) { transition: none; } }
