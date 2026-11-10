@@ -66,7 +66,7 @@
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/hero-video-poster.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/style.css?v=20261102f">
+  <link rel="stylesheet" href="css/style.css?v=20261110a">
   <script>
     (function () {
       var d = document.documentElement;
@@ -89,7 +89,7 @@
   <script src="js/cart.js" defer></script>
   <script src="js/brand.js?v=2" defer></script>
   <script src="js/fade.js" defer></script>
-  <script src="js/main.js?v=20261023g" defer></script>
+  <script src="js/main.js?v=20261110a" defer></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="js/header-hide.js" defer></script>
   <script src="js/waarom.js?v=6" defer></script>
@@ -778,7 +778,7 @@
       <span class="sky sky--c-r" style="--img:url(/assets/sky/gans-b.webp)" aria-hidden="true"></span>
       <span class="sky sky--c-r2" style="--img:url(/assets/sky/wolk-b.webp)" aria-hidden="true"></span>
         <div class="wrap contact__hero">
-          <p class="order__tag">Zakelijk &amp; Thuiskok</p>
+          <p class="order__tag">Zakelijk &amp; thuiskok</p>
           <h2 id="vragen-title" class="contact__title">Contact</h2>
           <a class="contact__mail" href="mailto:info@eetbuyt.nl">info@eetbuyt.nl</a>
           <p class="contact__lead">Ben je chef of horecaondernemer? Laat je gegevens achter en vertel wat je nodig hebt. Heb je als thuiskok een vraag? Ook die kun je hier stellen.</p>
@@ -906,28 +906,5 @@
     </div>
   </footer>
 
-  <!-- Pop-up nieuwsbrief. Een native dialog: focus blijft erin en Escape sluit hem. main.js toont hem na 25 seconden of halverwege de pagina. -->
-  <dialog class="popup" id="nieuwsbrief-popup" aria-labelledby="popup-title">
-    <div class="popup__card">
-      <button class="popup__close" type="button" data-popup-close aria-label="Pop-up sluiten">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-      </button>
-      <svg class="popup__goose" viewBox="0 0 130 80" aria-hidden="true" focusable="false"><use href="#goose-fly"/></svg>
-      <p class="popup__tag">Wilde updates</p>
-      <h2 id="popup-title" class="popup__title" tabindex="-1">Land in onze<br>mailbox</h2>
-      <form name="nieuwsbrief-popup" method="POST" action="/api/newsletter" class="popup__form">
-        <p class="hp"><label>Niet invullen: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-        <div class="popup__row">
-          <label class="sr-only" for="f-popup-email">E-mailadres</label>
-          <input id="f-popup-email" name="email" type="email" placeholder="Jouw e-mailadres" autocomplete="email" required>
-          <button class="btn btn--dark" type="submit"><span class="btn__label">Abonneer me</span></button>
-        </div>
-        <div class="popup__turnstile" data-popup-turnstile></div>
-        <p class="form__msg form__msg--ok" role="status" hidden>Bedankt, je bent ingeschreven. Wild!</p>
-        <p class="form__msg form__msg--err" role="alert" hidden>Je inschrijving is niet gelukt. Probeer het later opnieuw.</p>
-      </form>
-      <button class="popup__later" type="button" data-popup-close>Nu niet</button>
-    </div>
-  </dialog>
 </body>
 </html>

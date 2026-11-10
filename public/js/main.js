@@ -513,51 +513,5 @@
     });
   }
 
-  /* Pop-up: na 25 seconden of halverwege de pagina, één keer. Niet opnieuw na sluiten of inschrijven. */
-  const popup = $('#nieuwsbrief-popup');
-  if (popup && typeof popup.showModal === 'function' && newsState() === null) {
-    const popForm = $('form', popup);
-    const popOk = $('.form__msg--ok', popup);
-    const popErr = $('.form__msg--err', popup);
-    const popTitle = $('h2', popup);
-    const box = $('[data-popup-turnstile]', popup);
-    const siteKey = $('.cf-turnstile').dataset.sitekey;
-    let widgetId = null;
-    let shown = false;
-
-    /* Turnstile laadt asynchroon en een token verloopt, dus de widget pas tonen als de pop-up opengaat */
-    const freshToken = () => {
-      if (!window.turnstile) return;
-      if (widgetId === null) widgetId = window.turnstile.render(box, { sitekey: siteKey, language: 'nl' });
-      else window.turnstile.reset(widgetId);
-    };
-
-    const open = () => {
-      /* Pas tonen als de intro klaar is, en nooit twee keer */
-      if (shown || popup.open || !root.classList.contains('is-ready')) return;
-      shown = true;
-      popup.showModal();
-      popTitle.focus();
-      freshToken();
-    };
-
-    setTimeout(open, 25000);
-    scrollTasks.push(() => {
-      if (window.scrollY + window.innerHeight > document.documentElement.scrollHeight * 0.5) open();
-    });
-
-    popup.addEventListener('click', (e) => {
-      if (e.target === popup || e.target.closest('[data-popup-close]')) popup.close();
-    });
-    popup.addEventListener('close', () => {
-      if (newsState() === null) rememberNews('gesloten');
-    });
-    popForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const done = await subscribe(popForm, popOk, popErr, widgetId === null ? null : box);
-      if (done) setTimeout(() => popup.close(), 2200);
-    });
-  }
-
   scrollTasks.forEach((fn) => fn());
 })();
