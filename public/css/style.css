@@ -2010,3 +2010,16 @@ body .wg__tab, body .wg__more:not(.btn) { font-size: .95rem; }
 .sources { padding-top: 0; }
 .waitband { padding-bottom: max(0px, calc(var(--sec-gap) - clamp(48px, 6vw, 88px))); }
 #impact .kicker--light { color: var(--lime); }
+
+/* Footer op telefoon: logo staat vóór "BUYT" in de kop, alle tekst links uitgelijnd met het Instagram-icoon. Desktop en tablet houden het logo in de linkerkolom. */
+.footer__brandlogo { display: none; }
+@media (max-width: 720px) {
+  .footer .footer__brandcol > .footer__logo { display: none; }
+  .footer .footer__brandcol { grid-template-columns: minmax(0, 1fr); column-gap: 0; row-gap: 20px; }
+  .footer .footer__brandcol .footer__about, .footer .footer__brandcol .footer__social, .footer .footer__brandcol .footer__news { grid-column: 1; grid-row: auto; }
+  .footer .footer__brandcol .footer__social { justify-self: start; margin: 0 0 0 -10px; }
+  .footer__about .footer__brand { display: flex; align-items: center; gap: .3em; }
+  .footer__brandlogo { display: block; flex: none; padding: 0; line-height: 0; margin-block: -.4em; }
+  .footer__brandlogo::after { display: none; }
+  .footer__brandlogo img { display: block; width: auto; height: 2.8em; }
+}
