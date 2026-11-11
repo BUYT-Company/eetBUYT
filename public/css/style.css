@@ -1876,8 +1876,9 @@ html:not(.shop-open) .only-open { display: none !important; }
 .choose > .wrap, .wg > .wrap, .zb-coop > .wrap { position: relative; z-index: 1; }
 @keyframes sky-drift { from { translate: -8px 0; } to { translate: 12px -6px; } }
 /* missie: onder de twee kolommen, in de witruimte boven de golf */
-.sky--m-l { --w: clamp(150px, 16vw, 250px); --ar: 551 / 217; top: calc(100% + 6px); left: 26%; }
-.sky--m-r { --w: clamp(170px, 18vw, 280px); --ar: 812 / 411; top: calc(100% - 4px); right: 6%; animation-delay: -5s; }
+.sky--m-l { --w: clamp(150px, 16vw, 250px); --ar: 551 / 217; top: 11%; left: 5%; }
+.sky--m-l2 { --w: clamp(100px, 10vw, 160px); --ar: 461 / 151; top: 6%; left: 16%; animation-delay: -8s; }
+.sky--m-r { --w: clamp(170px, 18vw, 280px); --ar: 812 / 411; top: 58%; right: 6%; animation-delay: -5s; }
 /* waarom gans */
 .sky--w-l { --w: clamp(150px, 16vw, 250px); --ar: 551 / 217; left: 3vw; top: 4%; }
 .sky--w-r { --w: clamp(120px, 11vw, 180px); --ar: 684 / 635; right: 5vw; top: 0; rotate: -4deg; animation-delay: -6s; }
@@ -1904,8 +1905,9 @@ html:not(.shop-open) .only-open { display: none !important; }
   .sky--c-l { --w: clamp(84px, 13vw, 130px); left: 3vw; top: 26px; }
   .sky--c-r { --w: clamp(62px, 9vw, 92px); right: 5vw; top: 10px; rotate: 8deg; }
   .sky--c-r2 { display: block; --w: clamp(70px, 11vw, 110px); right: 9vw; bottom: 96px; top: auto; }
-  .sky--m-l { --w: clamp(80px, 12vw, 130px); left: 9%; top: calc(100% + 2px); rotate: -3deg; }
-  .sky--m-r { --w: clamp(96px, 15vw, 150px); right: 5%; top: calc(100% - 10px); rotate: 4deg; }
+  .sky--m-l { --w: clamp(80px, 12vw, 130px); left: 6%; top: 1%; rotate: -3deg; }
+  .sky--m-l2 { --w: clamp(60px, 9vw, 100px); left: 24%; top: 0; }
+  .sky--m-r { --w: clamp(96px, 15vw, 150px); right: 3%; top: auto; bottom: 44px; rotate: 4deg; }
   .sky--wl-g { --w: clamp(72px, 10vw, 110px); right: 6%; }
   .sky--coop { --w: clamp(200px, 44vw, 320px); margin: -6px -2vw 16px auto; rotate: -2deg; }
 }
@@ -1915,8 +1917,9 @@ html:not(.shop-open) .only-open { display: none !important; }
   .sky--c-l { --w: 78px; left: 4vw; top: 22px; }
   .sky--c-r { --w: 58px; right: 5vw; }
   .sky--c-r2 { display: none; }
-  .sky--m-l { --w: 84px; left: 7%; top: calc(100% + 16px); }
-  .sky--m-r { --w: 100px; right: 4%; }
+  .sky--m-l { --w: 84px; left: 7%; top: 14px; }
+  .sky--m-l2 { --w: 60px; left: 34%; top: 4px; }
+  .sky--m-r { --w: 100px; right: 3%; bottom: 46px; }
   .sky--wl-g { --w: 76px; right: 7%; }
   .sky--coop { --w: min(62vw, 250px); margin-right: -3vw; }
 }
