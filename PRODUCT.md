@@ -15,7 +15,7 @@ Two audiences, equally important, confirmed by the owner:
 
 ## Product Purpose
 
-BUYT brings the goose back on the plate. In the Netherlands roughly 330,000 geese are shot each year and most of the meat is never used. BUYT makes wild, Dutch goose meat popular with consumers and with horeca, through campaigns, dinners and chefs cooking with the products. The website has to sell the products (webshop) and win business customers.
+BUYT brings the goose back on the plate. In the Netherlands more than 330,000 geese are killed each year (shooting and moult capture) and most of the meat is never used. BUYT makes wild, Dutch goose meat popular with consumers and with horeca, through campaigns, dinners and chefs cooking with the products. The website has to sell the products (webshop) and win business customers.
 
 Success: visitors order, ideally in as few clicks as possible, and goose becomes as normal a choice as chicken or beef.
 
@@ -35,9 +35,10 @@ Wild goose from Dutch soil that would otherwise be thrown away: "van polder naar
 
 Confirmed facts that may be stated on the site:
 
-- About 330,000 geese are shot in the Netherlands every year (Dierenbescherming, Feb 2024). No percentage for unused meat is confirmed: on the site use "een te groot deel" (owner's decision, 23 Oct 2026; earlier "het overgrote deel"). "~70%" is only an own calculation (see Onderzoek/Buyt-Bronnenoverzicht-Ganzencijfers.pdf); "95%" and "80%" must not be used.
+- More than 330,000 geese were killed in the Netherlands in 2022, by shooting and gassing during moult capture (ruivangst) (Dierenbescherming factsheet, Feb 2024, p. 3). On the site the word is "gedood", never "geschoten" (owner's decision, 16 Nov 2026). No percentage for unused meat is confirmed: on the site use "een te groot deel" (owner's decision, 23 Oct 2026; earlier "het overgrote deel"). "~70%" is only an own calculation (see Onderzoek/Buyt-Bronnenoverzicht-Ganzencijfers.pdf); "95%" and "80%" must not be used.
 - The meat is wild and from Dutch soil.
 - Products (21 Sept 2026, owner's choice, data taken from natuurlijkwild.com/bestellen and marked as draft in `data/products.json`): ganzenshoarma, gerookte ganzenborst (pastrami), ganzenborstfilet, ganzenbiefstuk, ganzenpoten. The mixed goose/wild boar products (half-om-half gehakt, saucijzen, hamburger, gehaktballen) were considered and removed by the owner.
+- BUYT is going to sell a bitterbal made from wild goose to horeca (b2b); owner made this public on 16 Nov 2026 and it is named on the home page ("Van polder naar tafel" tab). Recipe, composition, price and launch date are not decided yet: do not state them.
 - Products are priced per kilo; pack weights are "ca." (approximate), so the cart shows indicative prices. Ganzenbiefstuk has no known pack weight (priceCents null, "Prijs op gewicht"). Gerookte ganzenborst is sold per piece (€ 7,50, ca. 250 g); its per-kilo price (€ 30) is derived.
 - Ingredient lines are only the composition stated by natuurlijkwild.com plus their allergen note (soja, mosterdzaad, selderij, tarwe for products marked #). The owner must verify these for BUYT's own products.
 - Photos for all five products: Media/buyt-productfotos-grote-plank ("stijl B", top-down on a large organic wooden board on grass).
@@ -51,7 +52,7 @@ Terminology: Dutch throughout; "gans/ganzen", "thuiskok", "horeca".
 
 - Name and logo: BUYT with the archer figure; the logo is one colour, never several tints (`assets/logo-animatie.svg`, `assets/logo-still.svg`).
 - The owner's brand board is the binding reference for palette and typefaces: `Inspiratie website/buyt-huisstijlvoorstel.html`.
-- Tone: honest and positive about the origin. The goose being shot is stated factually where relevant, but the site shows no weapons, blood or hunting imagery.
+- Tone: honest and positive about the origin. The goose being killed is stated factually where relevant, but the site shows no weapons, blood or hunting imagery.
 
 ## Evidence on Hand
 
