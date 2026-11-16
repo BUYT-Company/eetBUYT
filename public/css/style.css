@@ -1617,6 +1617,10 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 .wg__photo--faunabeheer { opacity: 0; object-position: 50% 62%; transition: opacity .6s ease; }
 .wg__stage[data-active="faunabeheer"] .wg__photo--faunabeheer { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .wg__photo--faunabeheer { transition: none; } }
+/* Impact: illustratie van Noord-Holland vol koelcontainers van de FBE. */
+.wg__photo--impact { opacity: 0; object-position: 50% 50%; transition: opacity .6s ease; }
+.wg__stage[data-active="impact"] .wg__photo--impact { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .wg__photo--impact { transition: none; } }
 
 /* Pijlknop bij de kop: op tablet naast de kop, op telefoon compact eronder */
 @media (max-width: 1250px) and (min-width: 641px) {
