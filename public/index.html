@@ -66,7 +66,7 @@
   <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/hero-video-poster.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/style.css?v=20261116a">
+  <link rel="stylesheet" href="css/style.css?v=20261116b">
   <script>
     (function () {
       var d = document.documentElement;
@@ -733,9 +733,11 @@
     <section class="section section--forest section--impact off-landing" id="impact" aria-labelledby="impact-title">
       <div class="wrap">
         <p class="kicker kicker--light reveal">Impact</p>
-        <h2 id="impact-title" data-split>Ganzen met een betere bestemming, <em>tot nu toe</em></h2>
+        <h2 id="impact-title" data-split>Elke gans verdient <em>een plek op tafel</em></h2>
         <div class="stats">
-          <div class="stat reveal">
+          <!-- Teller "ganzen met een betere bestemming": verborgen (16 nov 2026) tot er een impactvol cijfer is.
+               Later automatisch vullen vanuit de verkopen aan horeca; dan data-count bijwerken en "hidden" weghalen. -->
+          <div class="stat stat--impact-count reveal" hidden>
             <svg class="stat__icon" viewBox="0 0 60 60" aria-hidden="true"><use href="#plate"/></svg>
             <p class="stat__num stat__num--accent"><span data-count="0">0</span></p>
             <p class="stat__label">ganzen die we al een betere bestemming gaven</p>

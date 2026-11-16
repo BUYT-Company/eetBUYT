@@ -431,6 +431,10 @@ em {
 .stats { container-type: inline-size; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(40px, 6vw, 72px); border-top: 1px solid var(--hair-light); }
 .stat { padding: 32px 32px 0 0; }
 .stat + .stat { border-left: 1px solid var(--hair-light); padding-left: 32px; }
+/* Verborgen teller (hidden in de HTML): de overige twee cijfers vullen dan de breedte, zonder lijn ervoor. */
+.stat[hidden] { display: none; }
+@media (min-width: 901px) { .stats:has(> .stat[hidden]) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat[hidden] + .stat { border-left: 0; padding-left: 0; border-top: 0; }
 .stat__icon { height: 52px; width: auto; color: var(--lime); margin-bottom: 1.2rem; }
 /* Lettergrootte volgt de breedte van het blok, zodat "330.000" altijd in zijn kolom past */
 .stat__num { white-space: nowrap; font: 800 clamp(2.4rem, 6.2cqw, 4.6rem)/.95 var(--font-display); letter-spacing: -.05em; color: var(--cream); margin: 0 0 1rem; font-variant-numeric: tabular-nums; }
