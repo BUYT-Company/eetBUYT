@@ -165,16 +165,33 @@
     const bg = $('.intro__bg', intro);
     const logo = $('.intro__logo', intro);
     const wave = $('.intro__wave', intro);
+    /* De hero-video wacht verborgen (wel alvast laden). Zodra de golf het hele scherm bedekt, start hij
+       vanaf het begin, zodat de golf hem bij het omhoog schuiven als een gordijn onthult. */
+    const heroVideo = $('.hero__video');
+    if (heroVideo) { heroVideo.autoplay = false; heroVideo.preload = 'auto'; heroVideo.pause(); }
+    let videoStarted = false;
+    const startVideo = (instant) => {
+      if (!heroVideo || videoStarted) return;
+      videoStarted = true;
+      try { heroVideo.currentTime = 0; } catch (_) {}
+      if (instant) heroVideo.style.transition = 'none';
+      heroVideo.style.opacity = '1';
+      const p = heroVideo.play();
+      if (p && p.catch) p.catch(() => {});
+    };
     const timers = [];
     let finished = false;
     const finish = () => {
       if (finished) return;
       finished = true;
       timers.forEach(clearTimeout);
+      startVideo(false);
       root.classList.remove('intro-on');
       try { sessionStorage.setItem('buyt-intro', '1'); } catch (_) {}
       ready();
     };
+    /* Vangnet: blijft de animatie hangen (bijv. tabblad op de achtergrond), rond dan netjes af vóór het noodnet in index.html (9 s). */
+    setTimeout(finish, 8000);
     intro.addEventListener('pointerdown', finish);
     window.addEventListener('keydown', finish, { once: true });
 
@@ -191,6 +208,7 @@
       );
       rise.onfinish = () => {
         if (finished) return;
+        startVideo(true);
         bg.style.opacity = '0';
         logo.style.visibility = 'hidden';
         const out = wave.animate(
