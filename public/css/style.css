@@ -1324,10 +1324,11 @@ html:not(.shop-open) main.checkout { visibility: hidden; }
 @media (min-width: 1001px) {
   .zb-team h2 { font-size: clamp(2.25rem, 3.6vw, 3.25rem); }
   .zb-team__list { gap: 32px; }
-  .zb-person { column-gap: 22px; padding: 28px; box-shadow: 0 10px 30px -12px rgba(18, 51, 38, .35); }
-  .zb-person img { width: clamp(104px, 8vw, 132px); }
+  /* Foto, ruimte en mailadres schalen mee met de kaartbreedte, zodat het langste adres (timme@) op één regel blijft. */
+  .zb-person { container-type: inline-size; column-gap: clamp(14px, 7cqw, 22px); padding: clamp(20px, 9cqw, 28px); box-shadow: 0 10px 30px -12px rgba(18, 51, 38, .35); }
+  .zb-person img { width: clamp(72px, 35cqw, 132px); }
   .zb-person strong { font-size: 1.6rem; }
-  .zb-person a { font-size: 1rem; }
+  .zb-person a { font-size: clamp(.8rem, 5.4cqw, 1rem); white-space: nowrap; overflow-wrap: normal; }
 }
 .zb-product:hover img { transform: translateY(-4px) rotate(-1deg); }
 .zb-product img { transition: transform .5s var(--spring); }
